@@ -29,7 +29,7 @@ def main(stdscr):
       msg = 'Speed Up : +'
     elif key == ord('-'):
       msg = 'Speed Down : -'
-    elif key == ' ':  # Space key to exit
+    elif key == ord(' '):  # Space key to exit
       msg = 'Stop : space'
     elif key == 27:  # ESC key to exit
       break
