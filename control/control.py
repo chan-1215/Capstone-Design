@@ -26,10 +26,11 @@ MOTOR_POWER = 1.0
 DIRECTION_CHANGE_PAUSE = 0.06
 POLL_INTERVAL = 0.02
 # Used only in terminal fallback mode where key-up events are unavailable.
-RELEASE_TIMEOUT = 0.30
+RELEASE_TIMEOUT = 0.70
 
 MOTIONS = {
     "forward": (1, 1, 1, 1),
+    # Keep all four motors active during backward.
     "backward": (-1, -1, -1, -1),
     "left": (1, 1, 0, 0),
     "right": (0, 0, 1, 1),
@@ -171,17 +172,22 @@ def run_keyboard_hold_mode(car: CarController) -> None:
     print("Release key to stop. Press Q to quit.")
     print("-" * 30)
 
-    last_command = "stop"
+    last_reported = "stop"
     while True:
         command = get_hold_command()
 
         if command == "quit":
             break
 
-        if command != last_command:
+        if command in MOVING_COMMANDS:
+            # Re-apply continuously while key is held.
             car.apply(command)
+        elif command != last_reported:
+            car.apply("stop")
+
+        if command != last_reported:
             print(f"Command: {command}")
-            last_command = command
+            last_reported = command
 
         time.sleep(POLL_INTERVAL)
 
@@ -194,6 +200,7 @@ def run_terminal_hold_like_mode(car: CarController) -> None:
     print("-" * 30)
 
     active_command = "stop"
+    last_reported = "stop"
     last_motion_at = time.monotonic()
 
     with TerminalKeyReader() as reader:
@@ -208,24 +215,23 @@ def run_terminal_hold_like_mode(car: CarController) -> None:
                     print(f"Unsupported input: {printable} (ASCII {ord(key)})")
                 elif command == "quit":
                     break
+                elif command == "stop":
+                    active_command = "stop"
                 else:
-                    if command != active_command:
-                        car.apply(command)
-                        print(f"Command: {command}")
-                        active_command = command
-                    elif command in MOVING_COMMANDS:
-                        # Re-apply same command to keep both sides in sync.
-                        car.apply(command)
+                    active_command = command
+                    last_motion_at = now
 
-                    if command in MOVING_COMMANDS:
-                        last_motion_at = now
-                    else:
-                        last_motion_at = now
-
-            if active_command in MOVING_COMMANDS and now - last_motion_at >= RELEASE_TIMEOUT:
+            if active_command in MOVING_COMMANDS:
+                # Keep sending command so all motors stay engaged.
+                car.apply(active_command)
+                if now - last_motion_at >= RELEASE_TIMEOUT:
+                    active_command = "stop"
+            else:
                 car.apply("stop")
-                print("Command: stop (key release timeout)")
-                active_command = "stop"
+
+            if active_command != last_reported:
+                print(f"Command: {active_command}")
+                last_reported = active_command
 
             time.sleep(POLL_INTERVAL)
 
