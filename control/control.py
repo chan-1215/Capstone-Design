@@ -21,14 +21,16 @@ except Exception:
 RIGHT_MOTOR_PINS = ((26, 19), (22, 27))
 LEFT_MOTOR_PINS = ((20, 21), (24, 23))
 
+# Equal power for all 4 motors.
 MOTOR_POWER = 1.0
 DIRECTION_CHANGE_PAUSE = 0.06
 POLL_INTERVAL = 0.02
+# Used only in terminal fallback mode where key-up events are unavailable.
+RELEASE_TIMEOUT = 0.30
 
 MOTIONS = {
     "forward": (1, 1, 1, 1),
     "backward": (-1, -1, -1, -1),
-    # Pivot turns: one side moves, the other side stops.
     "left": (1, 1, 0, 0),
     "right": (0, 0, 1, 1),
     "stop": (0, 0, 0, 0),
@@ -52,6 +54,8 @@ HOLD_KEYS = (
     ("d", "right"),
 )
 
+MOVING_COMMANDS = {"forward", "backward", "left", "right"}
+
 
 class CarController:
     def __init__(self) -> None:
@@ -60,6 +64,7 @@ class CarController:
         left_front = Motor(*LEFT_MOTOR_PINS[0])
         left_rear = Motor(*LEFT_MOTOR_PINS[1])
 
+        # Order: right_front, right_rear, left_front, left_rear
         self.motors = (right_front, right_rear, left_front, left_rear)
         self.current_motion = MOTIONS["stop"]
 
@@ -80,7 +85,6 @@ class CarController:
     def apply(self, command: str) -> None:
         next_motion = MOTIONS[command]
 
-        # Brief neutral pause when direction flips, to reduce weak starts.
         reverse_switch = any(
             prev != 0 and nxt != 0 and prev != nxt
             for prev, nxt in zip(self.current_motion, next_motion)
@@ -101,32 +105,46 @@ class CarController:
 
 
 class TerminalKeyReader:
-    def read_key(self) -> int:
+    def __init__(self) -> None:
+        self._fd = None
+        self._original_settings = None
+
+    def __enter__(self) -> "TerminalKeyReader":
+        if os.name != "nt" and sys.stdin.isatty():
+            self._fd = sys.stdin.fileno()
+            self._original_settings = termios.tcgetattr(self._fd)
+            tty.setcbreak(self._fd)
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        if self._fd is not None and self._original_settings is not None:
+            termios.tcsetattr(self._fd, termios.TCSADRAIN, self._original_settings)
+
+    def read_nonblocking(self) -> str | None:
         if not sys.stdin.isatty():
-            user_input = input("Input command (w/a/s/d/x/q): ").strip().lower()
-            return ord(user_input[0]) if user_input else -1
+            return None
 
         if os.name == "nt":
             import msvcrt
 
+            if not msvcrt.kbhit():
+                return None
+
             key = msvcrt.getch()
             if key in {b"\x00", b"\xe0"}:
-                msvcrt.getch()
-                return -1
+                if msvcrt.kbhit():
+                    msvcrt.getch()
+                return None
 
-            return ord(key.decode("utf-8", errors="ignore").lower() or "\x00")
+            decoded = key.decode("utf-8", errors="ignore")
+            return decoded.lower() if decoded else None
 
-        file_descriptor = sys.stdin.fileno()
-        original_settings = termios.tcgetattr(file_descriptor)
+        ready, _, _ = select.select([sys.stdin], [], [], 0)
+        if not ready:
+            return None
 
-        try:
-            tty.setraw(file_descriptor)
-            _, _, _ = select.select([sys.stdin], [], [])
-            key = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(file_descriptor, termios.TCSADRAIN, original_settings)
-
-        return ord(key.lower())
+        key = sys.stdin.read(1)
+        return key.lower() if key else None
 
 
 def hold_mode_available() -> bool:
@@ -148,7 +166,7 @@ def get_hold_command() -> str:
     return "stop"
 
 
-def run_hold_mode(car: CarController) -> None:
+def run_keyboard_hold_mode(car: CarController) -> None:
     print("Hold mode: keep W/A/S/D pressed to move.")
     print("Release key to stop. Press Q to quit.")
     print("-" * 30)
@@ -170,31 +188,46 @@ def run_hold_mode(car: CarController) -> None:
     car.stop()
 
 
-def run_fallback_mode(car: CarController) -> None:
-    reader = TerminalKeyReader()
-
-    print("Drive the car with W/A/S/D.")
-    print("w: forward, a: turn left, s: backward, d: turn right")
-    print("x: stop, q: quit")
+def run_terminal_hold_like_mode(car: CarController) -> None:
+    print("Hold-like mode: W/A/S/D to move, Q to quit.")
+    print("Release auto-stop works with short timeout in this mode.")
     print("-" * 30)
 
-    while True:
-        ascii_code = reader.read_key()
-        if ascii_code < 0:
-            continue
+    active_command = "stop"
+    last_motion_at = time.monotonic()
 
-        command = KEY_BINDINGS.get(ascii_code)
-        if command is None:
-            printable = chr(ascii_code) if 32 <= ascii_code <= 126 else "unknown"
-            print(f"Unsupported input: {printable} (ASCII {ascii_code})")
-            continue
+    with TerminalKeyReader() as reader:
+        while True:
+            key = reader.read_nonblocking()
+            now = time.monotonic()
 
-        print(f"Command: {command} (ASCII {ascii_code})")
+            if key:
+                command = KEY_BINDINGS.get(ord(key))
+                if command is None:
+                    printable = key if 32 <= ord(key) <= 126 else "unknown"
+                    print(f"Unsupported input: {printable} (ASCII {ord(key)})")
+                elif command == "quit":
+                    break
+                else:
+                    if command != active_command:
+                        car.apply(command)
+                        print(f"Command: {command}")
+                        active_command = command
+                    elif command in MOVING_COMMANDS:
+                        # Re-apply same command to keep both sides in sync.
+                        car.apply(command)
 
-        if command == "quit":
-            break
+                    if command in MOVING_COMMANDS:
+                        last_motion_at = now
+                    else:
+                        last_motion_at = now
 
-        car.apply(command)
+            if active_command in MOVING_COMMANDS and now - last_motion_at >= RELEASE_TIMEOUT:
+                car.apply("stop")
+                print("Command: stop (key release timeout)")
+                active_command = "stop"
+
+            time.sleep(POLL_INTERVAL)
 
     car.stop()
 
@@ -204,11 +237,11 @@ def main() -> None:
 
     try:
         if hold_mode_available():
-            run_hold_mode(car)
+            run_keyboard_hold_mode(car)
         else:
-            print("[Info] Hold mode unavailable (keyboard module/permission).")
-            print("[Info] Fallback mode enabled. Use x to stop.")
-            run_fallback_mode(car)
+            print("[Info] keyboard hold mode unavailable (module/permission).")
+            print("[Info] Using terminal hold-like fallback mode.")
+            run_terminal_hold_like_mode(car)
     except KeyboardInterrupt:
         print("\nExit by Ctrl+C.")
     finally:
