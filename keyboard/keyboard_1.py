@@ -7,8 +7,9 @@ MOTOR2_PINS = (22, 27)
 MOTOR3_PINS = (20, 21)
 MOTOR4_PINS = (24, 23)
 
-# All motors use the exact same power value.
-MOTOR_POWER = 1.0
+# Right side baseline = 1.0, left side baseline = 0.8
+RIGHT_MOTOR_POWER = 1.0
+LEFT_MOTOR_POWER = 0.8
 DIRECTION_CHANGE_PAUSE = 0.06
 RELEASE_TIMEOUT = 0.2
 
@@ -41,17 +42,17 @@ motors = (motor1, motor2, motor3, motor4)
 current_motion = (0, 0, 0, 0)
 
 
-def drive_motor(motor, direction):
+def drive_motor(motor, direction, power):
   if direction > 0:
-    if MOTOR_POWER >= 0.99:
+    if power >= 0.99:
       motor.forward()
     else:
-      motor.forward(MOTOR_POWER)
+      motor.forward(power)
   elif direction < 0:
-    if MOTOR_POWER >= 0.99:
+    if power >= 0.99:
       motor.backward()
     else:
-      motor.backward(MOTOR_POWER)
+      motor.backward(power)
   else:
     motor.stop()
 
@@ -73,8 +74,9 @@ def apply_motion(next_motion):
     stop_all()
     sleep(DIRECTION_CHANGE_PAUSE)
 
-  for motor, direction in zip(motors, next_motion):
-    drive_motor(motor, direction)
+  for index, (motor, direction) in enumerate(zip(motors, next_motion)):
+    power = RIGHT_MOTOR_POWER if index < 2 else LEFT_MOTOR_POWER
+    drive_motor(motor, direction, power)
 
   current_motion = next_motion
 
@@ -84,7 +86,7 @@ def draw_screen(stdscr, msg):
   stdscr.addstr(0, 0, "Motor keyboard control (ESC to exit)")
   stdscr.addstr(1, 0, "w: forward | s: backward | a: left | d: right")
   stdscr.addstr(2, 0, "space: stop")
-  stdscr.addstr(4, 0, f"Power: {MOTOR_POWER:.2f} (same for all 4 motors)")
+  stdscr.addstr(4, 0, f"Power: Right {RIGHT_MOTOR_POWER:.2f} / Left {LEFT_MOTOR_POWER:.2f}")
   stdscr.addstr(5, 0, msg)
   stdscr.refresh()
 
