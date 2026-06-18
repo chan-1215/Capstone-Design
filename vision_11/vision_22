@@ -1,0 +1,273 @@
+﻿from picamera2 import Picamera2
+import cv2
+import numpy as np
+import time
+from gpiozero import Motor, LineSensor
+
+# Motor pins
+motor1 = Motor(26, 19)
+motor2 = Motor(22, 27)
+motor3 = Motor(16, 21)
+motor4 = Motor(24, 23)
+
+# Line sensor pins
+right_line = LineSensor(5)
+left_line = LineSensor(6)
+
+# motor1, motor2 = right side
+# motor3, motor4 = left side
+
+BASE_SPEED = 0.45
+MAX_SPEED = 0.75
+MIN_SPEED = 0.0
+
+DEAD_ZONE = 15
+MAX_ERROR = 160
+KP = 0.35
+
+# If black line gives 1, keep 1.
+# If black line gives 0, change to 0.
+BLACK_VALUE = 1
+
+LINE_CORRECTION = 0.35
+
+
+def clamp(value, low=MIN_SPEED, high=MAX_SPEED):
+    return max(low, min(high, value))
+
+
+def stop_motors():
+    motor1.stop()
+    motor2.stop()
+    motor3.stop()
+    motor4.stop()
+
+
+def set_right(speed):
+    speed = clamp(speed)
+
+    if speed <= 0.01:
+        motor1.stop()
+        motor2.stop()
+    else:
+        motor1.forward(speed)
+        motor2.forward(speed)
+
+
+def set_left(speed):
+    speed = clamp(speed)
+
+    if speed <= 0.01:
+        motor3.stop()
+        motor4.stop()
+    else:
+        motor3.forward(speed)
+        motor4.forward(speed)
+
+
+def drive(right_speed, left_speed):
+    set_right(right_speed)
+    set_left(left_speed)
+
+
+def go_forward():
+    drive(BASE_SPEED, BASE_SPEED)
+
+
+def turn_right():
+    right_speed = BASE_SPEED - LINE_CORRECTION
+    left_speed = BASE_SPEED + LINE_CORRECTION
+    drive(right_speed, left_speed)
+
+
+def turn_left():
+    right_speed = BASE_SPEED + LINE_CORRECTION
+    left_speed = BASE_SPEED - LINE_CORRECTION
+    drive(right_speed, left_speed)
+
+
+def is_black(value):
+    return value == BLACK_VALUE
+
+
+def line_sensor_safety_check():
+    L = left_line.value
+    R = right_line.value
+
+    L_black = is_black(L)
+    R_black = is_black(R)
+
+    if L_black and not R_black:
+        # Left sensor가 검은선을 감지하면 오른쪽으로 보정
+        turn_right()
+        return True, "LINE_LEFT_BLACK_GO_RIGHT"
+
+    elif not L_black and R_black:
+        # Right sensor가 검은선을 감지하면 왼쪽으로 보정
+        turn_left()
+        return True, "LINE_RIGHT_BLACK_GO_LEFT"
+
+    elif L_black and R_black:
+        # 양쪽 센서가 검은선을 감지하면 정지
+        stop_motors()
+        return True, "LINE_BOTH_BLACK_STOP"
+
+    return False, "LINE_CLEAR"
+
+
+def drive_by_camera_error(error):
+    if abs(error) < DEAD_ZONE:
+        go_forward()
+        return "FORWARD"
+
+    normalized_error = error / MAX_ERROR
+    normalized_error = max(-1.0, min(1.0, normalized_error))
+
+    correction = KP * normalized_error
+
+    # error > 0 => 현재 차선 중심이 왼쪽으로 치우침 -> 왼쪽으로 보정
+    # error < 0 => 현재 차선 중심이 오른쪽으로 치우침 -> 오른쪽으로 보정
+    right_speed = clamp(BASE_SPEED + correction)
+    left_speed = clamp(BASE_SPEED - correction)
+
+    drive(right_speed, left_speed)
+
+    if error > 0:
+        return "CAMERA_TURN_LEFT"
+    return "CAMERA_TURN_RIGHT"
+
+
+def make_coordinates(image_height, line_parameters):
+    slope, intercept = line_parameters
+    y1 = image_height
+    y2 = 40
+    x1 = int((y1 - intercept) / slope)
+    x2 = int((y2 - intercept) / slope)
+    return np.array([x1, y1, x2, y2])
+
+
+def average_slope_intercept(image_height, lines):
+    left_fit = []
+    right_fit = []
+
+    if lines is None:
+        return None, None
+
+    for line in lines:
+        x1, y1, x2, y2 = line[0]
+        if x1 == x2:
+            continue
+
+        parameters = np.polyfit((x1, x2), (y1, y2), 1)
+        slope = parameters[0]
+        intercept = parameters[1]
+
+        if slope < -0.3:
+            left_fit.append((slope, intercept))
+        elif slope > 0.3:
+            right_fit.append((slope, intercept))
+
+    left_line = None
+    right_line = None
+
+    if len(left_fit) > 0:
+        left_fit_average = np.average(left_fit, axis=0)
+        left_line = make_coordinates(image_height, left_fit_average)
+
+    if len(right_fit) > 0:
+        right_fit_average = np.average(right_fit, axis=0)
+        right_line = make_coordinates(image_height, right_fit_average)
+
+    return left_line, right_line
+
+
+def calculate_steering_error(cropped_frame, left_line, right_line):
+    image_width = cropped_frame.shape[1]
+    camera_center = image_width // 2
+
+    if left_line is not None and right_line is not None:
+        lane_center = (left_line[0] + right_line[0]) // 2
+        return camera_center - lane_center, lane_center
+
+    if left_line is not None:
+        lane_center = left_line[0] + 80
+        return camera_center - lane_center, lane_center
+
+    if right_line is not None:
+        lane_center = right_line[0] - 80
+        return camera_center - lane_center, lane_center
+
+    return 0, camera_center
+
+
+def draw_lane_overlay(line_result, left_line, right_line, lane_center):
+    if left_line is not None:
+        cv2.line(line_result, (left_line[0], left_line[1]), (left_line[2], left_line[3]), (255, 0, 0), 5)
+    if right_line is not None:
+        cv2.line(line_result, (right_line[0], right_line[1]), (right_line[2], right_line[3]), (255, 0, 0), 5)
+    cv2.line(line_result, (lane_center, 120), (lane_center, 40), (0, 255, 0), 4)
+    return line_result
+
+
+def main():
+    cam = Picamera2()
+    config = cam.create_preview_configuration(main={"size": (320, 240), "format": "BGR888"})
+    cam.configure(config)
+    cam.start()
+    time.sleep(2)
+
+    print("Camera is ready.")
+    print("-" * 30)
+
+    try:
+        while True:
+            frame = cam.capture_array()
+            cropped_frame = frame[120:240, 0:320]
+            gray_frame = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2GRAY)
+            blur_frame = cv2.GaussianBlur(gray_frame, (5, 5), 0)
+            edge_frame = cv2.Canny(blur_frame, 50, 150)
+
+            mask = np.zeros_like(edge_frame)
+            polygon = np.array([[(0, 120), (100, 40), (220, 40), (320, 120)]], np.int32)
+            cv2.fillPoly(mask, polygon, 255)
+            masked_edge = cv2.bitwise_and(edge_frame, mask)
+
+            src_pts = np.float32([(0, 120), (100, 40), (220, 40), (320, 120)])
+            dst_pts = np.float32([(0, 120), (0, 0), (320, 0), (320, 120)])
+            matrix = cv2.getPerspectiveTransform(src_pts, dst_pts)
+            birdseye_frame = cv2.warpPerspective(masked_edge, matrix, (320, 120))
+
+            lines = cv2.HoughLinesP(birdseye_frame, 1, np.pi / 180, 30, minLineLength=30, maxLineGap=20)
+            image_height = cropped_frame.shape[0]
+            left_line, right_line = average_slope_intercept(image_height, lines)
+
+            event, reason = line_sensor_safety_check()
+            if event:
+                print(f"[LINE SENSOR] {reason}")
+                time.sleep(0.05)
+                continue
+
+            error, lane_center = calculate_steering_error(cropped_frame, left_line, right_line)
+            steer_action = drive_by_camera_error(error)
+
+            line_result = cv2.warpPerspective(cropped_frame, matrix, (320, 120))
+            line_result = draw_lane_overlay(line_result, left_line, right_line, lane_center)
+
+            print(f"Steering Error={error:>4}, Action={steer_action}")
+            cv2.putText(line_result, f"Error: {error}", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.imwrite("vision_22_result.jpg", line_result)
+            time.sleep(0.03)
+
+    except KeyboardInterrupt:
+        print("Stopped by user.")
+    except Exception as err:
+        print(f"Error: {err}")
+    finally:
+        stop_motors()
+        cam.stop()
+        cv2.destroyAllWindows()
+        print("Camera safely terminated.")
+
+
+if __name__ == "__main__":
+    main()
