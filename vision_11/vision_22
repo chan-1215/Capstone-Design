@@ -199,7 +199,7 @@ def calculate_steering_error(cropped_frame, left_line, right_line):
         lane_center = right_line[0] - 80
         return camera_center - lane_center, lane_center
 
-    return 0, camera_center
+    return None, camera_center
 
 
 def draw_lane_overlay(line_result, left_line, right_line, lane_center):
@@ -251,6 +251,12 @@ def main():
                 continue
 
             error, lane_center = calculate_steering_error(cropped_frame, left_line, right_line)
+            if error is None:
+                print("[CAMERA] No lane detected. Stopping.")
+                stop_motors()
+                time.sleep(0.05)
+                continue
+
             steer_action = drive_by_camera_error(error)
 
             line_result = cv2.warpPerspective(cropped_frame, matrix, (320, 120))
