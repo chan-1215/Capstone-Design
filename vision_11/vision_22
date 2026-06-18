@@ -139,6 +139,8 @@ def drive_by_camera_error(error):
 
 def make_coordinates(image_height, line_parameters):
     slope, intercept = line_parameters
+    if slope == 0:
+        return None
     y1 = image_height
     y2 = 40
     x1 = int((y1 - intercept) / slope)
@@ -205,7 +207,8 @@ def draw_lane_overlay(line_result, left_line, right_line, lane_center):
         cv2.line(line_result, (left_line[0], left_line[1]), (left_line[2], left_line[3]), (255, 0, 0), 5)
     if right_line is not None:
         cv2.line(line_result, (right_line[0], right_line[1]), (right_line[2], right_line[3]), (255, 0, 0), 5)
-    cv2.line(line_result, (lane_center, 120), (lane_center, 40), (0, 255, 0), 4)
+    height = line_result.shape[0] - 1
+    cv2.line(line_result, (lane_center, height), (lane_center, 40), (0, 255, 0), 4)
     return line_result
 
 
@@ -228,12 +231,12 @@ def main():
             edge_frame = cv2.Canny(blur_frame, 50, 150)
 
             mask = np.zeros_like(edge_frame)
-            polygon = np.array([[(0, 120), (100, 40), (220, 40), (320, 120)]], np.int32)
+            polygon = np.array([[(0, 119), (100, 40), (220, 40), (320, 119)]], np.int32)
             cv2.fillPoly(mask, polygon, 255)
             masked_edge = cv2.bitwise_and(edge_frame, mask)
 
-            src_pts = np.float32([(0, 120), (100, 40), (220, 40), (320, 120)])
-            dst_pts = np.float32([(0, 120), (0, 0), (320, 0), (320, 120)])
+            src_pts = np.float32([(0, 119), (100, 40), (220, 40), (320, 119)])
+            dst_pts = np.float32([(0, 119), (0, 0), (320, 0), (320, 119)])
             matrix = cv2.getPerspectiveTransform(src_pts, dst_pts)
             birdseye_frame = cv2.warpPerspective(masked_edge, matrix, (320, 120))
 
