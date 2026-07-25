@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pi-Rover IoT Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        :root {
+            --ink: #18201d;
+            --muted: #68746f;
+            --panel: #ffffff;
+            --soft: #f5f8f7;
+            --line: #dfe8e4;
+            --green: #1f8a5b;
+            --cyan: #087ea4;
+            --amber: #b7791f;
+            --red: #d64545;
+            --dark: #17231f;
+            --shadow: 0 16px 36px rgba(24, 32, 29, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 12px;
+            color: var(--ink);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            touch-action: manipulation;
+            background:
+                linear-gradient(135deg, rgba(31,138,91,0.12), transparent 32%),
+                linear-gradient(315deg, rgba(8,126,164,0.10), transparent 36%),
+                #eef3f1;
+        }
+
+        .app-shell { max-width: 1060px; margin: 0 auto; }
+
+        .masthead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: var(--dark);
+            color: #9df0c6;
+            font-weight: 900;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: clamp(1.25rem, 3vw, 1.8rem);
+            margin: 0;
+            letter-spacing: 0;
+        }
+
+        .subtitle { color: var(--muted); font-size: 0.86rem; margin-top: 2px; }
+        .top-status { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+        .pill {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            box-shadow: 0 8px 18px rgba(24, 32, 29, 0.08);
+            white-space: nowrap;
+        }
+
+        .live, .safety-ok { color: var(--green); }
+        .safety-warn { color: var(--red); }
+
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .metric {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            min-height: 78px;
+            padding: 10px;
+            box-shadow: 0 10px 26px rgba(24, 32, 29, 0.08);
+        }
+
+        .label {
+            color: var(--muted);
+            font-size: 0.74rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .value {
+            color: var(--cyan);
+            font: 800 1.45rem/1.2 'Courier New', Courier, monospace;
+            margin-top: 8px;
+        }
+
+        .metric.danger .value { color: var(--red); }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+            gap: 12px;
+            align-items: start;
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.92);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 14px;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .range-stack { display: grid; gap: 12px; }
+
+        .range-row {
+            display: grid;
+            grid-template-columns: 70px 1fr 62px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .range-name { font-weight: 900; }
+
+        .range-track {
+            height: 14px;
+            background: #e5ebe8;
+            border: 1px solid #d7e0dc;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .range-fill {
+            width: var(--level, 0%);
+            height: 100%;
+            background: linear-gradient(90deg, var(--green), #4fbf8a);
+            transition: width 0.16s linear, background 0.16s linear;
+        }
+
+        .range-fill.warn { background: linear-gradient(90deg, var(--red), #ee7a55); }
+        .range-value { text-align: right; font: 800 0.95rem 'Courier New', Courier, monospace; }
+
+        .attitude {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .attitude-box {
+            background: var(--soft);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            min-height: 66px;
+            padding: 8px 10px;
+        }
+
+        .attitude-box span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.68rem;
+            font-weight: 900;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .attitude-box strong {
+            color: var(--amber);
+            font: 900 1.05rem 'Courier New', Courier, monospace;
+        }
+
+        .camera-panel { margin-top: 10px; }
+
+        #camera_preview,
+        #lane_preview,
+        #gesture_preview {
+            width: 100%;
+            max-height: 230px;
+            display: block;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: #000;
+        }
+
+        .controller-panel {
+            align-self: start;
+            background: var(--dark);
+            color: #ffffff;
+        }
+
+        .controller {
+            display: grid;
+            grid-template-columns: repeat(3, 64px);
+            grid-auto-rows: 64px;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 8px;
+            background: #24342e;
+            color: #d9fff0;
+            cursor: pointer;
+            font-size: 1.35rem;
+            font-weight: 900;
+            box-shadow: inset 0 -5px 0 rgba(0,0,0,0.22), 0 10px 22px rgba(0,0,0,0.22);
+            transition: transform 0.08s ease, background 0.08s ease;
+            user-select: none;
+            padding: 0;
+        }
+
+        .btn:active { background: var(--green); color: #ffffff; transform: translateY(3px); }
+        #stop { background: #4a2525; color: #ffd6d6; }
+        #stop:active { background: var(--red); color: #ffffff; }
+        .empty { width: 64px; height: 64px; visibility: hidden; }
+
+        .status-strip {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .status-tile {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            padding: 9px;
+        }
+
+        .status-tile span {
+            display: block;
+            color: #a7bbb3;
+            font-size: 0.72rem;
+            font-weight: 900;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .status-tile strong {
+            color: #ffffff;
+            font: 900 1.15rem 'Courier New', Courier, monospace;
+        }
+
+        .lane-follow-btn {
+            width: 100%;
+            height: 52px;
+            margin-top: 14px;
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 8px;
+            background: var(--green);
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 900;
+            box-shadow: inset 0 -5px 0 rgba(0,0,0,0.22), 0 10px 22px rgba(0,0,0,0.22);
+        }
+
+        .lane-follow-btn:active {
+            transform: translateY(3px);
+            background: #27a46d;
+        }
+
+        @media (max-width: 860px) {
+            body { padding: 12px; }
+            .masthead { align-items: flex-start; flex-direction: column; }
+            .top-status { justify-content: flex-start; }
+            .telemetry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .mission-grid { grid-template-columns: 1fr; }
+            .attitude { grid-template-columns: 1fr; }
+            .metric { min-height: 86px; }
+            .controller {
+                grid-template-columns: repeat(3, 58px);
+                grid-auto-rows: 58px;
+            }
+            .btn,
+            .empty {
+                width: 58px;
+                height: 58px;
+            }
+            .btn { font-size: 1.2rem; }
+            #camera_preview { max-height: 210px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="app-shell">
+        <header class="masthead">
+            <div class="brand">
+                <div class="brand-mark">AR</div>
+                <div>
+                    <h1>AI-Rover Control Center</h1>
+                    <div class="subtitle">Remote drive telemetry</div>
+                </div>
+            </div>
+            <div class="top-status">
+                <div class="pill live">Server Online</div>
+                <div class="pill safety-ok" id="safety">Clear</div>
+            </div>
+        </header>
+
+        <section class="telemetry-grid">
+            <div class="metric" id="front_raw_card"><div class="label">Front Raw</div><div id="front_raw_dist" class="value">--</div></div>
+            <div class="metric" id="front_card"><div class="label">Front Filtered</div><div id="front_dist" class="value">--</div></div>
+            <div class="metric" id="rear_raw_card"><div class="label">Rear Raw</div><div id="rear_raw_dist" class="value">--</div></div>
+            <div class="metric" id="rear_card"><div class="label">Rear Filtered</div><div id="rear_dist" class="value">--</div></div>
+            <div class="metric"><div class="label">Roll</div><div id="roll" class="value">--</div></div>
+            <div class="metric"><div class="label">Pitch</div><div id="pitch" class="value">--</div></div>
+            <div class="metric" id="impact_card"><div class="label">Impact Delta</div><div id="impact_value" class="value">--</div></div>
+        </section>
+
+        <section class="mission-grid">
+            <div class="panel">
+                <div class="panel-title"><span>Proximity</span><span>Stop threshold 50cm</span></div>
+                <div class="range-stack">
+                    <div class="range-row">
+                        <div class="range-name">Front</div>
+                        <div class="range-track"><div id="front_bar" class="range-fill"></div></div>
+                        <div id="front_bar_value" class="range-value">--</div>
+                    </div>
+                    <div class="range-row">
+                        <div class="range-name">Rear</div>
+                        <div class="range-track"><div id="rear_bar" class="range-fill"></div></div>
+                        <div id="rear_bar_value" class="range-value">--</div>
+                    </div>
+                </div>
+
+                <div class="attitude">
+                    <div class="attitude-box"><span>Speed</span><strong id="speed">0.50</strong></div>
+                    <div class="attitude-box"><span>Impact Limit</span><strong id="impact_threshold">--</strong></div>
+                    <div class="attitude-box"><span>Mode</span><strong>Manual</strong></div>
+                </div>
+
+                <div class="camera-panel">
+                    <div class="panel-title"><span>Camera</span><span>Live Preview</span></div>
+                    <img src="/camera_feed" id="camera_preview" alt="Camera preview">
+                </div>
+                <div class="camera-panel">
+                    <div class="panel-title"><span>Lane Detection</span><span>AI Preview</span></div>
+                    <img src="/lane_feed" id="lane_preview" alt="Lane detection preview">
+                </div>
+                <div class="camera-panel">
+                    <div class="panel-title"><span>Gesture Recognition</span><span>AI Preview</span></div>
+                    <img src="/gesture_feed" id="gesture_preview" alt="Gesture recognition preview">
+                </div>
+            </div>
+
+            <div class="panel controller-panel">
+                <div class="panel-title"><span>Drive Pad</span><span>Hold to move</span></div>
+                <div class="controller">
+                    <div class="btn" id="curve_left"><span class="icon">↖</span></div>
+                    <div class="btn" id="forward"><span class="icon">▲</span></div>
+                    <div class="btn" id="curve_right"><span class="icon">↗</span></div>
+
+                    <div class="btn" id="left"><span class="icon">◀</span></div>
+                    <div class="btn" id="stop"><span class="icon">■</span></div>
+                    <div class="btn" id="right"><span class="icon">▶</span></div>
+
+                    <div class="empty"></div>
+                    <div class="btn" id="backward"><span class="icon">▼</span></div>
+                    <div class="empty"></div>
+                </div>
+                <button class="lane-follow-btn" id="lane_follow">
+                    Lane Follow
+                </button>
+                <div class="status-strip">
+                    <div class="status-tile"><span>Drive</span><strong id="drive_state">Idle</strong></div>
+                    <div class="status-tile"><span>Link</span><strong>Live</strong></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const buttons = document.querySelectorAll('.btn');
+        const keyMap = {
+            w: 'forward',
+            a: 'left',
+            s: 'backward',
+            d: 'right',
+            q: 'curve_left',
+            e: 'curve_right',
+            ' ': 'stop'
+        };
+
+        let holdTimer = null;
+        let activeCommand = null;
+        let pressedKey = null;
+
+        buttons.forEach(btn => {
+            if (btn.id) {
+                btn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    startCmd(btn.id);
+                });
+                btn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    stopCmd();
+                });
+                btn.addEventListener('mousedown', () => startCmd(btn.id));
+                btn.addEventListener('mouseup', stopCmd);
+                btn.addEventListener('mouseleave', stopCmd);
+            }
+        });
+
+        document.getElementById('lane_follow').addEventListener('click', () => {
+            activeCommand = null;
+
+            if (holdTimer) {
+                clearInterval(holdTimer);
+                holdTimer = null;
+            }
+
+            document.getElementById('drive_state').innerText = 'LANE FOLLOW';
+            sendCmd('lane_follow');
+        });
+
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            const cmd = keyMap[key];
+
+            if (!cmd) return;
+            e.preventDefault();
+
+            if (cmd === 'stop') {
+                stopCmd();
+                return;
+            }
+
+            if (pressedKey === key && activeCommand === cmd) return;
+
+            pressedKey = key;
+            startCmd(cmd);
+        });
+
+        document.addEventListener('keyup', (e) => {
+            const key = e.key.toLowerCase();
+
+            if (!keyMap[key]) return;
+            e.preventDefault();
+
+            if (pressedKey === key) {
+                pressedKey = null;
+                stopCmd();
+            }
+        });
+
+        function startCmd(cmd) {
+            activeCommand = cmd;
+            document.getElementById('drive_state').innerText = cmd.toUpperCase();
+
+            sendCmd(cmd);
+
+            if (holdTimer) clearInterval(holdTimer);
+            holdTimer = setInterval(() => {
+                if (activeCommand) sendCmd(activeCommand);
+            }, 100);
+        }
+
+        function stopCmd() {
+            activeCommand = null;
+            document.getElementById('drive_state').innerText = 'Idle';
+
+            if (holdTimer) {
+                clearInterval(holdTimer);
+                holdTimer = null;
+            }
+
+            sendStop();
+        }
+
+        function sendCmd(cmd) {
+            fetch('/control', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: cmd})
+            });
+        }
+
+        function sendStop() {
+            fetch('/control', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: 'stop'})
+            });
+        }
+
+        function setRange(id, value) {
+            const bar = document.getElementById(id + '_bar');
+            const label = document.getElementById(id + '_bar_value');
+            const numeric = Number.parseFloat(value);
+            if (!Number.isFinite(numeric)) return;
+            const level = Math.max(0, Math.min(100, (numeric / 200) * 100));
+            bar.style.setProperty('--level', level + '%');
+            bar.classList.toggle('warn', numeric <= 50);
+            label.innerText = numeric.toFixed(1);
+        }
+
+        setInterval(() => {
+            fetch('/status').then(r => r.json()).then(data => {
+                document.getElementById('front_raw_dist').innerText = data.front_raw_dist;
+                document.getElementById('front_dist').innerText = data.front_dist;
+                document.getElementById('rear_raw_dist').innerText = data.rear_raw_dist;
+                document.getElementById('rear_dist').innerText = data.rear_dist;
+                document.getElementById('roll').innerText = data.roll;
+                document.getElementById('pitch').innerText = data.pitch;
+                document.getElementById('speed').innerText = data.current_speed;
+                document.getElementById('impact_value').innerText = data.impact_value;
+                document.getElementById('impact_threshold').innerText = data.impact_threshold;
+
+                setRange('front', data.front_dist);
+                setRange('rear', data.rear_dist);
+
+                document.getElementById('front_card').classList.toggle('danger', data.front_blocked);
+                document.getElementById('front_raw_card').classList.toggle('danger', data.front_blocked);
+                document.getElementById('rear_card').classList.toggle('danger', data.rear_blocked);
+                document.getElementById('rear_raw_card').classList.toggle('danger', data.rear_blocked);
+                document.getElementById('impact_card').classList.toggle('danger', data.impact_detected);
+
+                const safetyEl = document.getElementById('safety');
+                safetyEl.classList.toggle('safety-warn', data.front_blocked || data.rear_blocked || data.impact_detected);
+                safetyEl.classList.toggle('safety-ok', !(data.front_blocked || data.rear_blocked || data.impact_detected));
+
+                if (data.impact_locked) {
+                    safetyEl.innerText = 'Impact Locked';
+                    document.getElementById('drive_state').innerText = 'Locked';
+                } else if (data.impact_detected) {
+                    safetyEl.innerText = 'Impact Detected';
+                } else if (data.front_blocked && data.rear_blocked) {
+                    safetyEl.innerText = 'Front/Rear Blocked';
+                } else if (data.front_blocked) {
+                    safetyEl.innerText = 'Front Blocked';
+                } else if (data.rear_blocked) {
+                    safetyEl.innerText = 'Rear Blocked';
+                } else {
+                    safetyEl.innerText = 'Clear';
+                }
+            });
+        }, 300);
+    </script>
+</body>
+</html>
