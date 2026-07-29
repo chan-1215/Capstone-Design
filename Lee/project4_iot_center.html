@@ -81,7 +81,7 @@
 
         .telemetry-grid {
             display: grid;
-            grid-template-columns: repeat(7, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 8px;
             margin-bottom: 10px;
         }
@@ -196,9 +196,9 @@
 
         .camera-panel { margin-top: 10px; }
 
-        #camera_preview,
+
         #lane_preview,
-        #gesture_preview {
+        #yolo_preview {
             width: 100%;
             max-height: 230px;
             display: block;
@@ -311,7 +311,8 @@
                 height: 58px;
             }
             .btn { font-size: 1.2rem; }
-            #camera_preview { max-height: 210px; }
+            #lane_preview,
+            #yolo_preview { max-height: 210px; }
         }
     </style>
 </head>
@@ -332,17 +333,19 @@
         </header>
 
         <section class="telemetry-grid">
-            <div class="metric" id="front_raw_card"><div class="label">Front Raw</div><div id="front_raw_dist" class="value">--</div></div>
-            <div class="metric" id="front_card"><div class="label">Front Filtered</div><div id="front_dist" class="value">--</div></div>
-            <div class="metric" id="rear_raw_card"><div class="label">Rear Raw</div><div id="rear_raw_dist" class="value">--</div></div>
-            <div class="metric" id="rear_card"><div class="label">Rear Filtered</div><div id="rear_dist" class="value">--</div></div>
+            <!-- <div class="metric" id="front_raw_card"><div class="label">Front Raw</div><div id="front_raw_dist" class="value">--</div></div> -->
+            <!-- <div class="metric" id="front_card"><div class="label">Front Filtered</div><div id="front_dist" class="value">--</div></div> -->
+            <!-- <div class="metric" id="rear_raw_card"><div class="label">Rear Raw</div><div id="rear_raw_dist" class="value">--</div></div> -->
+            <!-- <div class="metric" id="rear_card"><div class="label">Rear Filtered</div><div id="rear_dist" class="value">--</div></div> -->
             <div class="metric"><div class="label">Roll</div><div id="roll" class="value">--</div></div>
             <div class="metric"><div class="label">Pitch</div><div id="pitch" class="value">--</div></div>
             <div class="metric" id="impact_card"><div class="label">Impact Delta</div><div id="impact_value" class="value">--</div></div>
+            <div class="metric" id="yolo_card"><div class="label">YOLO Detect</div><div id="yolo_state" class="value">--</div></div>
         </section>
 
         <section class="mission-grid">
             <div class="panel">
+                <!--
                 <div class="panel-title"><span>Proximity</span><span>Stop threshold 50cm</span></div>
                 <div class="range-stack">
                     <div class="range-row">
@@ -356,24 +359,26 @@
                         <div id="rear_bar_value" class="range-value">--</div>
                     </div>
                 </div>
+                -->
+
+                <div class="panel-title"><span>Object Detection</span><span>YOLO: person, car</span></div>
+                <div class="attitude-box" id="yolo_detail_box">
+                    <span>Detected Classes</span>
+                    <strong id="yolo_classes">--</strong>
+                </div>
 
                 <div class="attitude">
                     <div class="attitude-box"><span>Speed</span><strong id="speed">0.50</strong></div>
                     <div class="attitude-box"><span>Impact Limit</span><strong id="impact_threshold">--</strong></div>
                     <div class="attitude-box"><span>Mode</span><strong>Manual</strong></div>
                 </div>
-
-                <div class="camera-panel">
-                    <div class="panel-title"><span>Camera</span><span>Live Preview</span></div>
-                    <img src="/camera_feed" id="camera_preview" alt="Camera preview">
-                </div>
                 <div class="camera-panel">
                     <div class="panel-title"><span>Lane Detection</span><span>AI Preview</span></div>
                     <img src="/lane_feed" id="lane_preview" alt="Lane detection preview">
                 </div>
                 <div class="camera-panel">
-                    <div class="panel-title"><span>Gesture Recognition</span><span>AI Preview</span></div>
-                    <img src="/gesture_feed" id="gesture_preview" alt="Gesture recognition preview">
+                    <div class="panel-title"><span>Object Detection</span><span>YOLO Preview</span></div>
+                    <img src="/yolo_feed" id="yolo_preview" alt="YOLO detection preview">
                 </div>
             </div>
 
@@ -506,6 +511,17 @@
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({command: cmd})
+            }).then(response => {
+                if (response.status === 423) {
+                    activeCommand = null;
+
+                    if (holdTimer) {
+                        clearInterval(holdTimer);
+                        holdTimer = null;
+                    }
+
+                    document.getElementById('drive_state').innerText = 'Locked';
+                }
             });
         }
 
@@ -517,53 +533,60 @@
             });
         }
 
-        function setRange(id, value) {
-            const bar = document.getElementById(id + '_bar');
-            const label = document.getElementById(id + '_bar_value');
-            const numeric = Number.parseFloat(value);
-            if (!Number.isFinite(numeric)) return;
-            const level = Math.max(0, Math.min(100, (numeric / 200) * 100));
-            bar.style.setProperty('--level', level + '%');
-            bar.classList.toggle('warn', numeric <= 50);
-            label.innerText = numeric.toFixed(1);
-        }
+        // function setRange(id, value) {  // 초음파 센서 비활성화로 미사용
+        //     const bar = document.getElementById(id + '_bar');
+        //     const label = document.getElementById(id + '_bar_value');
+        //     const numeric = Number.parseFloat(value);
+        //     if (!Number.isFinite(numeric)) return;
+        //     const level = Math.max(0, Math.min(100, (numeric / 200) * 100));
+        //     bar.style.setProperty('--level', level + '%');
+        //     bar.classList.toggle('warn', numeric <= 50);
+        //     label.innerText = numeric.toFixed(1);
+        // }
 
         setInterval(() => {
             fetch('/status').then(r => r.json()).then(data => {
-                document.getElementById('front_raw_dist').innerText = data.front_raw_dist;
-                document.getElementById('front_dist').innerText = data.front_dist;
-                document.getElementById('rear_raw_dist').innerText = data.rear_raw_dist;
-                document.getElementById('rear_dist').innerText = data.rear_dist;
+                // document.getElementById('front_raw_dist').innerText = data.front_raw_dist;  // 초음파 센서 비활성화
+                // document.getElementById('front_dist').innerText = data.front_dist;  // 초음파 센서 비활성화
+                // document.getElementById('rear_raw_dist').innerText = data.rear_raw_dist;  // 초음파 센서 비활성화
+                // document.getElementById('rear_dist').innerText = data.rear_dist;  // 초음파 센서 비활성화
                 document.getElementById('roll').innerText = data.roll;
                 document.getElementById('pitch').innerText = data.pitch;
                 document.getElementById('speed').innerText = data.current_speed;
                 document.getElementById('impact_value').innerText = data.impact_value;
                 document.getElementById('impact_threshold').innerText = data.impact_threshold;
 
-                setRange('front', data.front_dist);
-                setRange('rear', data.rear_dist);
+                // setRange('front', data.front_dist);  // 초음파 센서 비활성화
+                // setRange('rear', data.rear_dist);  // 초음파 센서 비활성화
 
-                document.getElementById('front_card').classList.toggle('danger', data.front_blocked);
-                document.getElementById('front_raw_card').classList.toggle('danger', data.front_blocked);
-                document.getElementById('rear_card').classList.toggle('danger', data.rear_blocked);
-                document.getElementById('rear_raw_card').classList.toggle('danger', data.rear_blocked);
+                // document.getElementById('front_card').classList.toggle('danger', data.front_blocked);  // 초음파 센서 비활성화
+                // document.getElementById('front_raw_card').classList.toggle('danger', data.front_blocked);  // 초음파 센서 비활성화
+                // document.getElementById('rear_card').classList.toggle('danger', data.rear_blocked);  // 초음파 센서 비활성화
+                // document.getElementById('rear_raw_card').classList.toggle('danger', data.rear_blocked);  // 초음파 센서 비활성화
                 document.getElementById('impact_card').classList.toggle('danger', data.impact_detected);
 
+                const yoloText = data.yolo_available
+                    ? (data.yolo_detected_classes && data.yolo_detected_classes.length > 0
+                        ? data.yolo_detected_classes.join(', ')
+                        : 'None')
+                    : 'Offline';
+                document.getElementById('yolo_state').innerText = data.yolo_locked ? 'LOCKED' : yoloText;
+                document.getElementById('yolo_classes').innerText = yoloText;
+                document.getElementById('yolo_card').classList.toggle('danger', data.yolo_locked);
+
                 const safetyEl = document.getElementById('safety');
-                safetyEl.classList.toggle('safety-warn', data.front_blocked || data.rear_blocked || data.impact_detected);
-                safetyEl.classList.toggle('safety-ok', !(data.front_blocked || data.rear_blocked || data.impact_detected));
+                const warnActive = data.impact_detected || data.yolo_locked || data.yolo_release_required;
+                safetyEl.classList.toggle('safety-warn', warnActive);
+                safetyEl.classList.toggle('safety-ok', !warnActive);
 
                 if (data.impact_locked) {
                     safetyEl.innerText = 'Impact Locked';
                     document.getElementById('drive_state').innerText = 'Locked';
+                } else if (data.yolo_locked || data.yolo_release_required) {
+                    safetyEl.innerText = 'YOLO Locked: ' + yoloText;
+                    document.getElementById('drive_state').innerText = 'Locked';
                 } else if (data.impact_detected) {
                     safetyEl.innerText = 'Impact Detected';
-                } else if (data.front_blocked && data.rear_blocked) {
-                    safetyEl.innerText = 'Front/Rear Blocked';
-                } else if (data.front_blocked) {
-                    safetyEl.innerText = 'Front Blocked';
-                } else if (data.rear_blocked) {
-                    safetyEl.innerText = 'Rear Blocked';
                 } else {
                     safetyEl.innerText = 'Clear';
                 }
