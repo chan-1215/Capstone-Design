@@ -371,6 +371,13 @@ class RoadPController:
         self.left_rate.reset(0.0)
         self.right_rate.reset(0.0)
 
+    def reset(self) -> None:
+        """Clear steering history before a new driving session."""
+        self.error_filter.reset()
+        self.last_error = None
+        self.lost_frames = 0
+        self._reset_pwm()
+
 
 class OpenCvCamera:
     def __init__(self, index: int, width: int, height: int, fps: int) -> None:

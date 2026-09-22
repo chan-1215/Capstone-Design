@@ -78,6 +78,19 @@ First real driving test:
 python3 road_drive_dataset.py --camera rpicam --duration 20 --max-pwm 0.45
 ```
 
+To watch the camera and dataset-model decisions while driving, use the combined
+Flask program instead of running `road_drive_web.py` and
+`road_drive_dataset.py` at the same time:
+
+```bash
+python3 road_drive_dataset_web.py --camera rpicam --rotation 180
+```
+
+Open `http://<PI_IP>:5000`, confirm that the safety state is `driveable`, then
+press `Start driving`. The same camera frames are used for the web stream and
+model inference, so there is no camera conflict. Closing the dashboard or
+losing its status connection for two seconds stops the motors.
+
 This uses the current motor calibration in `motor_module.py`, including:
 
 ```text
@@ -93,6 +106,41 @@ Keep the robot lifted from the floor first.
 
 ```bash
 python3 road_drive_p_control.py --duration 10 --base-speed 0.22 --kp 0.0035
+```
+
+## Web lane monitor
+
+Install Flask once on the Raspberry Pi:
+
+```bash
+sudo apt update
+sudo apt install -y python3-flask
+```
+
+Start the camera and lane-recognition dashboard without driving first:
+
+```bash
+cd ~/Capstone-Design/Driving\ test
+python3 road_drive_web.py --camera rpicam --dry-run
+```
+
+If the camera is mounted upside down, rotate the frame before lane detection:
+
+```bash
+python3 road_drive_web.py --camera rpicam --rotation 180 --dry-run
+```
+
+Open `http://<PI_IP>:5000` from a computer on the same network. The page shows
+the camera frame, threshold mask, detected lane center, P-control error, and
+planned left/right PWM.
+
+After checking recognition, stop the dry-run process and enable real motor
+control. The motors remain stopped until `Start driving` is pressed in the web
+page. Driving is rejected while no lane is visible, and the robot stops if the
+dashboard status connection is lost for more than two seconds.
+
+```bash
+python3 road_drive_web.py --camera rpicam
 ```
 
 If steering reacts backward, do not edit code first. Run:
