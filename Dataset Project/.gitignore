@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.venv/
+debug_output/
+dataset/runs/
+webots_smoke_*.log

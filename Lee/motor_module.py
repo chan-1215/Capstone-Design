@@ -3,16 +3,16 @@
 from gpiozero import Motor, Robot
 import time
 
-motor1 = Motor(22, 27)
-motor2 = Motor(24, 23)
-motor3 = Motor(21, 16)
-motor4 = Motor(19, 26)
+motor1 = Motor(22, 27)  # left front
+motor2 = Motor(24, 23)  # left rear
+motor3 = Motor(21, 16)  # right rear
+motor4 = Motor(19, 26)  # right front
 
 
-front_wheels = Robot(motor1, motor2)
-rear_wheels = Robot(motor3, motor4)
-right_wheels = Robot(motor1, motor2)
-left_wheels = Robot(motor3, motor4)
+front_wheels = Robot(motor1, motor4)
+rear_wheels = Robot(motor2, motor3)
+left_wheels = Robot(motor1, motor2)
+right_wheels = Robot(motor3, motor4)
 
 _last_curve_direction = None
 

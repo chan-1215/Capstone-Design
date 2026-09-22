@@ -1,0 +1,14 @@
+{
+  "model": "steering_v1.npz",
+  "test_run": "run_20260831_013025",
+  "track": "learned_test_clockwise",
+  "samples": 421,
+  "simulation_seconds": 67.36,
+  "average_cross_track_error_m": 0.0185,
+  "maximum_cross_track_error_m": 0.0726,
+  "samples_outside_middle_lane": 0,
+  "samples_off_three_lane_road": 0,
+  "steering_min": -0.296,
+  "steering_max": 0.044,
+  "result": "passed"
+}

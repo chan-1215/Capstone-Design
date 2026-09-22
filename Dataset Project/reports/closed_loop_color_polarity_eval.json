@@ -1,0 +1,102 @@
+{
+  "created_at": "2026-09-01T17:09:25",
+  "cte_failure_m": 1.0,
+  "no_lane_limit": 6,
+  "runs": [
+    {
+      "run": "run_20260901_170437",
+      "rows": 747,
+      "images": 747,
+      "duration_s": 119.52,
+      "usable_duration_s": 119.52,
+      "control_modes": {
+        "learned": 747
+      },
+      "commands": {
+        "learned_model": 747
+      },
+      "decision_reasons": {
+        "steering_v2+vision_trim": 747
+      },
+      "safety_state": {
+        "driveable": 743,
+        "uncertain": 4
+      },
+      "lane_status": {
+        "both_lanes": 364,
+        "left_only": 302,
+        "no_lane": 76,
+        "right_only": 5
+      },
+      "target_lanes": {
+        "2": 747
+      },
+      "mean_abs_cte_m": 0.04368,
+      "max_abs_cte_m": 0.1067,
+      "mean_abs_heading_rad": 0.06265,
+      "max_abs_heading_rad": 0.39066,
+      "mean_abs_lane_error_px": 23.75,
+      "max_abs_lane_error_px": 51.0,
+      "left_pwm_min": 0.2565,
+      "left_pwm_max": 0.6474,
+      "right_pwm_min": 0.1924,
+      "right_pwm_max": 0.475,
+      "saturated_rows": 0,
+      "mean_driveability_score": 0.9186,
+      "min_driveability_score": 0.3784,
+      "first_no_lane_sample": 25,
+      "first_no_lane_time_s": 4.16,
+      "first_failure_sample": null,
+      "first_failure_time_s": null,
+      "failure_reason": "",
+      "pass": true
+    },
+    {
+      "run": "run_20260901_170811",
+      "rows": 779,
+      "images": 779,
+      "duration_s": 124.64,
+      "usable_duration_s": 124.64,
+      "control_modes": {
+        "learned": 779
+      },
+      "commands": {
+        "learned_model": 779
+      },
+      "decision_reasons": {
+        "steering_v2+vision_trim": 779
+      },
+      "safety_state": {
+        "driveable": 642,
+        "uncertain": 137
+      },
+      "lane_status": {
+        "both_lanes": 452,
+        "left_only": 313,
+        "right_only": 14
+      },
+      "target_lanes": {
+        "2": 779
+      },
+      "mean_abs_cte_m": 0.47648,
+      "max_abs_cte_m": 0.61058,
+      "mean_abs_heading_rad": 0.81247,
+      "max_abs_heading_rad": 1.34081,
+      "mean_abs_lane_error_px": 25.45,
+      "max_abs_lane_error_px": 63.0,
+      "left_pwm_min": 0.2606,
+      "left_pwm_max": 0.4223,
+      "right_pwm_min": 0.2177,
+      "right_pwm_max": 0.3794,
+      "saturated_rows": 0,
+      "mean_driveability_score": 0.7003,
+      "min_driveability_score": 0.0,
+      "first_no_lane_sample": null,
+      "first_no_lane_time_s": null,
+      "first_failure_sample": null,
+      "first_failure_time_s": null,
+      "failure_reason": "",
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,2248 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "../protos/BlueRCCar.proto"
+
+WorldInfo { basicTimeStep 32 }
+Viewpoint {
+  fieldOfView 0.75
+  orientation 0 1 0 1.5708
+  position 0 0 14.5
+  followType "None"
+}
+Background { skyColor [ 0.72 0.80 0.92 ] }
+DirectionalLight {
+  direction -0.35 0.4 -1
+  intensity 1.9
+  ambientIntensity 0.6
+}
+Solid {
+  translation 0 0 -0.026
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.10 0.29 0.13
+        roughness 1
+        metalness 0
+      }
+      geometry Box { size 11 8 0.05 }
+    }
+  ]
+  name "rectangle test ground"
+  boundingObject Box { size 11 8 0.05 }
+}
+Pose {
+  translation 0 0 0.003
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.05 0.055 0.065
+        roughness 0.95
+        metalness 0
+      }
+      geometry IndexedFaceSet {
+        coord Coordinate {
+          point [
+          2.10000 -2.94000 0
+          2.10000 -1.06000 0
+          2.17656 -2.93875 0
+          2.11505 -1.05975 0
+          2.25304 -2.93499 0
+          2.13009 -1.05902 0
+          2.32936 -2.92873 0
+          2.14509 -1.05778 0
+          2.40543 -2.91998 0
+          2.16004 -1.05606 0
+          2.48118 -2.90875 0
+          2.17493 -1.05386 0
+          2.55651 -2.89504 0
+          2.18974 -1.05116 0
+          2.63136 -2.87887 0
+          2.20446 -1.04798 0
+          2.70564 -2.86027 0
+          2.21906 -1.04433 0
+          2.77927 -2.83924 0
+          2.23353 -1.04019 0
+          2.85217 -2.81582 0
+          2.24786 -1.03559 0
+          2.92427 -2.79002 0
+          2.26204 -1.03052 0
+          2.99548 -2.76188 0
+          2.27603 -1.02498 0
+          3.06573 -2.73142 0
+          2.28985 -1.01900 0
+          3.13496 -2.69868 0
+          2.30345 -1.01256 0
+          3.20307 -2.66370 0
+          2.31684 -1.00568 0
+          3.27000 -2.62650 0
+          2.33000 -0.99837 0
+          3.33568 -2.58713 0
+          2.34291 -0.99063 0
+          3.40003 -2.54564 0
+          2.35556 -0.98248 0
+          3.46300 -2.50206 0
+          2.36794 -0.97391 0
+          3.52450 -2.45645 0
+          2.38003 -0.96494 0
+          3.58448 -2.40884 0
+          2.39182 -0.95558 0
+          3.64287 -2.35931 0
+          2.40330 -0.94585 0
+          3.69961 -2.30788 0
+          2.41445 -0.93574 0
+          3.75463 -2.25463 0
+          2.42527 -0.92527 0
+          3.80788 -2.19961 0
+          2.43574 -0.91445 0
+          3.85931 -2.14287 0
+          2.44585 -0.90330 0
+          3.90884 -2.08448 0
+          2.45558 -0.89182 0
+          3.95645 -2.02450 0
+          2.46494 -0.88003 0
+          4.00206 -1.96300 0
+          2.47391 -0.86794 0
+          4.04564 -1.90003 0
+          2.48248 -0.85556 0
+          4.08713 -1.83568 0
+          2.49063 -0.84291 0
+          4.12650 -1.77000 0
+          2.49837 -0.83000 0
+          4.16370 -1.70307 0
+          2.50568 -0.81684 0
+          4.19868 -1.63496 0
+          2.51256 -0.80345 0
+          4.23142 -1.56573 0
+          2.51900 -0.78985 0
+          4.26188 -1.49548 0
+          2.52498 -0.77603 0
+          4.29002 -1.42427 0
+          2.53052 -0.76204 0
+          4.31582 -1.35217 0
+          2.53559 -0.74786 0
+          4.33924 -1.27927 0
+          2.54019 -0.73353 0
+          4.36027 -1.20564 0
+          2.54433 -0.71906 0
+          4.37887 -1.13136 0
+          2.54798 -0.70446 0
+          4.39504 -1.05651 0
+          2.55116 -0.68974 0
+          4.40875 -0.98118 0
+          2.55386 -0.67493 0
+          4.41998 -0.90543 0
+          2.55606 -0.66004 0
+          4.42873 -0.82936 0
+          2.55778 -0.64509 0
+          4.43499 -0.75304 0
+          2.55902 -0.63009 0
+          4.43875 -0.67656 0
+          2.55975 -0.61505 0
+          4.44000 0.60000 0
+          2.56000 0.60000 0
+          4.43875 0.67656 0
+          2.55975 0.61505 0
+          4.43499 0.75304 0
+          2.55902 0.63009 0
+          4.42873 0.82936 0
+          2.55778 0.64509 0
+          4.41998 0.90543 0
+          2.55606 0.66004 0
+          4.40875 0.98118 0
+          2.55386 0.67493 0
+          4.39504 1.05651 0
+          2.55116 0.68974 0
+          4.37887 1.13136 0
+          2.54798 0.70446 0
+          4.36027 1.20564 0
+          2.54433 0.71906 0
+          4.33924 1.27927 0
+          2.54019 0.73353 0
+          4.31582 1.35217 0
+          2.53559 0.74786 0
+          4.29002 1.42427 0
+          2.53052 0.76204 0
+          4.26188 1.49548 0
+          2.52498 0.77603 0
+          4.23142 1.56573 0
+          2.51900 0.78985 0
+          4.19868 1.63496 0
+          2.51256 0.80345 0
+          4.16370 1.70307 0
+          2.50568 0.81684 0
+          4.12650 1.77000 0
+          2.49837 0.83000 0
+          4.08713 1.83568 0
+          2.49063 0.84291 0
+          4.04564 1.90003 0
+          2.48248 0.85556 0
+          4.00206 1.96300 0
+          2.47391 0.86794 0
+          3.95645 2.02450 0
+          2.46494 0.88003 0
+          3.90884 2.08448 0
+          2.45558 0.89182 0
+          3.85931 2.14287 0
+          2.44585 0.90330 0
+          3.80788 2.19961 0
+          2.43574 0.91445 0
+          3.75463 2.25463 0
+          2.42527 0.92527 0
+          3.69961 2.30788 0
+          2.41445 0.93574 0
+          3.64287 2.35931 0
+          2.40330 0.94585 0
+          3.58448 2.40884 0
+          2.39182 0.95558 0
+          3.52450 2.45645 0
+          2.38003 0.96494 0
+          3.46300 2.50206 0
+          2.36794 0.97391 0
+          3.40003 2.54564 0
+          2.35556 0.98248 0
+          3.33568 2.58713 0
+          2.34291 0.99063 0
+          3.27000 2.62650 0
+          2.33000 0.99837 0
+          3.20307 2.66370 0
+          2.31684 1.00568 0
+          3.13496 2.69868 0
+          2.30345 1.01256 0
+          3.06573 2.73142 0
+          2.28985 1.01900 0
+          2.99548 2.76188 0
+          2.27603 1.02498 0
+          2.92427 2.79002 0
+          2.26204 1.03052 0
+          2.85217 2.81582 0
+          2.24786 1.03559 0
+          2.77927 2.83924 0
+          2.23353 1.04019 0
+          2.70564 2.86027 0
+          2.21906 1.04433 0
+          2.63136 2.87887 0
+          2.20446 1.04798 0
+          2.55651 2.89504 0
+          2.18974 1.05116 0
+          2.48118 2.90875 0
+          2.17493 1.05386 0
+          2.40543 2.91998 0
+          2.16004 1.05606 0
+          2.32936 2.92873 0
+          2.14509 1.05778 0
+          2.25304 2.93499 0
+          2.13009 1.05902 0
+          2.17656 2.93875 0
+          2.11505 1.05975 0
+          -2.10000 2.94000 0
+          -2.10000 1.06000 0
+          -2.17656 2.93875 0
+          -2.11505 1.05975 0
+          -2.25304 2.93499 0
+          -2.13009 1.05902 0
+          -2.32936 2.92873 0
+          -2.14509 1.05778 0
+          -2.40543 2.91998 0
+          -2.16004 1.05606 0
+          -2.48118 2.90875 0
+          -2.17493 1.05386 0
+          -2.55651 2.89504 0
+          -2.18974 1.05116 0
+          -2.63136 2.87887 0
+          -2.20446 1.04798 0
+          -2.70564 2.86027 0
+          -2.21906 1.04433 0
+          -2.77927 2.83924 0
+          -2.23353 1.04019 0
+          -2.85217 2.81582 0
+          -2.24786 1.03559 0
+          -2.92427 2.79002 0
+          -2.26204 1.03052 0
+          -2.99548 2.76188 0
+          -2.27603 1.02498 0
+          -3.06573 2.73142 0
+          -2.28985 1.01900 0
+          -3.13496 2.69868 0
+          -2.30345 1.01256 0
+          -3.20307 2.66370 0
+          -2.31684 1.00568 0
+          -3.27000 2.62650 0
+          -2.33000 0.99837 0
+          -3.33568 2.58713 0
+          -2.34291 0.99063 0
+          -3.40003 2.54564 0
+          -2.35556 0.98248 0
+          -3.46300 2.50206 0
+          -2.36794 0.97391 0
+          -3.52450 2.45645 0
+          -2.38003 0.96494 0
+          -3.58448 2.40884 0
+          -2.39182 0.95558 0
+          -3.64287 2.35931 0
+          -2.40330 0.94585 0
+          -3.69961 2.30788 0
+          -2.41445 0.93574 0
+          -3.75463 2.25463 0
+          -2.42527 0.92527 0
+          -3.80788 2.19961 0
+          -2.43574 0.91445 0
+          -3.85931 2.14287 0
+          -2.44585 0.90330 0
+          -3.90884 2.08448 0
+          -2.45558 0.89182 0
+          -3.95645 2.02450 0
+          -2.46494 0.88003 0
+          -4.00206 1.96300 0
+          -2.47391 0.86794 0
+          -4.04564 1.90003 0
+          -2.48248 0.85556 0
+          -4.08713 1.83568 0
+          -2.49063 0.84291 0
+          -4.12650 1.77000 0
+          -2.49837 0.83000 0
+          -4.16370 1.70307 0
+          -2.50568 0.81684 0
+          -4.19868 1.63496 0
+          -2.51256 0.80345 0
+          -4.23142 1.56573 0
+          -2.51900 0.78985 0
+          -4.26188 1.49548 0
+          -2.52498 0.77603 0
+          -4.29002 1.42427 0
+          -2.53052 0.76204 0
+          -4.31582 1.35217 0
+          -2.53559 0.74786 0
+          -4.33924 1.27927 0
+          -2.54019 0.73353 0
+          -4.36027 1.20564 0
+          -2.54433 0.71906 0
+          -4.37887 1.13136 0
+          -2.54798 0.70446 0
+          -4.39504 1.05651 0
+          -2.55116 0.68974 0
+          -4.40875 0.98118 0
+          -2.55386 0.67493 0
+          -4.41998 0.90543 0
+          -2.55606 0.66004 0
+          -4.42873 0.82936 0
+          -2.55778 0.64509 0
+          -4.43499 0.75304 0
+          -2.55902 0.63009 0
+          -4.43875 0.67656 0
+          -2.55975 0.61505 0
+          -4.44000 -0.60000 0
+          -2.56000 -0.60000 0
+          -4.43875 -0.67656 0
+          -2.55975 -0.61505 0
+          -4.43499 -0.75304 0
+          -2.55902 -0.63009 0
+          -4.42873 -0.82936 0
+          -2.55778 -0.64509 0
+          -4.41998 -0.90543 0
+          -2.55606 -0.66004 0
+          -4.40875 -0.98118 0
+          -2.55386 -0.67493 0
+          -4.39504 -1.05651 0
+          -2.55116 -0.68974 0
+          -4.37887 -1.13136 0
+          -2.54798 -0.70446 0
+          -4.36027 -1.20564 0
+          -2.54433 -0.71906 0
+          -4.33924 -1.27927 0
+          -2.54019 -0.73353 0
+          -4.31582 -1.35217 0
+          -2.53559 -0.74786 0
+          -4.29002 -1.42427 0
+          -2.53052 -0.76204 0
+          -4.26188 -1.49548 0
+          -2.52498 -0.77603 0
+          -4.23142 -1.56573 0
+          -2.51900 -0.78985 0
+          -4.19868 -1.63496 0
+          -2.51256 -0.80345 0
+          -4.16370 -1.70307 0
+          -2.50568 -0.81684 0
+          -4.12650 -1.77000 0
+          -2.49837 -0.83000 0
+          -4.08713 -1.83568 0
+          -2.49063 -0.84291 0
+          -4.04564 -1.90003 0
+          -2.48248 -0.85556 0
+          -4.00206 -1.96300 0
+          -2.47391 -0.86794 0
+          -3.95645 -2.02450 0
+          -2.46494 -0.88003 0
+          -3.90884 -2.08448 0
+          -2.45558 -0.89182 0
+          -3.85931 -2.14287 0
+          -2.44585 -0.90330 0
+          -3.80788 -2.19961 0
+          -2.43574 -0.91445 0
+          -3.75463 -2.25463 0
+          -2.42527 -0.92527 0
+          -3.69961 -2.30788 0
+          -2.41445 -0.93574 0
+          -3.64287 -2.35931 0
+          -2.40330 -0.94585 0
+          -3.58448 -2.40884 0
+          -2.39182 -0.95558 0
+          -3.52450 -2.45645 0
+          -2.38003 -0.96494 0
+          -3.46300 -2.50206 0
+          -2.36794 -0.97391 0
+          -3.40003 -2.54564 0
+          -2.35556 -0.98248 0
+          -3.33568 -2.58713 0
+          -2.34291 -0.99063 0
+          -3.27000 -2.62650 0
+          -2.33000 -0.99837 0
+          -3.20307 -2.66370 0
+          -2.31684 -1.00568 0
+          -3.13496 -2.69868 0
+          -2.30345 -1.01256 0
+          -3.06573 -2.73142 0
+          -2.28985 -1.01900 0
+          -2.99548 -2.76188 0
+          -2.27603 -1.02498 0
+          -2.92427 -2.79002 0
+          -2.26204 -1.03052 0
+          -2.85217 -2.81582 0
+          -2.24786 -1.03559 0
+          -2.77927 -2.83924 0
+          -2.23353 -1.04019 0
+          -2.70564 -2.86027 0
+          -2.21906 -1.04433 0
+          -2.63136 -2.87887 0
+          -2.20446 -1.04798 0
+          -2.55651 -2.89504 0
+          -2.18974 -1.05116 0
+          -2.48118 -2.90875 0
+          -2.17493 -1.05386 0
+          -2.40543 -2.91998 0
+          -2.16004 -1.05606 0
+          -2.32936 -2.92873 0
+          -2.14509 -1.05778 0
+          -2.25304 -2.93499 0
+          -2.13009 -1.05902 0
+          -2.17656 -2.93875 0
+          -2.11505 -1.05975 0
+          ]
+        }
+        coordIndex [
+          0 2 3 1 -1
+          2 4 5 3 -1
+          4 6 7 5 -1
+          6 8 9 7 -1
+          8 10 11 9 -1
+          10 12 13 11 -1
+          12 14 15 13 -1
+          14 16 17 15 -1
+          16 18 19 17 -1
+          18 20 21 19 -1
+          20 22 23 21 -1
+          22 24 25 23 -1
+          24 26 27 25 -1
+          26 28 29 27 -1
+          28 30 31 29 -1
+          30 32 33 31 -1
+          32 34 35 33 -1
+          34 36 37 35 -1
+          36 38 39 37 -1
+          38 40 41 39 -1
+          40 42 43 41 -1
+          42 44 45 43 -1
+          44 46 47 45 -1
+          46 48 49 47 -1
+          48 50 51 49 -1
+          50 52 53 51 -1
+          52 54 55 53 -1
+          54 56 57 55 -1
+          56 58 59 57 -1
+          58 60 61 59 -1
+          60 62 63 61 -1
+          62 64 65 63 -1
+          64 66 67 65 -1
+          66 68 69 67 -1
+          68 70 71 69 -1
+          70 72 73 71 -1
+          72 74 75 73 -1
+          74 76 77 75 -1
+          76 78 79 77 -1
+          78 80 81 79 -1
+          80 82 83 81 -1
+          82 84 85 83 -1
+          84 86 87 85 -1
+          86 88 89 87 -1
+          88 90 91 89 -1
+          90 92 93 91 -1
+          92 94 95 93 -1
+          94 96 97 95 -1
+          96 98 99 97 -1
+          98 100 101 99 -1
+          100 102 103 101 -1
+          102 104 105 103 -1
+          104 106 107 105 -1
+          106 108 109 107 -1
+          108 110 111 109 -1
+          110 112 113 111 -1
+          112 114 115 113 -1
+          114 116 117 115 -1
+          116 118 119 117 -1
+          118 120 121 119 -1
+          120 122 123 121 -1
+          122 124 125 123 -1
+          124 126 127 125 -1
+          126 128 129 127 -1
+          128 130 131 129 -1
+          130 132 133 131 -1
+          132 134 135 133 -1
+          134 136 137 135 -1
+          136 138 139 137 -1
+          138 140 141 139 -1
+          140 142 143 141 -1
+          142 144 145 143 -1
+          144 146 147 145 -1
+          146 148 149 147 -1
+          148 150 151 149 -1
+          150 152 153 151 -1
+          152 154 155 153 -1
+          154 156 157 155 -1
+          156 158 159 157 -1
+          158 160 161 159 -1
+          160 162 163 161 -1
+          162 164 165 163 -1
+          164 166 167 165 -1
+          166 168 169 167 -1
+          168 170 171 169 -1
+          170 172 173 171 -1
+          172 174 175 173 -1
+          174 176 177 175 -1
+          176 178 179 177 -1
+          178 180 181 179 -1
+          180 182 183 181 -1
+          182 184 185 183 -1
+          184 186 187 185 -1
+          186 188 189 187 -1
+          188 190 191 189 -1
+          190 192 193 191 -1
+          192 194 195 193 -1
+          194 196 197 195 -1
+          196 198 199 197 -1
+          198 200 201 199 -1
+          200 202 203 201 -1
+          202 204 205 203 -1
+          204 206 207 205 -1
+          206 208 209 207 -1
+          208 210 211 209 -1
+          210 212 213 211 -1
+          212 214 215 213 -1
+          214 216 217 215 -1
+          216 218 219 217 -1
+          218 220 221 219 -1
+          220 222 223 221 -1
+          222 224 225 223 -1
+          224 226 227 225 -1
+          226 228 229 227 -1
+          228 230 231 229 -1
+          230 232 233 231 -1
+          232 234 235 233 -1
+          234 236 237 235 -1
+          236 238 239 237 -1
+          238 240 241 239 -1
+          240 242 243 241 -1
+          242 244 245 243 -1
+          244 246 247 245 -1
+          246 248 249 247 -1
+          248 250 251 249 -1
+          250 252 253 251 -1
+          252 254 255 253 -1
+          254 256 257 255 -1
+          256 258 259 257 -1
+          258 260 261 259 -1
+          260 262 263 261 -1
+          262 264 265 263 -1
+          264 266 267 265 -1
+          266 268 269 267 -1
+          268 270 271 269 -1
+          270 272 273 271 -1
+          272 274 275 273 -1
+          274 276 277 275 -1
+          276 278 279 277 -1
+          278 280 281 279 -1
+          280 282 283 281 -1
+          282 284 285 283 -1
+          284 286 287 285 -1
+          286 288 289 287 -1
+          288 290 291 289 -1
+          290 292 293 291 -1
+          292 294 295 293 -1
+          294 296 297 295 -1
+          296 298 299 297 -1
+          298 300 301 299 -1
+          300 302 303 301 -1
+          302 304 305 303 -1
+          304 306 307 305 -1
+          306 308 309 307 -1
+          308 310 311 309 -1
+          310 312 313 311 -1
+          312 314 315 313 -1
+          314 316 317 315 -1
+          316 318 319 317 -1
+          318 320 321 319 -1
+          320 322 323 321 -1
+          322 324 325 323 -1
+          324 326 327 325 -1
+          326 328 329 327 -1
+          328 330 331 329 -1
+          330 332 333 331 -1
+          332 334 335 333 -1
+          334 336 337 335 -1
+          336 338 339 337 -1
+          338 340 341 339 -1
+          340 342 343 341 -1
+          342 344 345 343 -1
+          344 346 347 345 -1
+          346 348 349 347 -1
+          348 350 351 349 -1
+          350 352 353 351 -1
+          352 354 355 353 -1
+          354 356 357 355 -1
+          356 358 359 357 -1
+          358 360 361 359 -1
+          360 362 363 361 -1
+          362 364 365 363 -1
+          364 366 367 365 -1
+          366 368 369 367 -1
+          368 370 371 369 -1
+          370 372 373 371 -1
+          372 374 375 373 -1
+          374 376 377 375 -1
+          376 378 379 377 -1
+          378 380 381 379 -1
+          380 382 383 381 -1
+          382 0 1 383 -1
+        ]
+      }
+    }
+  ]
+}
+Pose {
+  translation 2.10000 -1.10000 0.009
+  rotation 0 0 1 0.01636
+  children [
+    Shape {
+      appearance DEF DASH_APPEARANCE PBRAppearance {
+        baseColor 0.98 0.98 0.94
+        roughness 0.8
+        metalness 0
+      }
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.50956 -0.88671 0.009
+  rotation 0 0 1 0.96539
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.59977 -0.42536 0.009
+  rotation 0 0 1 1.57058
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.59988 0.05464 0.009
+  rotation 0 0 1 1.57058
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.59999 0.53464 0.009
+  rotation 0 0 1 1.57058
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.43765 0.96869 0.009
+  rotation 0 0 1 2.40528
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.99072 1.09974 0.009
+  rotation 0 0 1 3.14153
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.51072 1.09977 0.009
+  rotation 0 0 1 3.14153
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.03072 1.09980 0.009
+  rotation 0 0 1 3.14153
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.55072 1.09983 0.009
+  rotation 0 0 1 3.14153
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.07072 1.09986 0.009
+  rotation 0 0 1 3.14153
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.40928 1.09989 0.009
+  rotation 0 0 1 3.14153
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.88928 1.09992 0.009
+  rotation 0 0 1 3.14153
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.36928 1.09995 0.009
+  rotation 0 0 1 3.14153
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.84928 1.09998 0.009
+  rotation 0 0 1 3.14153
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.32133 1.04834 0.009
+  rotation 0 0 1 -2.66708
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.59416 0.67579 0.009
+  rotation 0 0 1 -1.71806
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.59982 0.19608 0.009
+  rotation 0 0 1 -1.57102
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.59993 -0.28392 0.009
+  rotation 0 0 1 -1.57102
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.57336 -0.76100 0.009
+  rotation 0 0 1 -1.22718
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.23956 -1.08007 0.009
+  rotation 0 0 1 -0.27816
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.76144 -1.09975 0.009
+  rotation 0 0 1 -0.00006
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.28144 -1.09979 0.009
+  rotation 0 0 1 -0.00006
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.80144 -1.09982 0.009
+  rotation 0 0 1 -0.00006
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.32144 -1.09985 0.009
+  rotation 0 0 1 -0.00006
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.15856 -1.09988 0.009
+  rotation 0 0 1 -0.00006
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.63856 -1.09991 0.009
+  rotation 0 0 1 -0.00006
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.11856 -1.09994 0.009
+  rotation 0 0 1 -0.00006
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.59856 -1.09997 0.009
+  rotation 0 0 1 -0.00006
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.10000 -1.70000 0.009
+  rotation 0 0 1 0.01636
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.56487 -1.59680 0.009
+  rotation 0 0 1 0.44179
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.94262 -1.30690 0.009
+  rotation 0 0 1 0.86721
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.16256 -0.88454 0.009
+  rotation 0 0 1 1.32536
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.19952 -0.40779 0.009
+  rotation 0 0 1 1.57032
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.19975 0.07221 0.009
+  rotation 0 0 1 1.57032
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.19998 0.55221 0.009
+  rotation 0 0 1 1.57032
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.11617 1.02119 0.009
+  rotation 0 0 1 1.97986
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.84283 1.41112 0.009
+  rotation 0 0 1 2.40528
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.43039 1.64908 0.009
+  rotation 0 0 1 2.83071
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.95559 1.69944 0.009
+  rotation 0 0 1 3.14145
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.47559 1.69950 0.009
+  rotation 0 0 1 3.14145
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.99559 1.69957 0.009
+  rotation 0 0 1 3.14145
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.51559 1.69964 0.009
+  rotation 0 0 1 3.14145
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.03559 1.69970 0.009
+  rotation 0 0 1 3.14145
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.44441 1.69977 0.009
+  rotation 0 0 1 3.14145
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.92441 1.69984 0.009
+  rotation 0 0 1 3.14145
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.40441 1.69990 0.009
+  rotation 0 0 1 3.14145
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.88441 1.69997 0.009
+  rotation 0 0 1 3.14145
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.36185 1.66824 0.009
+  rotation 0 0 1 -2.89616
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.78882 1.45746 0.009
+  rotation 0 0 1 -2.47073
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.08680 1.08602 0.009
+  rotation 0 0 1 -2.01258
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.19942 0.62338 0.009
+  rotation 0 0 1 -1.57127
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.19965 0.14338 0.009
+  rotation 0 0 1 -1.57127
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.19987 -0.33662 0.009
+  rotation 0 0 1 -1.57127
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.17873 -0.81523 0.009
+  rotation 0 0 1 -1.35808
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.98657 -1.25092 0.009
+  rotation 0 0 1 -0.93266
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.62836 -1.56465 0.009
+  rotation 0 0 1 -0.50724
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.17113 -1.69768 0.009
+  rotation 0 0 1 -0.04909
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.69118 -1.69947 0.009
+  rotation 0 0 1 -0.00014
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.21118 -1.69954 0.009
+  rotation 0 0 1 -0.00014
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.73118 -1.69961 0.009
+  rotation 0 0 1 -0.00014
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.25118 -1.69967 0.009
+  rotation 0 0 1 -0.00014
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.22882 -1.69974 0.009
+  rotation 0 0 1 -0.00014
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.70882 -1.69981 0.009
+  rotation 0 0 1 -0.00014
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.18882 -1.69987 0.009
+  rotation 0 0 1 -0.00014
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.10000 -2.30000 0.009
+  rotation 0 0 1 0.01636
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.57361 -2.23247 0.009
+  rotation 0 0 1 0.27816
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.00973 -2.03590 0.009
+  rotation 0 0 1 0.57269
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.37385 -1.72561 0.009
+  rotation 0 0 1 0.83449
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.63690 -1.32605 0.009
+  rotation 0 0 1 1.12901
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.77846 -0.86909 0.009
+  rotation 0 0 1 1.42353
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.79928 -0.39023 0.009
+  rotation 0 0 1 1.57007
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.79963 0.08977 0.009
+  rotation 0 0 1 1.57007
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.79998 0.56977 0.009
+  rotation 0 0 1 1.57007
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.74077 1.04454 0.009
+  rotation 0 0 1 1.84896
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.55184 1.48405 0.009
+  rotation 0 0 1 2.11076
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.24801 1.85355 0.009
+  rotation 0 0 1 2.40528
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.85335 2.12393 0.009
+  rotation 0 0 1 2.66708
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.39887 2.27330 0.009
+  rotation 0 0 1 2.96161
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.92045 2.29914 0.009
+  rotation 0 0 1 3.14138
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.44045 2.29924 0.009
+  rotation 0 0 1 3.14138
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.96045 2.29935 0.009
+  rotation 0 0 1 3.14138
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.48045 2.29945 0.009
+  rotation 0 0 1 3.14138
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.00045 2.29955 0.009
+  rotation 0 0 1 3.14138
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.47955 2.29965 0.009
+  rotation 0 0 1 3.14138
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.95955 2.29976 0.009
+  rotation 0 0 1 3.14138
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.43955 2.29986 0.009
+  rotation 0 0 1 3.14138
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.91955 2.29996 0.009
+  rotation 0 0 1 3.14138
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.39797 2.27346 0.009
+  rotation 0 0 1 -2.96161
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.85254 2.12435 0.009
+  rotation 0 0 1 -2.66708
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.24733 1.85416 0.009
+  rotation 0 0 1 -2.40528
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.55136 1.48483 0.009
+  rotation 0 0 1 -2.11076
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.74052 1.04543 0.009
+  rotation 0 0 1 -1.84896
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.79915 0.57068 0.009
+  rotation 0 0 1 -1.57152
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.79950 0.09068 0.009
+  rotation 0 0 1 -1.57152
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.79985 -0.38932 0.009
+  rotation 0 0 1 -1.57152
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.77859 -0.86819 0.009
+  rotation 0 0 1 -1.42353
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.63730 -1.32522 0.009
+  rotation 0 0 1 -1.12901
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.37446 -1.72493 0.009
+  rotation 0 0 1 -0.83449
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.01050 -2.03540 0.009
+  rotation 0 0 1 -0.57269
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.57449 -2.23222 0.009
+  rotation 0 0 1 -0.27816
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.10091 -2.29910 0.009
+  rotation 0 0 1 -0.00021
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.62091 -2.29920 0.009
+  rotation 0 0 1 -0.00021
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.14091 -2.29931 0.009
+  rotation 0 0 1 -0.00021
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.66091 -2.29941 0.009
+  rotation 0 0 1 -0.00021
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.18091 -2.29951 0.009
+  rotation 0 0 1 -0.00021
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.29909 -2.29961 0.009
+  rotation 0 0 1 -0.00021
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.77909 -2.29972 0.009
+  rotation 0 0 1 -0.00021
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.25909 -2.29982 0.009
+  rotation 0 0 1 -0.00021
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.10000 -2.90000 0.009
+  rotation 0 0 1 0.01636
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.57648 -2.84981 0.009
+  rotation 0 0 1 0.21271
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.03232 -2.70232 0.009
+  rotation 0 0 1 0.40906
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.44772 -2.46360 0.009
+  rotation 0 0 1 0.63814
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.80448 -2.14381 0.009
+  rotation 0 0 1 0.83449
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 4.08752 -1.75725 0.009
+  rotation 0 0 1 1.03084
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 4.28405 -1.32030 0.009
+  rotation 0 0 1 1.25991
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 4.38585 -0.85214 0.009
+  rotation 0 0 1 1.45626
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 4.39906 -0.37266 0.009
+  rotation 0 0 1 1.56983
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 4.39952 0.10734 0.009
+  rotation 0 0 1 1.56983
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 4.39999 0.58734 0.009
+  rotation 0 0 1 1.56983
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 4.35248 1.06411 0.009
+  rotation 0 0 1 1.78351
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 4.20735 1.52070 0.009
+  rotation 0 0 1 1.97986
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.97107 1.93750 0.009
+  rotation 0 0 1 2.17621
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.65319 2.29597 0.009
+  rotation 0 0 1 2.40528
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 3.26810 2.58101 0.009
+  rotation 0 0 1 2.60163
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.83235 2.78017 0.009
+  rotation 0 0 1 2.83071
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 2.36472 2.88441 0.009
+  rotation 0 0 1 3.02706
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.88532 2.89885 0.009
+  rotation 0 0 1 3.14130
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.40532 2.89899 0.009
+  rotation 0 0 1 3.14130
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.92532 2.89913 0.009
+  rotation 0 0 1 3.14130
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.44532 2.89927 0.009
+  rotation 0 0 1 3.14130
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.03468 2.89941 0.009
+  rotation 0 0 1 3.14130
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.51468 2.89954 0.009
+  rotation 0 0 1 3.14130
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.99468 2.89968 0.009
+  rotation 0 0 1 3.14130
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.47468 2.89982 0.009
+  rotation 0 0 1 3.14130
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.95468 2.89996 0.009
+  rotation 0 0 1 3.14130
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.43347 2.87539 0.009
+  rotation 0 0 1 -2.99433
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.89772 2.75704 0.009
+  rotation 0 0 1 -2.79798
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.32732 2.54493 0.009
+  rotation 0 0 1 -2.56891
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.70360 2.24836 0.009
+  rotation 0 0 1 -2.37256
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -4.01054 1.88048 0.009
+  rotation 0 0 1 -2.17621
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -4.23418 1.45676 0.009
+  rotation 0 0 1 -1.94713
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -4.36540 0.99598 0.009
+  rotation 0 0 1 -1.75078
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -4.39892 0.51798 0.009
+  rotation 0 0 1 -1.57176
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -4.39938 0.03798 0.009
+  rotation 0 0 1 -1.57176
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -4.39985 -0.44202 0.009
+  rotation 0 0 1 -1.57176
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -4.37725 -0.92095 0.009
+  rotation 0 0 1 -1.42353
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -4.26130 -1.38580 0.009
+  rotation 0 0 1 -1.22718
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -4.05179 -1.81668 0.009
+  rotation 0 0 1 -0.99811
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.75717 -2.19450 0.009
+  rotation 0 0 1 -0.80176
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -3.39089 -2.50333 0.009
+  rotation 0 0 1 -0.60541
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.96853 -2.72952 0.009
+  rotation 0 0 1 -0.37634
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.50844 -2.86313 0.009
+  rotation 0 0 1 -0.17999
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -2.03064 -2.89881 0.009
+  rotation 0 0 1 -0.00029
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.55064 -2.89895 0.009
+  rotation 0 0 1 -0.00029
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -1.07064 -2.89909 0.009
+  rotation 0 0 1 -0.00029
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.59064 -2.89922 0.009
+  rotation 0 0 1 -0.00029
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation -0.11064 -2.89936 0.009
+  rotation 0 0 1 -0.00029
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.36936 -2.89950 0.009
+  rotation 0 0 1 -0.00029
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 0.84936 -2.89964 0.009
+  rotation 0 0 1 -0.00029
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+Pose {
+  translation 1.32936 -2.89978 0.009
+  rotation 0 0 1 -0.00029
+  children [
+    Shape {
+      appearance USE DASH_APPEARANCE
+      geometry Box { size 0.27 0.045 0.007 }
+    }
+  ]
+}
+
+BlueRCCar {
+  translation 0 2.0 0.145
+  customData "expert_rectangle_lane_2"
+}
+

@@ -1,0 +1,7 @@
+이 USB 압축본의 Capstone-Design 프로젝트에서 작업을 이어갈 거야.
+먼저 루트의 AGENTS.md와 "Dataset Project/HANDOFF.md"를 끝까지 읽고,
+setup_new_pc.ps1 및 현재 PC 환경을 점검해 필요한 Git, GitHub CLI, Python,
+OpenCV/NumPy, Webots R2025a 설치를 도와줘. 설치나 다운로드에 필요한 승인은
+나에게 요청해. Lee/motor_module.py의 GPIO 핀, 모터 순서와 회전 방향 및 기존
+카메라/제스처 코드는 절대 변경하지 마. 세팅 후 기존 데이터·모델·월드가
+정상인지 검증하고 collect_rectangle_lane_1.wbt부터 짧게 실행해줘.

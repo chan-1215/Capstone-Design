@@ -1,0 +1,51 @@
+{
+  "created_at": "2026-09-01T17:13:27",
+  "source_manifest": "dataset_v2\\manifest.csv",
+  "source_rows": 9000,
+  "source_rows_by_lane": {
+    "1": 3000,
+    "2": 3000,
+    "3": 3000
+  },
+  "train_rows": 7200,
+  "validation_rows": 1800,
+  "training_samples_augmented": 28800,
+  "validation_samples_augmented": 7200,
+  "polarity_augmentation": true,
+  "input_polarity": "auto_dark_road",
+  "feature_mode": "grayscale",
+  "model_path": "models\\steering_v2.npz",
+  "output_min": [
+    0.07999999821186066,
+    0.07999999821186066
+  ],
+  "output_max": [
+    0.7196999788284302,
+    0.7196999788284302
+  ],
+  "steering_min": -0.6196999740600586,
+  "steering_max": 0.6196999740600586,
+  "left_pwm_mae": 0.029545092955231667,
+  "right_pwm_mae": 0.029545357450842857,
+  "steering_mae": 0.04399866610765457,
+  "lane_metrics": {
+    "1": {
+      "left_pwm_mae": 0.035132188349962234,
+      "right_pwm_mae": 0.035132501274347305,
+      "steering_mae": 0.054099224507808685,
+      "samples": 2400
+    },
+    "2": {
+      "left_pwm_mae": 0.02952190674841404,
+      "right_pwm_mae": 0.02952224388718605,
+      "steering_mae": 0.04643387347459793,
+      "samples": 2400
+    },
+    "3": {
+      "left_pwm_mae": 0.023981241509318352,
+      "right_pwm_mae": 0.023981381207704544,
+      "steering_mae": 0.0314628966152668,
+      "samples": 2400
+    }
+  }
+}

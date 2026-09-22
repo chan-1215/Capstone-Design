@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.venv/
+debug_output/
+webots_smoke_*.log
+
+# Raw Webots captures are kept locally because they contain more than 200,000 files.
+Dataset Project/dataset/runs/
+

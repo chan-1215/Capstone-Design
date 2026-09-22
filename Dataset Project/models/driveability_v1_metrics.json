@@ -1,0 +1,47 @@
+{
+  "created_at": "2026-09-01T16:57:55",
+  "positive_candidates": 9000,
+  "negative_candidates": 3604,
+  "selected_per_class": 2500,
+  "selected_label_counts": {
+    "1": 2500,
+    "0": 2500
+  },
+  "selected_reason_counts": {
+    "expert_labeled": 2500,
+    "lane_lost_or_off_path": 2500
+  },
+  "selected_source_counts": {
+    "run_20260831_015552": 331,
+    "run_20260831_033326": 133,
+    "run_20260901_111559": 7,
+    "run_20260901_113405": 363,
+    "run_20260831_021524": 20,
+    "run_20260901_122200": 721,
+    "run_20260901_163419": 36,
+    "run_20260901_163948": 462,
+    "run_20260831_031931": 28,
+    "run_20260901_131627": 805,
+    "run_20260831_013535": 201,
+    "run_20260831_013642": 166,
+    "run_20260831_013918": 1021,
+    "run_20260901_155143": 120,
+    "run_20260901_162700": 39,
+    "run_20260901_165033": 547
+  },
+  "train_rows": 4000,
+  "validation_rows": 1000,
+  "training_samples_augmented": 16000,
+  "validation_samples_augmented": 4000,
+  "threshold": 0.45,
+  "feature_mode": "lane_edges",
+  "model_path": "models\\driveability_v1.npz",
+  "accuracy": 0.9595,
+  "precision": 0.9285051067780873,
+  "drivable_recall": 0.9960159362549801,
+  "negative_recall": 0.9226907630522089,
+  "tp": 2000,
+  "tn": 1838,
+  "fp": 154,
+  "fn": 8
+}

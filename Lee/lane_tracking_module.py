@@ -3,6 +3,17 @@ import numpy as np
 from collections import deque
 
 
+def normalize_lane_polarity(gray_frame):
+    height, width = gray_frame.shape[:2]
+    road_sample = gray_frame[
+        (height * 2) // 3:height,
+        width // 3:(width * 2) // 3,
+    ]
+    if float(np.median(road_sample)) > 127:
+        return cv2.bitwise_not(gray_frame)
+    return gray_frame
+
+
 class LaneTracker:
     def __init__(
         self,
@@ -73,11 +84,49 @@ class LaneTracker:
 
         return left_line, right_line
 
+    def pixel_lane_center(self, gray_frame):
+        image_height, image_width = gray_frame.shape[:2]
+        roi = gray_frame[20:image_height]
+        if roi.size == 0:
+            return None, "no_lane"
+        if np.percentile(roi, 95) - np.percentile(roi, 5) < 25:
+            return None, "no_lane"
+
+        _, marking_mask = cv2.threshold(
+            roi,
+            0,
+            255,
+            cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+        )
+        marking_mask = cv2.morphologyEx(
+            marking_mask,
+            cv2.MORPH_OPEN,
+            np.ones((3, 3), np.uint8),
+        )
+        column_strength = np.sum(marking_mask > 0, axis=0)
+        active_columns = np.flatnonzero(column_strength >= 3)
+        if active_columns.size < 8:
+            return None, "no_lane"
+
+        camera_center = image_width // 2
+        left_columns = active_columns[active_columns < camera_center]
+        right_columns = active_columns[active_columns >= camera_center]
+
+        if left_columns.size >= 4 and right_columns.size >= 4:
+            lane_center = int((np.median(left_columns) + np.median(right_columns)) / 2)
+            return lane_center, "both_lanes"
+        if left_columns.size >= 4:
+            return None, "left_only"
+        if right_columns.size >= 4:
+            return None, "right_only"
+        return None, "no_lane"
+
     def process(self, frame, save_debug=False):
         cropped_frame = frame[self.crop_y1:self.crop_y2, 0:self.frame_width]
         image_height = cropped_frame.shape[0]
 
         gray_frame = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2GRAY)
+        gray_frame = normalize_lane_polarity(gray_frame)
         blur_frame = cv2.GaussianBlur(gray_frame, (5, 5), 0)
         edge_frame = cv2.Canny(blur_frame, 50, 150)
 
@@ -136,6 +185,26 @@ class LaneTracker:
             self.draw_line(line_result, right_line, (255, 0, 0))
             error = 50
             status = "right_only"
+
+        if status == "no_lane":
+            fallback_center, fallback_status = self.pixel_lane_center(gray_frame)
+            if fallback_status == "both_lanes":
+                lane_center = fallback_center
+                error = camera_center - lane_center
+                status = "both_lanes"
+                cv2.line(
+                    line_result,
+                    (lane_center, image_height),
+                    (lane_center, max(0, image_height - 30)),
+                    (0, 180, 255),
+                    3,
+                )
+            elif fallback_status == "left_only":
+                error = -50
+                status = "left_only"
+            elif fallback_status == "right_only":
+                error = 50
+                status = "right_only"
 
         self.error_history.append(error)
         smoothed_error = int(sum(self.error_history) / len(self.error_history))

@@ -1,0 +1,10 @@
+{
+  "source_run": "run_20260830_222941",
+  "source_rows": 64137,
+  "training_samples_with_mirroring": 5600,
+  "validation_samples": 1400,
+  "left_pwm_mae": 0.0008761032950133085,
+  "right_pwm_mae": 0.0008781242650002241,
+  "steering_mae": 0.0017244764603674412,
+  "model_path": "models\\steering_v1.npz"
+}
