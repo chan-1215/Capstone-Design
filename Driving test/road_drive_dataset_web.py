@@ -396,12 +396,14 @@ class DatasetWebRuntime:
             motors.backward(motors.right_motors, right_speed, direct_pwm=True)
             return -left_speed, -right_speed
         if direction == "left":
-            motors.backward(motors.left_motors, left_speed, direct_pwm=True)
+            motors.stop((motors.left_motors[0],))
+            motors.backward((motors.left_motors[1],), left_speed, direct_pwm=True)
             motors.forward(motors.right_motors, right_speed, direct_pwm=True)
-            return -left_speed, right_speed
+            return -left_speed / 2.0, right_speed
         motors.forward(motors.left_motors, left_speed, direct_pwm=True)
-        motors.backward(motors.right_motors, right_speed, direct_pwm=True)
-        return left_speed, -right_speed
+        motors.stop((motors.right_motors[0],))
+        motors.backward((motors.right_motors[1],), right_speed, direct_pwm=True)
+        return left_speed, -right_speed / 2.0
 
     def _run(self) -> None:
         camera = None

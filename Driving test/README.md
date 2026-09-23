@@ -100,6 +100,10 @@ The final motor output applies a physical straight-line calibration of `1.00`
 on the left and `0.90` on the right. Override these with `--left-motor-scale`
 and `--right-motor-scale` after repeating a straight five-second test.
 
+Manual turns use the rear inside wheel as an active brake. For a right turn,
+both left motors move forward, the right-front motor stops, and the right-rear
+motor reverses. A left turn mirrors this behavior.
+
 This uses the current motor calibration in `motor_module.py`, including:
 
 ```text
