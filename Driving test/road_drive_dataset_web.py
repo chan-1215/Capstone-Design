@@ -568,7 +568,7 @@ def parse_args():
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--manual-speed", type=float, default=0.35)
     parser.add_argument("--left-motor-scale", type=float, default=1.0)
-    parser.add_argument("--right-motor-scale", type=float, default=0.96)
+    parser.add_argument("--right-motor-scale", type=float, default=0.90)
 
     parser.add_argument("--speed-scale", type=float, default=1.0)
     parser.add_argument("--steering-scale", type=float, default=1.0)

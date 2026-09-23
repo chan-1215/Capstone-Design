@@ -97,7 +97,7 @@ browser tabs, or losing command refreshes for 0.6 seconds stops the motors.
 Manual mode disables autonomous driving and uses direct PWM `0.35` by default.
 Adjust it at startup with `--manual-speed`, for example `--manual-speed 0.30`.
 The final motor output applies a physical straight-line calibration of `1.00`
-on the left and `0.96` on the right. Override these with `--left-motor-scale`
+on the left and `0.90` on the right. Override these with `--left-motor-scale`
 and `--right-motor-scale` after repeating a straight five-second test.
 
 This uses the current motor calibration in `motor_module.py`, including:
