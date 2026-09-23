@@ -57,10 +57,19 @@ PAGE = """<!doctype html>
     .warn { background: #8a651d; color: #fff8dc; }
     .bad { background: #8a2930; color: #fff0f1; }
     .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .manual-pad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-areas: ". forward ." "left stop right" ". backward ."; gap: 8px;
+      touch-action: none; user-select: none; }
     button { min-height: 42px; border: 0; border-radius: 5px; font-size: 14px;
       font-weight: 700; cursor: pointer; }
     #start { background: #2f9e62; color: #071d11; }
-    #stop { background: #d94b54; color: #fff; }
+    #stopAll { background: #d94b54; color: #fff; grid-area: stop; }
+    .manual { background: #3f474d; color: #fff; touch-action: none; }
+    .manual:active { background: #2f9e62; color: #071d11; }
+    [data-direction="forward"] { grid-area: forward; }
+    [data-direction="backward"] { grid-area: backward; }
+    [data-direction="left"] { grid-area: left; }
+    [data-direction="right"] { grid-area: right; }
     button:disabled { opacity: .45; cursor: not-allowed; }
     .error { min-height: 20px; color: #ff949b; font-size: 13px; overflow-wrap: anywhere; }
     .legend { color: #9fa7ac; font-size: 12px; line-height: 1.5; }
@@ -95,10 +104,20 @@ PAGE = """<!doctype html>
         </dl>
       </section>
       <section class="box">
-        <h2>Motor control</h2>
+        <h2>Autonomous control</h2>
         <div class="controls">
           <button id="start" onclick="motor('start')">Start driving</button>
-          <button id="stop" onclick="motor('stop')">Stop</button>
+          <button onclick="stopAll()">Stop</button>
+        </div>
+      </section>
+      <section class="box">
+        <h2>Manual control (hold)</h2>
+        <div class="manual-pad">
+          <button class="manual" data-direction="forward">Forward</button>
+          <button class="manual" data-direction="left">Left</button>
+          <button id="stopAll" onclick="stopAll()">Stop</button>
+          <button class="manual" data-direction="right">Right</button>
+          <button class="manual" data-direction="backward">Backward</button>
         </div>
       </section>
       <div id="runtimeError" class="error"></div>
@@ -108,12 +127,37 @@ PAGE = """<!doctype html>
   <script>
     const get = id => document.getElementById(id);
     const fmt = value => value === null || value === undefined ? '-' : Number(value).toFixed(3);
+    let manualTimer = null;
     async function motor(action) {
       try {
         const response = await fetch('/api/motors/' + action, {method: 'POST'});
         if (!response.ok) throw new Error('Driving rejected: road is not confirmed driveable');
         await refresh();
       } catch (error) { get('runtimeError').textContent = error.message; }
+    }
+    async function manualPulse(direction) {
+      try {
+        const response = await fetch('/api/manual/' + direction, {method: 'POST', keepalive: true});
+        if (!response.ok) throw new Error('Manual control rejected');
+      } catch (error) { get('runtimeError').textContent = error.message; }
+    }
+    function beginManual(direction, event) {
+      event.preventDefault();
+      endManual();
+      manualPulse(direction);
+      manualTimer = setInterval(() => manualPulse(direction), 200);
+    }
+    function endManual(event) {
+      if (event) event.preventDefault();
+      if (manualTimer !== null) {
+        clearInterval(manualTimer);
+        manualTimer = null;
+        fetch('/api/manual/stop', {method: 'POST', keepalive: true});
+      }
+    }
+    function stopAll() {
+      endManual();
+      motor('stop');
     }
     async function refresh() {
       try {
@@ -133,12 +177,25 @@ PAGE = """<!doctype html>
         get('runtimeError').textContent = s.error_message || '';
         const badge = get('badge');
         const driveable = s.safety_state === 'driveable' || s.safety_state === 'disabled';
-        badge.textContent = s.motor_enabled ? 'DRIVING' : s.safety_state.toUpperCase();
-        badge.className = 'badge ' + (driveable ? 'ok' : (s.safety_state === 'uncertain' ? 'warn' : 'bad'));
-        get('start').disabled = !s.camera_online || !driveable || s.motor_enabled || s.dry_run;
-        get('stop').disabled = !s.motor_enabled;
+        badge.textContent = s.manual_active ? 'MANUAL ' + s.manual_direction.toUpperCase()
+          : (s.motor_enabled ? 'DRIVING' : s.safety_state.toUpperCase());
+        badge.className = 'badge ' + ((s.manual_active || driveable) ? 'ok'
+          : (s.safety_state === 'uncertain' ? 'warn' : 'bad'));
+        get('start').disabled = !s.camera_online || !driveable || s.motor_enabled || s.manual_active || s.dry_run;
+        document.querySelectorAll('.manual').forEach(button => {
+          button.disabled = !s.camera_online || s.motor_enabled || s.dry_run;
+        });
+        get('stopAll').disabled = !s.motor_enabled && !s.manual_active;
       } catch (error) { get('runtimeError').textContent = 'Dashboard connection lost'; }
     }
+    document.querySelectorAll('.manual').forEach(button => {
+      button.addEventListener('pointerdown', event => beginManual(button.dataset.direction, event));
+      button.addEventListener('pointerup', endManual);
+      button.addEventListener('pointercancel', endManual);
+      button.addEventListener('pointerleave', endManual);
+    });
+    window.addEventListener('blur', endManual);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) endManual(); });
     setInterval(refresh, 300); refresh();
   </script>
 </body>
@@ -174,8 +231,11 @@ def draw_model_preview(frame, steering_model, status):
     inset = cv2.resize(feature_image, (inset_width, inset_height), interpolation=cv2.INTER_NEAREST)
     preview[0:inset_height, width - inset_width : width] = cv2.cvtColor(inset, cv2.COLOR_GRAY2BGR)
 
-    state = "DRIVING" if status["motor_enabled"] else ("DRY RUN" if status["dry_run"] else "MONITOR")
-    color = (50, 220, 110) if status["motor_enabled"] else (0, 200, 255)
+    if status["manual_active"]:
+        state = f"MANUAL {status['manual_direction'].upper()}"
+    else:
+        state = "DRIVING" if status["motor_enabled"] else ("DRY RUN" if status["dry_run"] else "MONITOR")
+    color = (50, 220, 110) if status["motor_enabled"] or status["manual_active"] else (0, 200, 255)
     cv2.rectangle(preview, (0, height - 42), (width, height), (20, 20, 20), -1)
     cv2.putText(
         preview,
@@ -197,6 +257,8 @@ class DatasetWebRuntime:
         self.stop_event = threading.Event()
         self.latest_jpeg: Optional[bytes] = None
         self.motor_enabled = False
+        self.manual_direction: Optional[str] = None
+        self.manual_deadline = 0.0
         self.reset_requested = False
         self.last_client_seen = time.monotonic()
         self.status = {
@@ -212,6 +274,8 @@ class DatasetWebRuntime:
             "actual_left_pwm": 0.0,
             "actual_right_pwm": 0.0,
             "motor_enabled": False,
+            "manual_active": False,
+            "manual_direction": "",
             "dry_run": args.dry_run,
             "command": "starting",
             "error_message": "",
@@ -232,6 +296,11 @@ class DatasetWebRuntime:
             if enabled and (self.args.dry_run or not self.status["camera_online"] or not driveable):
                 return False
             self.last_client_seen = time.monotonic()
+            if enabled:
+                self.manual_direction = None
+                self.manual_deadline = 0.0
+                self.status["manual_active"] = False
+                self.status["manual_direction"] = ""
             self.motor_enabled = enabled
             self.reset_requested = enabled
             self.status["motor_enabled"] = enabled
@@ -239,6 +308,40 @@ class DatasetWebRuntime:
                 self.status["actual_left_pwm"] = 0.0
                 self.status["actual_right_pwm"] = 0.0
             return True
+
+    def set_manual(self, direction: str) -> bool:
+        if direction not in {"forward", "backward", "left", "right"}:
+            return False
+        with self.lock:
+            if self.args.dry_run or not self.status["camera_online"]:
+                return False
+            direction_changed = direction != self.manual_direction
+            self.motor_enabled = False
+            self.manual_direction = direction
+            self.manual_deadline = time.monotonic() + 0.6
+            self.reset_requested = self.reset_requested or direction_changed
+            self.status.update(
+                motor_enabled=False,
+                manual_active=True,
+                manual_direction=direction,
+                command=f"manual_{direction}",
+            )
+            return True
+
+    def stop_all(self) -> None:
+        with self.lock:
+            self.motor_enabled = False
+            self.manual_direction = None
+            self.manual_deadline = 0.0
+            self.reset_requested = True
+            self.status.update(
+                motor_enabled=False,
+                manual_active=False,
+                manual_direction="",
+                actual_left_pwm=0.0,
+                actual_right_pwm=0.0,
+                command="stopped",
+            )
 
     def jpeg_stream(self):
         while not self.stop_event.is_set():
@@ -251,7 +354,7 @@ class DatasetWebRuntime:
             time.sleep(1.0 / max(1, self.args.web_fps))
 
     def close(self) -> None:
-        self.set_motor_enabled(False)
+        self.stop_all()
         self.stop_event.set()
         self.thread.join(timeout=4.0)
 
@@ -280,6 +383,23 @@ class DatasetWebRuntime:
             invert_left_pins=self.args.invert_left_pins,
             invert_right_pins=self.args.invert_right_pins,
         )
+
+    def _apply_manual(self, motors, direction: str):
+        speed = max(0.0, min(1.0, self.args.manual_speed))
+        if direction == "forward":
+            motors.set_side_pwm(speed, speed)
+            return speed, speed
+        if direction == "backward":
+            motors.backward(motors.left_motors, speed, direct_pwm=True)
+            motors.backward(motors.right_motors, speed, direct_pwm=True)
+            return -speed, -speed
+        if direction == "left":
+            motors.backward(motors.left_motors, speed, direct_pwm=True)
+            motors.forward(motors.right_motors, speed, direct_pwm=True)
+            return -speed, speed
+        motors.forward(motors.left_motors, speed, direct_pwm=True)
+        motors.backward(motors.right_motors, speed, direct_pwm=True)
+        return speed, -speed
 
     def _run(self) -> None:
         camera = None
@@ -331,6 +451,11 @@ class DatasetWebRuntime:
                     reset_requested = self.reset_requested
                     self.reset_requested = False
                     enabled = self.motor_enabled
+                    manual_direction = self.manual_direction
+                    manual_timed_out = manual_direction is not None and now > self.manual_deadline
+                    if manual_timed_out:
+                        manual_direction = None
+                        self.manual_direction = None
                     timed_out = enabled and now - self.last_client_seen > 2.0
                     if timed_out:
                         enabled = False
@@ -351,7 +476,10 @@ class DatasetWebRuntime:
                     planned_left, planned_right = pwm_limiter.update(planned_left, planned_right)
                     command = "dataset_model"
 
-                if enabled and safety_state != "unsafe" and not self.args.dry_run:
+                if manual_direction is not None and not self.args.dry_run:
+                    actual_left, actual_right = self._apply_manual(motors, manual_direction)
+                    command = f"manual_{manual_direction}"
+                elif enabled and safety_state != "unsafe" and not self.args.dry_run:
                     actual_left = planned_left
                     actual_right = planned_right
                     motors.set_side_pwm(actual_left, actual_right)
@@ -362,6 +490,8 @@ class DatasetWebRuntime:
 
                 frame_status = {
                     "motor_enabled": enabled,
+                    "manual_active": manual_direction is not None,
+                    "manual_direction": manual_direction or "",
                     "dry_run": self.args.dry_run,
                     "safety_state": safety_state,
                     "driveability_score": score,
@@ -389,16 +519,22 @@ class DatasetWebRuntime:
                         actual_left_pwm=actual_left,
                         actual_right_pwm=actual_right,
                         motor_enabled=enabled,
-                        command="dashboard_timeout" if timed_out else command,
+                        manual_active=manual_direction is not None,
+                        manual_direction=manual_direction or "",
+                        command=("manual_timeout" if manual_timed_out else
+                                 ("dashboard_timeout" if timed_out else command)),
                         error_message="",
                     )
                 time.sleep(1.0 / max(1, self.args.fps))
         except BaseException as exc:
             with self.lock:
                 self.motor_enabled = False
+                self.manual_direction = None
                 self.status.update(
                     camera_online=False,
                     motor_enabled=False,
+                    manual_active=False,
+                    manual_direction="",
                     actual_left_pwm=0.0,
                     actual_right_pwm=0.0,
                     command="runtime_error",
@@ -428,6 +564,7 @@ def parse_args():
     parser.add_argument("--web-fps", type=int, default=10)
     parser.add_argument("--jpeg-quality", type=int, default=80)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--manual-speed", type=float, default=0.35)
 
     parser.add_argument("--speed-scale", type=float, default=1.0)
     parser.add_argument("--steering-scale", type=float, default=1.0)
@@ -484,8 +621,16 @@ def main() -> int:
 
     @app.post("/api/motors/stop")
     def stop_motors():
-        runtime.set_motor_enabled(False)
+        runtime.stop_all()
         return jsonify({"ok": True})
+
+    @app.post("/api/manual/<direction>")
+    def manual_control(direction):
+        if direction == "stop":
+            runtime.stop_all()
+            return jsonify({"ok": True})
+        accepted = runtime.set_manual(direction)
+        return jsonify({"ok": accepted}), 200 if accepted else 409
 
     def stop_runtime(*_):
         runtime.close()

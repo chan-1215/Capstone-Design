@@ -91,6 +91,12 @@ press `Start driving`. The same camera frames are used for the web stream and
 model inference, so there is no camera conflict. Closing the dashboard or
 losing its status connection for two seconds stops the motors.
 
+The dashboard also provides `Forward`, `Backward`, `Left`, and `Right` manual
+controls. A manual button drives only while it is held; releasing it, changing
+browser tabs, or losing command refreshes for 0.6 seconds stops the motors.
+Manual mode disables autonomous driving and uses direct PWM `0.35` by default.
+Adjust it at startup with `--manual-speed`, for example `--manual-speed 0.30`.
+
 This uses the current motor calibration in `motor_module.py`, including:
 
 ```text
