@@ -386,20 +386,22 @@ class DatasetWebRuntime:
 
     def _apply_manual(self, motors, direction: str):
         speed = max(0.0, min(1.0, self.args.manual_speed))
+        left_speed = speed * self.args.left_motor_scale
+        right_speed = speed * self.args.right_motor_scale
         if direction == "forward":
-            motors.set_side_pwm(speed, speed)
-            return speed, speed
+            motors.set_side_pwm(left_speed, right_speed)
+            return left_speed, right_speed
         if direction == "backward":
-            motors.backward(motors.left_motors, speed, direct_pwm=True)
-            motors.backward(motors.right_motors, speed, direct_pwm=True)
-            return -speed, -speed
+            motors.backward(motors.left_motors, left_speed, direct_pwm=True)
+            motors.backward(motors.right_motors, right_speed, direct_pwm=True)
+            return -left_speed, -right_speed
         if direction == "left":
-            motors.backward(motors.left_motors, speed, direct_pwm=True)
-            motors.forward(motors.right_motors, speed, direct_pwm=True)
-            return -speed, speed
-        motors.forward(motors.left_motors, speed, direct_pwm=True)
-        motors.backward(motors.right_motors, speed, direct_pwm=True)
-        return speed, -speed
+            motors.backward(motors.left_motors, left_speed, direct_pwm=True)
+            motors.forward(motors.right_motors, right_speed, direct_pwm=True)
+            return -left_speed, right_speed
+        motors.forward(motors.left_motors, left_speed, direct_pwm=True)
+        motors.backward(motors.right_motors, right_speed, direct_pwm=True)
+        return left_speed, -right_speed
 
     def _run(self) -> None:
         camera = None
@@ -480,8 +482,8 @@ class DatasetWebRuntime:
                     actual_left, actual_right = self._apply_manual(motors, manual_direction)
                     command = f"manual_{manual_direction}"
                 elif enabled and safety_state != "unsafe" and not self.args.dry_run:
-                    actual_left = planned_left
-                    actual_right = planned_right
+                    actual_left = planned_left * self.args.left_motor_scale
+                    actual_right = planned_right * self.args.right_motor_scale
                     motors.set_side_pwm(actual_left, actual_right)
                 else:
                     actual_left = 0.0
@@ -565,6 +567,8 @@ def parse_args():
     parser.add_argument("--jpeg-quality", type=int, default=80)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--manual-speed", type=float, default=0.35)
+    parser.add_argument("--left-motor-scale", type=float, default=1.0)
+    parser.add_argument("--right-motor-scale", type=float, default=0.96)
 
     parser.add_argument("--speed-scale", type=float, default=1.0)
     parser.add_argument("--steering-scale", type=float, default=1.0)
