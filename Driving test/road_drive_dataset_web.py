@@ -113,11 +113,11 @@ PAGE = """<!doctype html>
       <section class="box">
         <h2>Manual control (hold)</h2>
         <div class="manual-pad">
-          <button class="manual" data-direction="forward">Forward</button>
-          <button class="manual" data-direction="left">Left</button>
+          <button class="manual" data-direction="forward" aria-keyshortcuts="W">Forward</button>
+          <button class="manual" data-direction="left" aria-keyshortcuts="A">Left</button>
           <button id="stopAll" onclick="stopAll()">Stop</button>
-          <button class="manual" data-direction="right">Right</button>
-          <button class="manual" data-direction="backward">Backward</button>
+          <button class="manual" data-direction="right" aria-keyshortcuts="D">Right</button>
+          <button class="manual" data-direction="backward" aria-keyshortcuts="S">Backward</button>
         </div>
       </section>
       <div id="runtimeError" class="error"></div>
@@ -127,7 +127,9 @@ PAGE = """<!doctype html>
   <script>
     const get = id => document.getElementById(id);
     const fmt = value => value === null || value === undefined ? '-' : Number(value).toFixed(3);
+    const keyDirections = {w: 'forward', a: 'left', s: 'backward', d: 'right'};
     let manualTimer = null;
+    let manualDirection = null;
     async function motor(action) {
       try {
         const response = await fetch('/api/motors/' + action, {method: 'POST'});
@@ -143,15 +145,19 @@ PAGE = """<!doctype html>
     }
     function beginManual(direction, event) {
       event.preventDefault();
+      if (manualDirection === direction) return;
       endManual();
+      manualDirection = direction;
       manualPulse(direction);
       manualTimer = setInterval(() => manualPulse(direction), 200);
     }
-    function endManual(event) {
+    function endManual(event, direction) {
       if (event) event.preventDefault();
+      if (direction && manualDirection !== direction) return;
       if (manualTimer !== null) {
         clearInterval(manualTimer);
         manualTimer = null;
+        manualDirection = null;
         fetch('/api/manual/stop', {method: 'POST', keepalive: true});
       }
     }
@@ -193,6 +199,15 @@ PAGE = """<!doctype html>
       button.addEventListener('pointerup', endManual);
       button.addEventListener('pointercancel', endManual);
       button.addEventListener('pointerleave', endManual);
+    });
+    document.addEventListener('keydown', event => {
+      const direction = keyDirections[event.key.toLowerCase()];
+      if (!direction || event.repeat) return;
+      beginManual(direction, event);
+    });
+    document.addEventListener('keyup', event => {
+      const direction = keyDirections[event.key.toLowerCase()];
+      if (direction) endManual(event, direction);
     });
     window.addEventListener('blur', endManual);
     document.addEventListener('visibilitychange', () => { if (document.hidden) endManual(); });

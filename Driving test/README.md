@@ -104,6 +104,10 @@ Manual turns use the rear inside wheel as an active brake. For a right turn,
 both left motors move forward, the right-front motor stops, and the right-rear
 motor reverses. A left turn mirrors this behavior.
 
+The same hold-to-run manual controls are available from the keyboard: `W`
+forward, `S` backward, `A` left, and `D` right. Releasing the active key or
+moving away from the browser window stops the motors.
+
 This uses the current motor calibration in `motor_module.py`, including:
 
 ```text
