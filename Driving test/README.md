@@ -98,6 +98,28 @@ Its detection mode and threshold can be adjusted with `--lane-mode` and
 `--lane-threshold`. The diagnostic view updates at 5 FPS by default to limit
 load on the Pi; use `--lane-fps` to change it.
 
+The optional `--video-turn-assist` supplements the dataset model with the
+direction of diagonal road markings seen in the manual-driving recording.
+Three consecutive OpenCV observations are required before this cue can request
+a turn. If a strong model command and a confirmed visual cue disagree, driving
+stops and must be restarted manually. The existing driveability safety check,
+four-second turn timeout, and browser heartbeat still apply. This is an
+experimental aid, not a model trained from the screen recording; it requires
+supervised low-speed testing on the actual track. `Line heading` is positive
+for a right bend and negative for a left bend; `Turn assist` shows the
+confirmed direction. Without the flag, the original dataset control remains
+unchanged.
+
+To test the assisted mode, start the combined dashboard with:
+
+```bash
+python3 road_drive_dataset_web.py --camera rpicam --rotation 180 --video-turn-assist
+```
+
+The motor remains stopped until `Start driving` is pressed. Keep the first
+track test supervised and use the dashboard `Stop` button when the visual cue
+or model disagrees with the visible road.
+
 The dashboard also provides `Forward`, `Backward`, `Left`, and `Right` manual
 controls. A manual button drives only while it is held; releasing it, changing
 browser tabs, or losing command refreshes for 0.6 seconds stops the motors.

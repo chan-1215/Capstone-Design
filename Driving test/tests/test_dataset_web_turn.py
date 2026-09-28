@@ -8,6 +8,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import numpy as np
+import cv2
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -127,6 +128,7 @@ class TurnDecisionTests(unittest.TestCase):
             speed_scale=1.0, steering_scale=1.0, invert_steering=False,
             min_forward_pwm=0.32, max_pwm=0.55, fps=1000,
             jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=5,
+            video_turn_assist=False,
         ))
         motors = FakeMotors()
         runtime.motor_enabled = True
@@ -169,6 +171,56 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertEqual(runtime.status["command"], "auto_forward")
         self.assertEqual(runtime.status["opencv_lane_status"], "lost")
         self.assertIsNotNone(runtime.latest_lane_jpeg)
+
+    def test_video_assist_stops_when_model_disagrees(self):
+        args = SimpleNamespace(
+            dry_run=False, left_motor_scale=1.0, right_motor_scale=0.90,
+            turn_enter_threshold=0.10, turn_exit_threshold=0.04,
+            turn_straight_frames=4, turn_speed=0.30, max_turn_seconds=4.0,
+            no_safety=True, model=Path("unused"), rotation=0,
+            unsafe_frame_limit=8, pwm_alpha=1.0, pwm_step=1.0,
+            speed_scale=1.0, steering_scale=1.0, invert_steering=False,
+            min_forward_pwm=0.32, max_pwm=0.55, fps=1000,
+            jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=1000,
+            video_turn_assist=True,
+        )
+        runtime = DatasetWebRuntime(args)
+        runtime.motor_enabled = True
+        runtime.last_client_seen = time.monotonic()
+        motors = FakeMotors()
+        frame = np.full((240, 320, 3), 255, dtype=np.uint8)
+        cv2.line(frame, (250, 100), (100, 190), (0, 0, 0), 8)
+
+        class Camera:
+            count = 0
+
+            def read(self):
+                self.count += 1
+                if self.count == 3:
+                    runtime.stop_event.set()
+                return frame
+
+            def stop(self):
+                pass
+
+        class Model:
+            def __init__(self, _path):
+                pass
+
+            def predict(self, _frame):
+                return 0.10, 0.50
+
+        with patch.object(web, "LearnedSteeringModel", Model), \
+                patch.object(runtime, "_camera", return_value=Camera()), \
+                patch.object(runtime, "_motors", return_value=motors), \
+                patch.object(web, "draw_model_preview", side_effect=lambda image, *_: image):
+            runtime._run()
+
+        self.assertEqual(runtime.status["command"], "vision_conflict")
+        self.assertFalse(runtime.status["motor_enabled"])
+        self.assertEqual(runtime.status["actual_left_pwm"], 0.0)
+        self.assertEqual(runtime.status["actual_right_pwm"], 0.0)
+        self.assertIn("disagree", runtime.status["error_message"])
 
 
 if __name__ == "__main__":
