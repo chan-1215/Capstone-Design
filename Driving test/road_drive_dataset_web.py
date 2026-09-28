@@ -683,7 +683,7 @@ def parse_args():
     parser.add_argument("--manual-speed", type=float, default=0.38)
     parser.add_argument("--left-motor-scale", type=float, default=1.0)
     parser.add_argument("--right-motor-scale", type=float, default=0.90)
-    parser.add_argument("--turn-speed", type=float, default=0.43)
+    parser.add_argument("--turn-speed", type=float, default=0.48)
     parser.add_argument("--turn-enter-threshold", type=float, default=0.10)
     parser.add_argument("--turn-exit-threshold", type=float, default=0.04)
     parser.add_argument("--turn-straight-frames", type=int, default=4)
