@@ -126,7 +126,7 @@ class TurnDecisionTests(unittest.TestCase):
             unsafe_frame_limit=8, pwm_alpha=1.0, pwm_step=1.0,
             speed_scale=1.0, steering_scale=1.0, invert_steering=False,
             min_forward_pwm=0.32, max_pwm=0.55, fps=1000,
-            jpeg_quality=80,
+            jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=5,
         ))
         motors = FakeMotors()
         runtime.motor_enabled = True
@@ -167,6 +167,8 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertLess(forwards[0], turns[0])
         self.assertLess(turns[-1], forwards[-1])
         self.assertEqual(runtime.status["command"], "auto_forward")
+        self.assertEqual(runtime.status["opencv_lane_status"], "lost")
+        self.assertIsNotNone(runtime.latest_lane_jpeg)
 
 
 if __name__ == "__main__":

@@ -14,6 +14,7 @@ import numpy as np
 
 from dataset_model import DriveabilityModel, LearnedSteeringModel, extract_steering_features
 from motor_module import DEFAULT_MOTOR_PINS, DEFAULT_MOTOR_TRIM, MotorController
+from road_drive_p_control import LaneDetector, load_vision_dependencies
 from road_drive_dataset import (
     LowPass,
     OpenCvCamera,
@@ -46,6 +47,10 @@ PAGE = """<!doctype html>
       gap: 16px; max-width: 1200px; margin: 0 auto; padding: 16px; }
     .video { width: 100%; aspect-ratio: 4 / 3; object-fit: contain; display: block;
       background: #050505; border: 1px solid #353a3f; }
+    .view-switch { display: inline-grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2px; margin-bottom: 8px; padding: 2px; background: #353a3f; border-radius: 5px; }
+    .view-switch button { min-height: 34px; padding: 0 12px; background: transparent; color: #c4cbd0; }
+    .view-switch button[aria-pressed="true"] { background: #596b52; color: #fff; }
     .panel { display: grid; gap: 12px; align-content: start; }
     .box { padding: 12px; border: 1px solid #353a3f; background: #1b1e21; border-radius: 6px; }
     .box h2 { margin: 0 0 10px; font-size: 14px; color: #bcc3c8; }
@@ -79,7 +84,13 @@ PAGE = """<!doctype html>
 <body>
   <header><h1>Dataset Driving Monitor</h1><span id="badge" class="badge">WAITING</span></header>
   <main>
-    <section><img class="video" src="/video_feed" alt="Dataset driving stream"></section>
+    <section>
+      <div class="view-switch" role="group" aria-label="Camera view">
+        <button id="modelView" aria-pressed="true" onclick="setView('model')">Model</button>
+        <button id="laneView" aria-pressed="false" onclick="setView('lane')">OpenCV</button>
+      </div>
+      <img id="cameraStream" class="video" src="/video_feed" alt="Dataset driving stream">
+    </section>
     <aside class="panel">
       <section class="box">
         <h2>Model recognition</h2>
@@ -89,6 +100,8 @@ PAGE = """<!doctype html>
           <dt>Driveability</dt><dd id="score">-</dd>
           <dt>Threshold</dt><dd id="threshold">-</dd>
           <dt>Frame rate</dt><dd id="fps">-</dd>
+          <dt>OpenCV lane</dt><dd id="laneStatus">-</dd>
+          <dt>Lane center error</dt><dd id="laneError">-</dd>
         </dl>
       </section>
       <section class="box">
@@ -123,7 +136,7 @@ PAGE = """<!doctype html>
         </div>
       </section>
       <div id="runtimeError" class="error"></div>
-      <div class="legend">Yellow box: model crop area<br>Top-right inset: image features supplied to the steering model</div>
+      <div id="legend" class="legend">Yellow box: model crop area<br>Top-right inset: image features supplied to the steering model</div>
     </aside>
   </main>
   <script>
@@ -132,6 +145,16 @@ PAGE = """<!doctype html>
     const keyDirections = {w: 'forward', a: 'left', s: 'backward', d: 'right'};
     let manualTimer = null;
     let manualDirection = null;
+    function setView(view) {
+      const lane = view === 'lane';
+      get('modelView').setAttribute('aria-pressed', String(!lane));
+      get('laneView').setAttribute('aria-pressed', String(lane));
+      get('cameraStream').src = lane ? '/lane_feed' : '/video_feed';
+      get('cameraStream').alt = lane ? 'OpenCV lane detection stream' : 'Dataset driving stream';
+      get('legend').innerHTML = lane
+        ? 'Blue: camera center &nbsp; Green: detected road center<br>Top-right inset: threshold mask'
+        : 'Yellow box: model crop area<br>Top-right inset: image features supplied to the steering model';
+    }
     async function motor(action) {
       try {
         const response = await fetch('/api/motors/' + action, {method: 'POST'});
@@ -175,6 +198,8 @@ PAGE = """<!doctype html>
         get('score').textContent = fmt(s.driveability_score);
         get('threshold').textContent = fmt(s.driveability_threshold);
         get('fps').textContent = fmt(s.fps);
+        get('laneStatus').textContent = s.opencv_lane_status;
+        get('laneError').textContent = fmt(s.opencv_lane_error);
         get('modelLeft').textContent = fmt(s.model_left_pwm);
         get('modelRight').textContent = fmt(s.model_right_pwm);
         get('steeringError').textContent = fmt(s.steering_error);
@@ -311,6 +336,7 @@ class DatasetWebRuntime:
         self.lock = threading.Lock()
         self.stop_event = threading.Event()
         self.latest_jpeg: Optional[bytes] = None
+        self.latest_lane_jpeg: Optional[bytes] = None
         self.motor_enabled = False
         self.manual_direction: Optional[str] = None
         self.manual_deadline = 0.0
@@ -322,6 +348,8 @@ class DatasetWebRuntime:
             "driveability_score": 0.0,
             "driveability_threshold": 0.0,
             "fps": 0.0,
+            "opencv_lane_status": "waiting",
+            "opencv_lane_error": None,
             "model_left_pwm": 0.0,
             "model_right_pwm": 0.0,
             "steering_error": 0.0,
@@ -400,10 +428,10 @@ class DatasetWebRuntime:
                 command="stopped",
             )
 
-    def jpeg_stream(self):
+    def jpeg_stream(self, lane_view: bool = False):
         while not self.stop_event.is_set():
             with self.lock:
-                jpeg = self.latest_jpeg
+                jpeg = self.latest_lane_jpeg if lane_view else self.latest_jpeg
             if jpeg is None:
                 time.sleep(0.05)
                 continue
@@ -481,6 +509,11 @@ class DatasetWebRuntime:
         try:
             steering_model = LearnedSteeringModel(self.args.model)
             safety_model = None if self.args.no_safety else DriveabilityModel(self.args.safety_model)
+            load_vision_dependencies()
+            lane_detector = LaneDetector(
+                self.args.lane_mode, 0.45, 0.98, self.args.lane_threshold,
+                50, 70, 55,
+            )
             camera = self._camera()
             motors = self._motors()
             pwm_filter = LowPass(self.args.pwm_alpha)
@@ -494,6 +527,9 @@ class DatasetWebRuntime:
             unsafe_frames = 0
             camera_started = time.monotonic()
             last_frame_time = camera_started
+            last_lane_time = 0.0
+            lane_status = "waiting"
+            lane_error = None
             fps_value = 0.0
 
             while not self.stop_event.is_set():
@@ -527,6 +563,17 @@ class DatasetWebRuntime:
                         safety_state = "unsafe" if unsafe_frames >= self.args.unsafe_frame_limit else "uncertain"
 
                 model_left, model_right = steering_model.predict(frame)
+                lane_jpeg = None
+                if now - last_lane_time >= 1.0 / max(1, self.args.lane_fps):
+                    lane = lane_detector.process(frame)
+                    lane_status = lane.status
+                    lane_error = lane.error
+                    last_lane_time = now
+                    lane_ok, lane_encoded = cv2.imencode(
+                        ".jpg", lane.debug_frame, [cv2.IMWRITE_JPEG_QUALITY, self.args.jpeg_quality]
+                    )
+                    if lane_ok:
+                        lane_jpeg = lane_encoded.tobytes()
                 with self.lock:
                     reset_requested = self.reset_requested
                     self.reset_requested = False
@@ -620,8 +667,12 @@ class DatasetWebRuntime:
                 with self.lock:
                     if ok:
                         self.latest_jpeg = encoded.tobytes()
+                    if lane_jpeg is not None:
+                        self.latest_lane_jpeg = lane_jpeg
                     self.status.update(
                         camera_online=True,
+                        opencv_lane_status=lane_status,
+                        opencv_lane_error=lane_error,
                         safety_state=safety_state,
                         driveability_score=score,
                         driveability_threshold=threshold,
@@ -679,6 +730,9 @@ def parse_args():
     parser.add_argument("--rotation", type=int, choices=[0, 90, 180, 270], default=180)
     parser.add_argument("--web-fps", type=int, default=10)
     parser.add_argument("--jpeg-quality", type=int, default=80)
+    parser.add_argument("--lane-mode", choices=["auto", "center-line", "lane-borders"], default="auto")
+    parser.add_argument("--lane-threshold", type=int, default=150)
+    parser.add_argument("--lane-fps", type=int, default=5)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--manual-speed", type=float, default=0.38)
     parser.add_argument("--left-motor-scale", type=float, default=1.0)
@@ -736,6 +790,10 @@ def main() -> int:
     @app.get("/video_feed")
     def video_feed():
         return Response(runtime.jpeg_stream(), mimetype="multipart/x-mixed-replace; boundary=frame")
+
+    @app.get("/lane_feed")
+    def lane_feed():
+        return Response(runtime.jpeg_stream(lane_view=True), mimetype="multipart/x-mixed-replace; boundary=frame")
 
     @app.get("/api/status")
     def status():

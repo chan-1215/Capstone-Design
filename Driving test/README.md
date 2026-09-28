@@ -91,6 +91,13 @@ press `Start driving`. The same camera frames are used for the web stream and
 model inference, so there is no camera conflict. Closing the dashboard or
 losing its status connection for two seconds stops the motors.
 
+The `Model` and `OpenCV` views use the same camera frames. The OpenCV view
+shows the earlier P-control lane detector's center lines and threshold mask;
+it is a visual diagnostic and does not change the dataset-model driving command.
+Its detection mode and threshold can be adjusted with `--lane-mode` and
+`--lane-threshold`. The diagnostic view updates at 5 FPS by default to limit
+load on the Pi; use `--lane-fps` to change it.
+
 The dashboard also provides `Forward`, `Backward`, `Left`, and `Right` manual
 controls. A manual button drives only while it is held; releasing it, changing
 browser tabs, or losing command refreshes for 0.6 seconds stops the motors.
