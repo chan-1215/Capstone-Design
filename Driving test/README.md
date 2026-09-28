@@ -102,7 +102,9 @@ and `--right-motor-scale` after repeating a straight five-second test.
 
 Manual turns use the rear inside wheel as an active brake. For a right turn,
 both left motors move forward, the right-front motor stops, and the right-rear
-motor reverses. A left turn mirrors this behavior.
+motor reverses. A left turn mirrors this behavior. Manual and autonomous turns
+use `--turn-speed` (default direct PWM `0.40`); `--manual-speed` controls only
+manual forward and backward movement.
 
 The same hold-to-run manual controls are available from the keyboard: `W`
 forward, `S` backward, `A` left, and `D` right. Releasing the active key or

@@ -458,7 +458,7 @@ class DatasetWebRuntime:
     def _apply_manual(self, motors, direction: str):
         speed = max(0.0, min(1.0, self.args.manual_speed))
         if direction in {"left", "right"}:
-            return self._apply_turn(motors, direction, speed)
+            return self._apply_turn(motors, direction, self.args.turn_speed)
         left_speed = speed * self.args.left_motor_scale
         right_speed = speed * self.args.right_motor_scale
         if direction == "forward":
@@ -683,7 +683,7 @@ def parse_args():
     parser.add_argument("--manual-speed", type=float, default=0.35)
     parser.add_argument("--left-motor-scale", type=float, default=1.0)
     parser.add_argument("--right-motor-scale", type=float, default=0.90)
-    parser.add_argument("--turn-speed", type=float, default=0.30)
+    parser.add_argument("--turn-speed", type=float, default=0.40)
     parser.add_argument("--turn-enter-threshold", type=float, default=0.10)
     parser.add_argument("--turn-exit-threshold", type=float, default=0.04)
     parser.add_argument("--turn-straight-frames", type=int, default=4)

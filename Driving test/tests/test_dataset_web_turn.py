@@ -90,6 +90,21 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertAlmostEqual(right, 0.27)
         self.assertEqual(motors.calls[0][0], "forward_both")
 
+    def test_manual_turn_uses_turn_speed_only(self):
+        runtime = DatasetWebRuntime(SimpleNamespace(
+            dry_run=False, manual_speed=0.35, turn_speed=0.40,
+            left_motor_scale=1.0, right_motor_scale=0.90,
+        ))
+        motors = FakeMotors()
+        left, right = runtime._apply_manual(motors, "right")
+        self.assertAlmostEqual(left, 0.40)
+        self.assertAlmostEqual(right, -0.18)
+        self.assertEqual(motors.calls[0], ("forward", (3, 4), 0.40))
+        motors.calls.clear()
+        left, right = runtime._apply_manual(motors, "forward")
+        self.assertAlmostEqual(left, 0.35)
+        self.assertAlmostEqual(right, 0.315)
+
     def test_autonomous_loop_stops_forward_during_turn(self):
         predictions = [(0.30, 0.30), (0.20, 0.40), (0.20, 0.40)]
         predictions += [(0.30, 0.30)] * 4
