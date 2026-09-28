@@ -108,6 +108,15 @@ The same hold-to-run manual controls are available from the keyboard: `W`
 forward, `S` backward, `A` left, and `D` right. Releasing the active key or
 moving away from the browser window stops the motors.
 
+In autonomous mode, a steering difference of at least `0.10` stops forward
+motion and uses the same rear-inside-wheel turn pattern. It resumes equal-speed
+forward motion after the difference stays at or below `0.04` for four frames.
+Three consecutive opposite turn signals reverse the turn direction.
+An unsafe camera frame stops the motors; a turn lasting over four seconds also
+stops autonomous driving until it is started again. The turn thresholds, speed,
+and timeout can be adjusted with `--turn-enter-threshold`,
+`--turn-exit-threshold`, `--turn-speed`, and `--max-turn-seconds`.
+
 This uses the current motor calibration in `motor_module.py`, including:
 
 ```text

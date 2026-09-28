@@ -96,6 +96,8 @@ PAGE = """<!doctype html>
         <dl>
           <dt>Model left</dt><dd id="modelLeft">-</dd>
           <dt>Model right</dt><dd id="modelRight">-</dd>
+          <dt>Steering error</dt><dd id="steeringError">-</dd>
+          <dt>Drive phase</dt><dd id="drivePhase">-</dd>
           <dt>Planned left</dt><dd id="plannedLeft">-</dd>
           <dt>Planned right</dt><dd id="plannedRight">-</dd>
           <dt>Motor left</dt><dd id="motorLeft">-</dd>
@@ -175,6 +177,8 @@ PAGE = """<!doctype html>
         get('fps').textContent = fmt(s.fps);
         get('modelLeft').textContent = fmt(s.model_left_pwm);
         get('modelRight').textContent = fmt(s.model_right_pwm);
+        get('steeringError').textContent = fmt(s.steering_error);
+        get('drivePhase').textContent = s.drive_phase;
         get('plannedLeft').textContent = fmt(s.planned_left_pwm);
         get('plannedRight').textContent = fmt(s.planned_right_pwm);
         get('motorLeft').textContent = fmt(s.actual_left_pwm);
@@ -265,6 +269,42 @@ def draw_model_preview(frame, steering_model, status):
     return preview
 
 
+class TurnDecision:
+    def __init__(self, enter_threshold: float, exit_threshold: float, straight_frames: int) -> None:
+        self.enter_threshold = enter_threshold
+        self.exit_threshold = exit_threshold
+        self.straight_frames = straight_frames
+        self.direction: Optional[str] = None
+        self.aligned_frames = 0
+        self.opposite_frames = 0
+
+    def reset(self) -> None:
+        self.direction = None
+        self.aligned_frames = 0
+        self.opposite_frames = 0
+
+    def update(self, steering_error: float) -> Optional[str]:
+        if self.direction is None:
+            if abs(steering_error) >= self.enter_threshold:
+                self.direction = "left" if steering_error > 0 else "right"
+            return self.direction
+
+        if abs(steering_error) <= self.exit_threshold:
+            self.aligned_frames += 1
+            self.opposite_frames = 0
+            if self.aligned_frames >= self.straight_frames:
+                self.reset()
+        else:
+            self.aligned_frames = 0
+            opposite = (steering_error < -self.enter_threshold if self.direction == "left"
+                        else steering_error > self.enter_threshold)
+            self.opposite_frames = self.opposite_frames + 1 if opposite else 0
+            if self.opposite_frames >= 3:
+                self.direction = "right" if self.direction == "left" else "left"
+                self.opposite_frames = 0
+        return self.direction
+
+
 class DatasetWebRuntime:
     def __init__(self, args) -> None:
         self.args = args
@@ -284,6 +324,8 @@ class DatasetWebRuntime:
             "fps": 0.0,
             "model_left_pwm": 0.0,
             "model_right_pwm": 0.0,
+            "steering_error": 0.0,
+            "drive_phase": "stopped",
             "planned_left_pwm": 0.0,
             "planned_right_pwm": 0.0,
             "actual_left_pwm": 0.0,
@@ -399,17 +441,10 @@ class DatasetWebRuntime:
             invert_right_pins=self.args.invert_right_pins,
         )
 
-    def _apply_manual(self, motors, direction: str):
-        speed = max(0.0, min(1.0, self.args.manual_speed))
+    def _apply_turn(self, motors, direction: str, speed: float):
+        speed = max(0.0, min(1.0, speed))
         left_speed = speed * self.args.left_motor_scale
         right_speed = speed * self.args.right_motor_scale
-        if direction == "forward":
-            motors.set_side_pwm(left_speed, right_speed)
-            return left_speed, right_speed
-        if direction == "backward":
-            motors.backward(motors.left_motors, left_speed, direct_pwm=True)
-            motors.backward(motors.right_motors, right_speed, direct_pwm=True)
-            return -left_speed, -right_speed
         if direction == "left":
             motors.stop((motors.left_motors[0],))
             motors.backward((motors.left_motors[1],), left_speed, direct_pwm=True)
@@ -419,6 +454,26 @@ class DatasetWebRuntime:
         motors.stop((motors.right_motors[0],))
         motors.backward((motors.right_motors[1],), right_speed, direct_pwm=True)
         return left_speed, -right_speed / 2.0
+
+    def _apply_manual(self, motors, direction: str):
+        speed = max(0.0, min(1.0, self.args.manual_speed))
+        if direction in {"left", "right"}:
+            return self._apply_turn(motors, direction, speed)
+        left_speed = speed * self.args.left_motor_scale
+        right_speed = speed * self.args.right_motor_scale
+        if direction == "forward":
+            motors.set_side_pwm(left_speed, right_speed)
+            return left_speed, right_speed
+        motors.backward(motors.left_motors, left_speed, direct_pwm=True)
+        motors.backward(motors.right_motors, right_speed, direct_pwm=True)
+        return -left_speed, -right_speed
+
+    def _apply_forward(self, motors, planned_left: float, planned_right: float):
+        forward_pwm = (planned_left + planned_right) / 2.0
+        left_pwm = forward_pwm * self.args.left_motor_scale
+        right_pwm = forward_pwm * self.args.right_motor_scale
+        motors.set_side_pwm(left_pwm, right_pwm)
+        return left_pwm, right_pwm
 
     def _run(self) -> None:
         camera = None
@@ -430,6 +485,12 @@ class DatasetWebRuntime:
             motors = self._motors()
             pwm_filter = LowPass(self.args.pwm_alpha)
             pwm_limiter = RateLimiter(self.args.pwm_step)
+            turn_decision = TurnDecision(
+                self.args.turn_enter_threshold,
+                self.args.turn_exit_threshold,
+                self.args.turn_straight_frames,
+            )
+            turn_started = 0.0
             unsafe_frames = 0
             camera_started = time.monotonic()
             last_frame_time = camera_started
@@ -482,10 +543,12 @@ class DatasetWebRuntime:
                 if reset_requested:
                     pwm_filter.reset()
                     pwm_limiter.reset()
+                    turn_decision.reset()
 
                 if safety_state == "unsafe":
                     pwm_filter.reset()
                     pwm_limiter.reset()
+                    turn_decision.reset()
                     planned_left = 0.0
                     planned_right = 0.0
                     command = "safety_stop"
@@ -495,17 +558,49 @@ class DatasetWebRuntime:
                     planned_left, planned_right = pwm_limiter.update(planned_left, planned_right)
                     command = "dataset_model"
 
+                steering_error = planned_right - planned_left
                 if manual_direction is not None and not self.args.dry_run:
+                    turn_decision.reset()
                     actual_left, actual_right = self._apply_manual(motors, manual_direction)
                     command = f"manual_{manual_direction}"
+                    drive_phase = f"manual_{manual_direction}"
                 elif enabled and safety_state != "unsafe" and not self.args.dry_run:
-                    actual_left = planned_left * self.args.left_motor_scale
-                    actual_right = planned_right * self.args.right_motor_scale
-                    motors.set_side_pwm(actual_left, actual_right)
+                    previous_direction = turn_decision.direction
+                    turn_direction = turn_decision.update(steering_error)
+                    if turn_direction is not None:
+                        if previous_direction != turn_direction:
+                            motors.stop()
+                        if previous_direction is None:
+                            turn_started = now
+                        if now - turn_started > self.args.max_turn_seconds:
+                            motors.stop()
+                            turn_decision.reset()
+                            with self.lock:
+                                self.motor_enabled = False
+                            enabled = False
+                            actual_left = actual_right = 0.0
+                            command = "turn_timeout"
+                            drive_phase = "stopped"
+                        else:
+                            actual_left, actual_right = self._apply_turn(
+                                motors, turn_direction, self.args.turn_speed
+                            )
+                            command = f"auto_turn_{turn_direction}"
+                            drive_phase = f"turn_{turn_direction}"
+                    else:
+                        if previous_direction is not None:
+                            motors.stop()
+                        actual_left, actual_right = self._apply_forward(
+                            motors, planned_left, planned_right
+                        )
+                        command = "auto_forward"
+                        drive_phase = "forward"
                 else:
+                    turn_decision.reset()
                     actual_left = 0.0
                     actual_right = 0.0
                     motors.stop()
+                    drive_phase = "stopped"
 
                 frame_status = {
                     "motor_enabled": enabled,
@@ -533,6 +628,8 @@ class DatasetWebRuntime:
                         fps=fps_value,
                         model_left_pwm=model_left,
                         model_right_pwm=model_right,
+                        steering_error=steering_error,
+                        drive_phase=drive_phase,
                         planned_left_pwm=planned_left,
                         planned_right_pwm=planned_right,
                         actual_left_pwm=actual_left,
@@ -586,6 +683,11 @@ def parse_args():
     parser.add_argument("--manual-speed", type=float, default=0.35)
     parser.add_argument("--left-motor-scale", type=float, default=1.0)
     parser.add_argument("--right-motor-scale", type=float, default=0.90)
+    parser.add_argument("--turn-speed", type=float, default=0.30)
+    parser.add_argument("--turn-enter-threshold", type=float, default=0.10)
+    parser.add_argument("--turn-exit-threshold", type=float, default=0.04)
+    parser.add_argument("--turn-straight-frames", type=int, default=4)
+    parser.add_argument("--max-turn-seconds", type=float, default=4.0)
 
     parser.add_argument("--speed-scale", type=float, default=1.0)
     parser.add_argument("--steering-scale", type=float, default=1.0)
@@ -615,6 +717,10 @@ def main() -> int:
         raise SystemExit("Flask is not installed. Run: sudo apt install -y python3-flask") from exc
 
     args = parse_args()
+    if not (0 <= args.turn_exit_threshold < args.turn_enter_threshold <= 1):
+        raise SystemExit("turn thresholds must satisfy 0 <= exit < enter <= 1")
+    if args.turn_straight_frames < 1 or args.max_turn_seconds <= 0 or not (0 < args.turn_speed <= 1):
+        raise SystemExit("turn frames, timeout, and speed must be positive")
     if not args.model.exists():
         raise SystemExit(f"steering model not found: {args.model}")
     if not args.no_safety and not args.safety_model.exists():
