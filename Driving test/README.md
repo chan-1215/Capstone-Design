@@ -98,7 +98,7 @@ Its detection mode and threshold can be adjusted with `--lane-mode` and
 `--lane-threshold`. The diagnostic view updates at 5 FPS by default to limit
 load on the Pi; use `--lane-fps` to change it.
 
-The optional `--video-turn-assist` supplements the dataset model with the
+Video turn assistance supplements the dataset model with the
 direction of diagonal road markings seen in the manual-driving recording.
 Three consecutive OpenCV observations are required before this cue can request
 a turn. If a strong model command and a confirmed visual cue disagree, driving
@@ -107,13 +107,19 @@ four-second turn timeout, and browser heartbeat still apply. This is an
 experimental aid, not a model trained from the screen recording; it requires
 supervised low-speed testing on the actual track. `Line heading` is positive
 for a right bend and negative for a left bend; `Turn assist` shows the
-confirmed direction. Without the flag, the original dataset control remains
-unchanged.
+confirmed direction. The assist is on by default; `--no-video-turn-assist`
+turns it off for comparison. The dashboard reports `off` when disabled.
+
+Autonomous driving requires a visible road line within 40 pixels of the image
+center before Start is accepted. Three consecutive lost-line observations stop
+the motors and require another manual Start. A centered pair of road borders
+suppresses model-only pivot turns, and a model-only pivot requires three
+consecutive turn commands. These checks do not affect manual driving.
 
 To test the assisted mode, start the combined dashboard with:
 
 ```bash
-python3 road_drive_dataset_web.py --camera rpicam --rotation 180 --video-turn-assist
+python3 road_drive_dataset_web.py --camera rpicam --rotation 180
 ```
 
 The motor remains stopped until `Start driving` is pressed. Keep the first
@@ -139,7 +145,7 @@ The same hold-to-run manual controls are available from the keyboard: `W`
 forward, `S` backward, `A` left, and `D` right. Releasing the active key or
 moving away from the browser window stops the motors.
 
-In autonomous mode, a steering difference of at least `0.10` stops forward
+In autonomous mode, a steering difference of at least `0.10` for three frames stops forward
 motion and uses the same rear-inside-wheel turn pattern. It resumes equal-speed
 forward motion after the difference stays at or below `0.04` for four frames.
 Three consecutive opposite turn signals reverse the turn direction.

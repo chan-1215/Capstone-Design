@@ -221,7 +221,8 @@ PAGE = """<!doctype html>
           : (s.motor_enabled ? 'DRIVING' : s.safety_state.toUpperCase());
         badge.className = 'badge ' + ((s.manual_active || driveable) ? 'ok'
           : (s.safety_state === 'uncertain' ? 'warn' : 'bad'));
-        get('start').disabled = !s.camera_online || !driveable || s.motor_enabled || s.manual_active || s.dry_run;
+        const laneReady = s.opencv_lane_error !== null && Math.abs(s.opencv_lane_error) <= 40;
+        get('start').disabled = !s.camera_online || !driveable || !laneReady || s.motor_enabled || s.manual_active || s.dry_run;
         document.querySelectorAll('.manual').forEach(button => {
           button.disabled = !s.camera_online || s.motor_enabled || s.dry_run;
         });
@@ -300,23 +301,36 @@ def draw_model_preview(frame, steering_model, status):
 
 
 class TurnDecision:
-    def __init__(self, enter_threshold: float, exit_threshold: float, straight_frames: int) -> None:
+    def __init__(self, enter_threshold: float, exit_threshold: float, straight_frames: int,
+                 enter_frames: int = 1) -> None:
         self.enter_threshold = enter_threshold
         self.exit_threshold = exit_threshold
         self.straight_frames = straight_frames
+        self.enter_frames = enter_frames
         self.direction: Optional[str] = None
+        self.candidate: Optional[str] = None
+        self.candidate_frames = 0
         self.aligned_frames = 0
         self.opposite_frames = 0
 
     def reset(self) -> None:
         self.direction = None
+        self.candidate = None
+        self.candidate_frames = 0
         self.aligned_frames = 0
         self.opposite_frames = 0
 
     def update(self, steering_error: float) -> Optional[str]:
         if self.direction is None:
             if abs(steering_error) >= self.enter_threshold:
-                self.direction = "left" if steering_error > 0 else "right"
+                candidate = "left" if steering_error > 0 else "right"
+                self.candidate_frames = self.candidate_frames + 1 if self.candidate == candidate else 1
+                self.candidate = candidate
+                if self.candidate_frames >= self.enter_frames:
+                    self.direction = candidate
+            else:
+                self.candidate = None
+                self.candidate_frames = 0
             return self.direction
 
         if abs(steering_error) <= self.exit_threshold:
@@ -344,6 +358,7 @@ class DatasetWebRuntime:
         self.latest_lane_jpeg: Optional[bytes] = None
         self.motor_enabled = False
         self.fault_reason = ""
+        self.fault_command = ""
         self.manual_direction: Optional[str] = None
         self.manual_deadline = 0.0
         self.reset_requested = False
@@ -388,9 +403,13 @@ class DatasetWebRuntime:
             driveable = self.status["safety_state"] in {"driveable", "disabled"}
             if enabled and (self.args.dry_run or not self.status["camera_online"] or not driveable):
                 return False
+            lane_error = self.status["opencv_lane_error"]
+            if enabled and (lane_error is None or abs(lane_error) > 40):
+                return False
             self.last_client_seen = time.monotonic()
             if enabled:
                 self.fault_reason = ""
+                self.fault_command = ""
                 self.status["error_message"] = ""
                 self.manual_direction = None
                 self.manual_deadline = 0.0
@@ -532,6 +551,7 @@ class DatasetWebRuntime:
                 self.args.turn_enter_threshold,
                 self.args.turn_exit_threshold,
                 self.args.turn_straight_frames,
+                self.args.turn_enter_frames,
             )
             video_assist = VideoTurnAssist()
             turn_started = 0.0
@@ -541,6 +561,7 @@ class DatasetWebRuntime:
             last_lane_time = 0.0
             lane_status = "waiting"
             lane_error = None
+            lane_lost_samples = 0
             vision_heading = None
             fps_value = 0.0
 
@@ -580,6 +601,7 @@ class DatasetWebRuntime:
                     lane = lane_detector.process(frame)
                     lane_status = lane.status
                     lane_error = lane.error
+                    lane_lost_samples = lane_lost_samples + 1 if not lane.visible else 0
                     if self.args.video_turn_assist:
                         vision_heading = estimate_lane_heading(frame)
                         video_assist.observe(vision_heading)
@@ -627,12 +649,27 @@ class DatasetWebRuntime:
                     video_assist.control_error(steering_error, self.args.turn_enter_threshold)
                     if self.args.video_turn_assist else (steering_error, False)
                 )
+                if (lane_status == "both_edges" and lane_error is not None
+                        and abs(lane_error) <= 25 and video_assist.direction is None):
+                    control_error = 0.0
                 if manual_direction is not None and not self.args.dry_run:
                     turn_decision.reset()
                     video_assist.reset()
                     actual_left, actual_right = self._apply_manual(motors, manual_direction)
                     command = f"manual_{manual_direction}"
                     drive_phase = f"manual_{manual_direction}"
+                elif enabled and lane_lost_samples >= self.args.lane_loss_limit:
+                    motors.stop()
+                    turn_decision.reset()
+                    video_assist.reset()
+                    with self.lock:
+                        self.motor_enabled = False
+                        self.fault_reason = "Road line lost. Driving stopped."
+                        self.fault_command = "lane_lost_stop"
+                    enabled = False
+                    actual_left = actual_right = 0.0
+                    command = "lane_lost_stop"
+                    drive_phase = "stopped"
                 elif enabled and vision_conflict:
                     motors.stop()
                     turn_decision.reset()
@@ -640,6 +677,7 @@ class DatasetWebRuntime:
                     with self.lock:
                         self.motor_enabled = False
                         self.fault_reason = "Model and road-line turn directions disagree. Driving stopped."
+                        self.fault_command = "vision_conflict"
                     enabled = False
                     actual_left = actual_right = 0.0
                     command = "vision_conflict"
@@ -682,7 +720,7 @@ class DatasetWebRuntime:
                     motors.stop()
                     drive_phase = "stopped"
                     if self.fault_reason:
-                        command = "vision_conflict"
+                        command = self.fault_command
 
                 frame_status = {
                     "motor_enabled": enabled,
@@ -771,12 +809,16 @@ def parse_args():
     parser.add_argument("--lane-threshold", type=int, default=150)
     parser.add_argument("--lane-fps", type=int, default=5)
     parser.add_argument("--video-turn-assist", action="store_true")
+    parser.add_argument("--no-video-turn-assist", action="store_false", dest="video_turn_assist")
+    parser.set_defaults(video_turn_assist=True)
+    parser.add_argument("--lane-loss-limit", type=int, default=3)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--manual-speed", type=float, default=0.38)
     parser.add_argument("--left-motor-scale", type=float, default=1.0)
     parser.add_argument("--right-motor-scale", type=float, default=0.90)
     parser.add_argument("--turn-speed", type=float, default=0.48)
     parser.add_argument("--turn-enter-threshold", type=float, default=0.10)
+    parser.add_argument("--turn-enter-frames", type=int, default=3)
     parser.add_argument("--turn-exit-threshold", type=float, default=0.04)
     parser.add_argument("--turn-straight-frames", type=int, default=4)
     parser.add_argument("--max-turn-seconds", type=float, default=4.0)
@@ -811,7 +853,8 @@ def main() -> int:
     args = parse_args()
     if not (0 <= args.turn_exit_threshold < args.turn_enter_threshold <= 1):
         raise SystemExit("turn thresholds must satisfy 0 <= exit < enter <= 1")
-    if args.turn_straight_frames < 1 or args.max_turn_seconds <= 0 or not (0 < args.turn_speed <= 1):
+    if (args.turn_straight_frames < 1 or args.turn_enter_frames < 1 or args.lane_loss_limit < 1
+            or args.max_turn_seconds <= 0 or not (0 < args.turn_speed <= 1)):
         raise SystemExit("turn frames, timeout, and speed must be positive")
     if not args.model.exists():
         raise SystemExit(f"steering model not found: {args.model}")
