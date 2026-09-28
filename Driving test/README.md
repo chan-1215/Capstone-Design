@@ -94,7 +94,7 @@ losing its status connection for two seconds stops the motors.
 The dashboard also provides `Forward`, `Backward`, `Left`, and `Right` manual
 controls. A manual button drives only while it is held; releasing it, changing
 browser tabs, or losing command refreshes for 0.6 seconds stops the motors.
-Manual mode disables autonomous driving and uses direct PWM `0.35` by default.
+Manual mode disables autonomous driving and uses direct PWM `0.38` by default.
 Adjust it at startup with `--manual-speed`, for example `--manual-speed 0.30`.
 The final motor output applies a physical straight-line calibration of `1.00`
 on the left and `0.90` on the right. Override these with `--left-motor-scale`
@@ -103,7 +103,7 @@ and `--right-motor-scale` after repeating a straight five-second test.
 Manual turns use the rear inside wheel as an active brake. For a right turn,
 both left motors move forward, the right-front motor stops, and the right-rear
 motor reverses. A left turn mirrors this behavior. Manual and autonomous turns
-use `--turn-speed` (default direct PWM `0.40`); `--manual-speed` controls only
+use `--turn-speed` (default direct PWM `0.43`); `--manual-speed` controls only
 manual forward and backward movement.
 
 The same hold-to-run manual controls are available from the keyboard: `W`
@@ -118,6 +118,8 @@ An unsafe camera frame stops the motors; a turn lasting over four seconds also
 stops autonomous driving until it is started again. The turn thresholds, speed,
 and timeout can be adjusted with `--turn-enter-threshold`,
 `--turn-exit-threshold`, `--turn-speed`, and `--max-turn-seconds`.
+Autonomous forward driving uses `--speed-scale 1.07`, a minimum PWM of `0.34`,
+and a maximum PWM of `0.58` by default.
 
 This uses the current motor calibration in `motor_module.py`, including:
 

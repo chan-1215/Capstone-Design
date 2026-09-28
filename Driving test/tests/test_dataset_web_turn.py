@@ -105,6 +105,16 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertAlmostEqual(left, 0.35)
         self.assertAlmostEqual(right, 0.315)
 
+    def test_slightly_faster_default_speeds(self):
+        with patch.object(sys, "argv", ["road_drive_dataset_web.py"]):
+            args = web.parse_args()
+        self.assertEqual(args.manual_speed, 0.38)
+        self.assertEqual(args.turn_speed, 0.43)
+        self.assertEqual(args.speed_scale, 1.07)
+        self.assertEqual(args.min_forward_pwm, 0.34)
+        self.assertEqual(args.max_pwm, 0.58)
+        self.assertEqual(args.right_motor_scale, 0.90)
+
     def test_autonomous_loop_stops_forward_during_turn(self):
         predictions = [(0.30, 0.30), (0.20, 0.40), (0.20, 0.40)]
         predictions += [(0.30, 0.30)] * 4
