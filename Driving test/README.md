@@ -116,6 +116,12 @@ the motors and require another manual Start. A centered pair of road borders
 suppresses model-only pivot turns, and a model-only pivot requires three
 consecutive turn commands. These checks do not affect manual driving.
 
+With both road borders visible, forward driving now applies a small OpenCV
+P-correction to the left/right motor PWM instead of holding a fixed ratio.
+The defaults are `--lane-kp 0.0025` PWM per pixel and
+`--lane-max-correction 0.07`. A temporarily lost line stops motor output while
+waiting for reacquisition; three consecutive lost samples latch a stop.
+
 To test the assisted mode, start the combined dashboard with:
 
 ```bash

@@ -84,7 +84,8 @@ class TurnDecisionTests(unittest.TestCase):
     def test_autonomous_turn_and_straight_motor_commands(self):
         runtime = DatasetWebRuntime(SimpleNamespace(
             dry_run=False, manual_speed=0.30, left_motor_scale=1.0,
-            right_motor_scale=0.90,
+            right_motor_scale=0.90, max_pwm=0.58,
+            lane_kp=0.0025, lane_max_correction=0.07,
         ))
         motors = FakeMotors()
         self.assertEqual(runtime._apply_turn(motors, "right", 0.30), (0.30, -0.135))
@@ -105,6 +106,13 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertAlmostEqual(left, 0.30)
         self.assertAlmostEqual(right, 0.27)
         self.assertEqual(motors.calls[0][0], "forward_both")
+        motors.calls.clear()
+        left, right = runtime._apply_forward(motors, 0.34, 0.34, lane_error=-18.0)
+        self.assertGreater(left, 0.34)
+        self.assertLess(right, 0.34 * 0.90)
+        left, right = runtime._apply_forward(motors, 0.34, 0.34, lane_error=18.0)
+        self.assertLess(left, 0.34)
+        self.assertGreater(right, 0.34 * 0.90)
 
     def test_manual_turn_uses_turn_speed_only(self):
         runtime = DatasetWebRuntime(SimpleNamespace(
@@ -147,6 +155,7 @@ class TurnDecisionTests(unittest.TestCase):
             min_forward_pwm=0.32, max_pwm=0.55, fps=1000,
             jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=5,
             video_turn_assist=False, turn_enter_frames=1, lane_loss_limit=100,
+            lane_kp=0.0025, lane_max_correction=0.07,
         ))
         motors = FakeMotors()
         runtime.motor_enabled = True
@@ -174,7 +183,16 @@ class TurnDecisionTests(unittest.TestCase):
                 self.index += 1
                 return result
 
+        class Detector:
+            def __init__(self, *_args):
+                pass
+
+            def process(self, frame):
+                return SimpleNamespace(visible=True, status="center_line", error=0.0,
+                                       debug_frame=frame)
+
         with patch.object(web, "LearnedSteeringModel", Model), \
+                patch.object(web, "LaneDetector", Detector), \
                 patch.object(runtime, "_camera", return_value=Camera()), \
                 patch.object(runtime, "_motors", return_value=motors), \
                 patch.object(web, "draw_model_preview", side_effect=lambda frame, *_: frame):
@@ -187,7 +205,7 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertLess(forwards[0], turns[0])
         self.assertLess(turns[-1], forwards[-1])
         self.assertEqual(runtime.status["command"], "auto_forward")
-        self.assertEqual(runtime.status["opencv_lane_status"], "lost")
+        self.assertEqual(runtime.status["opencv_lane_status"], "center_line")
         self.assertIsNotNone(runtime.latest_lane_jpeg)
 
     def test_video_assist_stops_when_model_disagrees(self):
@@ -201,6 +219,7 @@ class TurnDecisionTests(unittest.TestCase):
             min_forward_pwm=0.32, max_pwm=0.55, fps=1000,
             jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=1000,
             video_turn_assist=True, turn_enter_frames=1, lane_loss_limit=100,
+            lane_kp=0.0025, lane_max_correction=0.07,
         )
         runtime = DatasetWebRuntime(args)
         runtime.motor_enabled = True
@@ -253,6 +272,7 @@ class TurnDecisionTests(unittest.TestCase):
             min_forward_pwm=0.32, max_pwm=0.55, fps=1000,
             jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=1000,
             video_turn_assist=False, lane_loss_limit=3,
+            lane_kp=0.0025, lane_max_correction=0.07,
         )
         runtime = DatasetWebRuntime(args)
         runtime.motor_enabled = True
@@ -308,6 +328,7 @@ class TurnDecisionTests(unittest.TestCase):
             min_forward_pwm=0.32, max_pwm=0.55, fps=1000,
             jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=1000,
             video_turn_assist=False, lane_loss_limit=3,
+            lane_kp=0.0025, lane_max_correction=0.07,
         )
         runtime = DatasetWebRuntime(args)
         runtime.motor_enabled = True
@@ -344,6 +365,7 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertEqual(runtime.status["actual_left_pwm"], 0.0)
         self.assertEqual(runtime.status["actual_right_pwm"], 0.0)
         self.assertIn("lost", runtime.status["error_message"])
+        self.assertFalse(any(call[0] == "forward_both" for call in motors.calls))
 
 
 if __name__ == "__main__":

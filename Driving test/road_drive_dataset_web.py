@@ -525,10 +525,15 @@ class DatasetWebRuntime:
         motors.backward(motors.right_motors, right_speed, direct_pwm=True)
         return -left_speed, -right_speed
 
-    def _apply_forward(self, motors, planned_left: float, planned_right: float):
+    def _apply_forward(self, motors, planned_left: float, planned_right: float,
+                       lane_error: Optional[float] = None):
         forward_pwm = (planned_left + planned_right) / 2.0
-        left_pwm = forward_pwm * self.args.left_motor_scale
-        right_pwm = forward_pwm * self.args.right_motor_scale
+        turn = 0.0 if lane_error is None else max(
+            -self.args.lane_max_correction,
+            min(self.args.lane_max_correction, self.args.lane_kp * lane_error),
+        )
+        left_pwm = max(0.0, min(self.args.max_pwm, forward_pwm - turn)) * self.args.left_motor_scale
+        right_pwm = max(0.0, min(self.args.max_pwm, forward_pwm + turn)) * self.args.right_motor_scale
         motors.set_side_pwm(left_pwm, right_pwm)
         return left_pwm, right_pwm
 
@@ -561,6 +566,7 @@ class DatasetWebRuntime:
             last_lane_time = 0.0
             lane_status = "waiting"
             lane_error = None
+            filtered_lane_error = None
             lane_lost_samples = 0
             vision_heading = None
             fps_value = 0.0
@@ -602,6 +608,11 @@ class DatasetWebRuntime:
                     lane_status = lane.status
                     lane_error = lane.error
                     lane_lost_samples = lane_lost_samples + 1 if not lane.visible else 0
+                    if lane.visible and lane.error is not None:
+                        filtered_lane_error = (lane.error if filtered_lane_error is None else
+                                               0.5 * lane.error + 0.5 * filtered_lane_error)
+                    else:
+                        filtered_lane_error = None
                     if self.args.video_turn_assist:
                         vision_heading = estimate_lane_heading(frame)
                         video_assist.observe(vision_heading)
@@ -629,12 +640,14 @@ class DatasetWebRuntime:
                     pwm_limiter.reset()
                     turn_decision.reset()
                     video_assist.reset()
+                    filtered_lane_error = None
 
                 if safety_state == "unsafe":
                     pwm_filter.reset()
                     pwm_limiter.reset()
                     turn_decision.reset()
                     video_assist.reset()
+                    filtered_lane_error = None
                     planned_left = 0.0
                     planned_right = 0.0
                     command = "safety_stop"
@@ -649,8 +662,8 @@ class DatasetWebRuntime:
                     video_assist.control_error(steering_error, self.args.turn_enter_threshold)
                     if self.args.video_turn_assist else (steering_error, False)
                 )
-                if (lane_status == "both_edges" and lane_error is not None
-                        and abs(lane_error) <= 25 and video_assist.direction is None):
+                if lane_status == "both_edges" and video_assist.direction is None:
+                    turn_decision.reset()
                     control_error = 0.0
                 if manual_direction is not None and not self.args.dry_run:
                     turn_decision.reset()
@@ -669,6 +682,14 @@ class DatasetWebRuntime:
                     enabled = False
                     actual_left = actual_right = 0.0
                     command = "lane_lost_stop"
+                    drive_phase = "stopped"
+                elif enabled and lane_status == "lost":
+                    motors.stop()
+                    turn_decision.reset()
+                    video_assist.reset()
+                    filtered_lane_error = None
+                    actual_left = actual_right = 0.0
+                    command = "lane_search_wait"
                     drive_phase = "stopped"
                 elif enabled and vision_conflict:
                     motors.stop()
@@ -709,7 +730,8 @@ class DatasetWebRuntime:
                         if previous_direction is not None:
                             motors.stop()
                         actual_left, actual_right = self._apply_forward(
-                            motors, planned_left, planned_right
+                            motors, planned_left, planned_right,
+                            filtered_lane_error if lane_status == "both_edges" else None,
                         )
                         command = "auto_forward"
                         drive_phase = "forward"
@@ -812,6 +834,8 @@ def parse_args():
     parser.add_argument("--no-video-turn-assist", action="store_false", dest="video_turn_assist")
     parser.set_defaults(video_turn_assist=True)
     parser.add_argument("--lane-loss-limit", type=int, default=3)
+    parser.add_argument("--lane-kp", type=float, default=0.0025)
+    parser.add_argument("--lane-max-correction", type=float, default=0.07)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--manual-speed", type=float, default=0.38)
     parser.add_argument("--left-motor-scale", type=float, default=1.0)
@@ -856,6 +880,8 @@ def main() -> int:
     if (args.turn_straight_frames < 1 or args.turn_enter_frames < 1 or args.lane_loss_limit < 1
             or args.max_turn_seconds <= 0 or not (0 < args.turn_speed <= 1)):
         raise SystemExit("turn frames, timeout, and speed must be positive")
+    if args.lane_kp < 0 or not (0 <= args.lane_max_correction <= 1):
+        raise SystemExit("lane P-control gain and maximum correction must be nonnegative")
     if not args.model.exists():
         raise SystemExit(f"steering model not found: {args.model}")
     if not args.no_safety and not args.safety_model.exists():
