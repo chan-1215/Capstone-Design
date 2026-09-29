@@ -94,6 +94,8 @@ losing its status connection for two seconds stops the motors.
 The `Model` and `OpenCV` views use the same camera frames. The OpenCV view
 shows the earlier P-control lane detector's center lines and threshold mask;
 it is a visual diagnostic and does not change the dataset-model driving command.
+In auto mode, `both_edges` requires one detected border on each side of the
+camera center; two broken pieces of the same border cannot form a lane pair.
 Its detection mode and threshold can be adjusted with `--lane-mode` and
 `--lane-threshold`. The diagnostic view updates at 5 FPS by default to limit
 load on the Pi; use `--lane-fps` to change it.

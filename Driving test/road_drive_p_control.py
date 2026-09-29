@@ -231,7 +231,7 @@ class LaneDetector:
             return self._weighted_mask_center(mask), "center_line"
 
         if self.mode in {"auto", "lane-borders"}:
-            left_right = self._two_separated_candidates(candidates)
+            left_right = self._two_separated_candidates(candidates, center_x)
             if left_right is not None:
                 left_x, right_x = left_right
                 return (left_x + right_x) / 2.0, "both_edges"
@@ -251,13 +251,14 @@ class LaneDetector:
         weights = ys.astype(np.float32) + 1.0
         return float(np.average(xs, weights=weights))
 
-    def _two_separated_candidates(self, candidates) -> Optional[Tuple[float, float]]:
-        by_x = sorted(candidates[:6], key=lambda item: item[1])
+    def _two_separated_candidates(self, candidates, center_x: float) -> Optional[Tuple[float, float]]:
+        left_candidates = [item for item in candidates[:8] if item[1] < center_x]
+        right_candidates = [item for item in candidates[:8] if item[1] > center_x]
         best = None
         best_area = -1.0
 
-        for left in by_x:
-            for right in by_x:
+        for left in left_candidates:
+            for right in right_candidates:
                 if right[1] - left[1] < self.min_lane_gap:
                     continue
                 area = left[0] + right[0]
