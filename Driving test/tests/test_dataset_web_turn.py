@@ -44,7 +44,7 @@ class ReadyVisionGate:
         self.surface = SimpleNamespace(reading=SimpleNamespace(
             state="track", near_fraction=1.0, far_fraction=1.0))
 
-    def update(self, _frame, _lane_visible):
+    def update(self, _frame, _lane_visible, _lane_error=None):
         return "ready"
 
 
@@ -63,6 +63,9 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertFalse(runtime.set_motor_enabled(True))
         runtime.status.update(opencv_lane_status="both_edges", opencv_lane_error=17.0,
                               vision_gate="ready")
+        self.assertTrue(runtime.set_motor_enabled(True))
+        runtime.set_motor_enabled(False)
+        runtime.status.update(opencv_lane_error=104.0, vision_gate="corner_right")
         self.assertTrue(runtime.set_motor_enabled(True))
 
     def test_turn_keeps_direction_until_four_aligned_frames(self):
@@ -450,6 +453,148 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertFalse(runtime.status["motor_enabled"])
         self.assertEqual(runtime.status["actual_left_pwm"], 0.0)
         self.assertEqual(runtime.status["actual_right_pwm"], 0.0)
+
+    def test_corner_pivots_without_forward_and_stops_on_floor(self):
+        with patch.object(sys, "argv", ["road_drive_dataset_web.py"]):
+            args = web.parse_args()
+        args.model = Path("unused")
+        args.no_safety = True
+        args.video_turn_assist = False
+        args.rotation = 0
+        args.fps = 1000
+        args.lane_fps = 1000
+        runtime = DatasetWebRuntime(args)
+        runtime.motor_enabled = True
+        runtime.last_client_seen = time.monotonic()
+        motors = FakeMotors()
+        white = np.full((240, 320, 3), 230, dtype=np.uint8)
+        floor = np.full((240, 320, 3), (55, 95, 125), dtype=np.uint8)
+        corner = white.copy()
+        corner[106:160, :160] = floor[106:160, :160]
+        frames = [corner] * 4 + [white] * 3 + [floor] * 2
+
+        class Camera:
+            count = 0
+
+            def read(self):
+                time.sleep(0.02)
+                frame = frames[self.count]
+                self.count += 1
+                if self.count == len(frames):
+                    runtime.stop_event.set()
+                return frame
+
+            def stop(self):
+                pass
+
+        class Model:
+            def __init__(self, _path):
+                pass
+
+            def predict(self, _frame):
+                return 0.3, 0.3
+
+        class Detector:
+            def __init__(self, *_args):
+                pass
+
+            def process(self, frame):
+                error = 104.0 if frame is corner else 0.0
+                return SimpleNamespace(visible=True, status="both_edges", error=error,
+                                       debug_frame=frame)
+
+        with patch.object(web, "LearnedSteeringModel", Model), \
+                patch.object(web, "LaneDetector", Detector), \
+                patch.object(runtime, "_camera", return_value=Camera()), \
+                patch.object(runtime, "_motors", return_value=motors), \
+                patch.object(web, "draw_model_preview", side_effect=lambda frame, *_: frame):
+            runtime._run()
+
+        turns = [i for i, call in enumerate(motors.calls) if call[:2] == ("backward", (2,))]
+        forwards = [i for i, call in enumerate(motors.calls) if call[0] == "forward_both"]
+        self.assertEqual(len(turns), 2)
+        self.assertEqual(len(forwards), 1)
+        self.assertLess(turns[-1], forwards[0])
+        self.assertEqual(runtime.status["command"], "vision_off_track")
+        self.assertFalse(runtime.status["motor_enabled"])
+
+    def test_corner_timeout_and_unsafe_model_do_not_keep_turning(self):
+        def run_case(unsafe, max_turn_seconds):
+            with patch.object(sys, "argv", ["road_drive_dataset_web.py"]):
+                args = web.parse_args()
+            args.model = Path("unused")
+            args.no_safety = not unsafe
+            args.unsafe_frame_limit = 1
+            args.video_turn_assist = False
+            args.rotation = 0
+            args.fps = 1000
+            args.lane_fps = 1000
+            args.max_turn_seconds = max_turn_seconds
+            runtime = DatasetWebRuntime(args)
+            runtime.motor_enabled = True
+            runtime.last_client_seen = time.monotonic()
+            motors = FakeMotors()
+            frame = np.full((240, 320, 3), 230, dtype=np.uint8)
+            frame[106:160, :160] = (55, 95, 125)
+
+            class Camera:
+                count = 0
+
+                def read(self):
+                    time.sleep(0.02)
+                    self.count += 1
+                    if self.count == 6:
+                        runtime.stop_event.set()
+                    return frame
+
+                def stop(self):
+                    pass
+
+            class Model:
+                def __init__(self, _path):
+                    pass
+
+                def predict(self, _frame):
+                    return 0.3, 0.3
+
+            class Safety:
+                threshold = 0.45
+
+                def __init__(self, _path):
+                    pass
+
+                def predict_probability(self, _frame):
+                    return 0.0
+
+            class Detector:
+                def __init__(self, *_args):
+                    pass
+
+                def process(self, image):
+                    return SimpleNamespace(visible=True, status="both_edges", error=104.0,
+                                           debug_frame=image)
+
+            with patch.object(web, "LearnedSteeringModel", Model), \
+                    patch.object(web, "DriveabilityModel", Safety), \
+                    patch.object(web, "LaneDetector", Detector), \
+                    patch.object(runtime, "_camera", return_value=Camera()), \
+                    patch.object(runtime, "_motors", return_value=motors), \
+                    patch.object(web, "draw_model_preview", side_effect=lambda image, *_: image):
+                runtime._run()
+            return runtime, motors
+
+        timed_out, motors = run_case(False, 0.01)
+        self.assertEqual(timed_out.status["command"], "corner_timeout")
+        self.assertFalse(timed_out.status["motor_enabled"])
+        self.assertTrue(any(call[:2] == ("backward", (2,)) for call in motors.calls))
+        self.assertFalse(any(call[0] == "forward_both" for call in motors.calls))
+
+        unsafe, motors = run_case(True, 4.0)
+        self.assertEqual(unsafe.status["safety_state"], "unsafe")
+        self.assertEqual(unsafe.status["actual_left_pwm"], 0.0)
+        self.assertEqual(unsafe.status["actual_right_pwm"], 0.0)
+        self.assertFalse(any(call[0] in {"forward", "backward", "forward_both"}
+                             for call in motors.calls))
 
 
 if __name__ == "__main__":

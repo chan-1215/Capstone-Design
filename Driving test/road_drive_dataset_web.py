@@ -224,14 +224,18 @@ PAGE = """<!doctype html>
         get('runtimeError').textContent = s.error_message || '';
         const badge = get('badge');
         const driveable = s.safety_state === 'driveable' || s.safety_state === 'disabled';
-        const visionFault = s.command.startsWith('vision_') && s.command !== 'vision_wait';
+        const visionFault = s.command === 'corner_timeout'
+          || (s.command.startsWith('vision_') && s.command !== 'vision_wait');
         badge.textContent = s.manual_active ? 'MANUAL ' + s.manual_direction.toUpperCase()
           : (s.motor_enabled ? (s.drive_phase === 'paused' ? 'PAUSED' : 'DRIVING')
             : (visionFault ? 'VISION STOP' : s.safety_state.toUpperCase()));
         badge.className = 'badge ' + (visionFault ? 'bad' : (s.drive_phase === 'paused' ? 'warn' : ((s.manual_active || driveable) ? 'ok'
           : (s.safety_state === 'uncertain' ? 'warn' : 'bad'))));
         const laneReady = s.opencv_lane_error !== null && Math.abs(s.opencv_lane_error) <= 40;
-        get('start').disabled = !s.camera_online || !driveable || !laneReady || s.vision_gate !== 'ready' || s.motor_enabled || s.manual_active || s.dry_run;
+        const cornerReady = s.opencv_lane_error !== null && s.vision_gate.startsWith('corner_');
+        get('start').disabled = !s.camera_online || !driveable
+          || !(laneReady && s.vision_gate === 'ready' || cornerReady)
+          || s.motor_enabled || s.manual_active || s.dry_run;
         document.querySelectorAll('.manual').forEach(button => {
           button.disabled = !s.camera_online || s.motor_enabled || s.dry_run;
         });
@@ -417,8 +421,11 @@ class DatasetWebRuntime:
             if enabled and (self.args.dry_run or not self.status["camera_online"] or not driveable):
                 return False
             lane_error = self.status["opencv_lane_error"]
-            if enabled and (lane_error is None or abs(lane_error) > 40
-                            or self.status["vision_gate"] != "ready"):
+            gate_state = self.status["vision_gate"]
+            if enabled and (lane_error is None or not (
+                (gate_state == "ready" and abs(lane_error) <= 40)
+                or gate_state in {"corner_left", "corner_right"}
+            )):
                 return False
             self.last_client_seen = time.monotonic()
             if enabled:
@@ -575,6 +582,7 @@ class DatasetWebRuntime:
             video_assist = VideoTurnAssist()
             vision_gate = VisionGate(self.args.road_surface, self.args.lane_loss_limit)
             turn_started = 0.0
+            corner_started = 0.0
             resume_until = 0.0
             was_waiting = False
             unsafe_frames = 0
@@ -624,7 +632,7 @@ class DatasetWebRuntime:
                     lane = lane_detector.process(frame)
                     lane_status = lane.status
                     lane_error = lane.error
-                    vision_state = vision_gate.update(frame, lane.visible)
+                    vision_state = vision_gate.update(frame, lane.visible, lane.error)
                     if lane.visible and lane.error is not None:
                         filtered_lane_error = (lane.error if filtered_lane_error is None else
                                                0.5 * lane.error + 0.5 * filtered_lane_error)
@@ -658,6 +666,7 @@ class DatasetWebRuntime:
                     turn_decision.reset()
                     video_assist.reset()
                     filtered_lane_error = None
+                    corner_started = 0.0
                     resume_until = now + self.args.resume_seconds
                     was_waiting = False
 
@@ -702,6 +711,31 @@ class DatasetWebRuntime:
                     actual_left = actual_right = 0.0
                     command = self.fault_command
                     drive_phase = "stopped"
+                elif enabled and safety_state != "unsafe" and vision_state in {"corner_left", "corner_right"}:
+                    turn_decision.reset()
+                    video_assist.reset()
+                    filtered_lane_error = None
+                    was_waiting = True
+                    if corner_started == 0.0:
+                        corner_started = now
+                        motors.stop()
+                    if now - corner_started > self.args.max_turn_seconds:
+                        motors.stop()
+                        with self.lock:
+                            self.motor_enabled = False
+                            self.fault_reason = "Corner recovery timed out. Driving stopped."
+                            self.fault_command = "corner_timeout"
+                        enabled = False
+                        actual_left = actual_right = 0.0
+                        command = "corner_timeout"
+                        drive_phase = "stopped"
+                    else:
+                        direction = vision_state.removeprefix("corner_")
+                        actual_left, actual_right = self._apply_turn(
+                            motors, direction, min(self.args.turn_speed, self.args.resume_speed)
+                        )
+                        command = f"auto_corner_{direction}"
+                        drive_phase = f"turn_{direction}"
                 elif enabled and vision_state != "ready":
                     motors.stop()
                     turn_decision.reset()
@@ -724,6 +758,7 @@ class DatasetWebRuntime:
                     command = "vision_conflict"
                     drive_phase = "stopped"
                 elif enabled and safety_state != "unsafe" and not self.args.dry_run:
+                    corner_started = 0.0
                     if was_waiting:
                         resume_until = now + self.args.resume_seconds
                         was_waiting = False

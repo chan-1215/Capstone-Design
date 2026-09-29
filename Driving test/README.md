@@ -123,6 +123,12 @@ rate, ten observations take about two seconds. These thresholds were selected
 from a screen recording and still require supervised validation with raw Pi
 camera frames. The white profile admits the slight tint seen in the Pi camera
 while excluding brighter tan floors by requiring near-neutral LAB color.
+At a sharp bend, three matching observations with white track close to the
+camera and clearly more white track on one far side permit a limited pivot
+toward that side. This corner recovery never commands forward PWM, stops when
+the near track disappears or the safety model becomes unsafe, and latches a
+stop after `--max-turn-seconds`. Start can be pressed while this confirmed
+corner state is visible, even if the lane-center error exceeds 40 pixels.
 A centered pair of road borders
 suppresses model-only pivot turns, and a model-only pivot requires three
 consecutive turn commands. These checks do not affect manual driving.
