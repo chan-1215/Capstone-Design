@@ -111,16 +111,26 @@ confirmed direction. The assist is on by default; `--no-video-turn-assist`
 turns it off for comparison. The dashboard reports `off` when disabled.
 
 Autonomous driving requires a visible road line within 40 pixels of the image
-center before Start is accepted. Three consecutive lost-line observations stop
-the motors and require another manual Start. A centered pair of road borders
+center and a ready vision gate before Start is accepted. The default surface
+profile (`--road-surface white`) checks for the white paper track independently
+of line detection. A brief surface or lane uncertainty pauses the motors, then
+automatically resumes after three clear observations. For the first second
+after resuming, the forward base PWM and turn speed are capped at 0.34
+(`--resume-seconds`, `--resume-speed`). Two definite off-track observations,
+ten consecutive uncertain surface observations, or ten lost-line observations
+stop driving and require another manual Start. At the default 5 FPS diagnostic
+rate, ten observations take about two seconds. These thresholds were selected
+from a screen recording and still require supervised validation with raw Pi
+camera frames. A centered pair of road borders
 suppresses model-only pivot turns, and a model-only pivot requires three
 consecutive turn commands. These checks do not affect manual driving.
 
 With both road borders visible, forward driving now applies a small OpenCV
 P-correction to the left/right motor PWM instead of holding a fixed ratio.
 The defaults are `--lane-kp 0.0025` PWM per pixel and
-`--lane-max-correction 0.07`. A temporarily lost line stops motor output while
-waiting for reacquisition; three consecutive lost samples latch a stop.
+`--lane-max-correction 0.07`. The dashboard displays the road-surface fractions
+and vision-gate state alongside the OpenCV view. The `black` road-surface
+profile is experimental and is not calibrated for the white-paper track.
 
 To test the assisted mode, start the combined dashboard with:
 

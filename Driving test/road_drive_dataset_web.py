@@ -16,6 +16,7 @@ from dataset_model import DriveabilityModel, LearnedSteeringModel, extract_steer
 from lane_heading import VideoTurnAssist, estimate_lane_heading
 from motor_module import DEFAULT_MOTOR_PINS, DEFAULT_MOTOR_TRIM, MotorController
 from road_drive_p_control import LaneDetector, load_vision_dependencies
+from road_surface import VisionGate
 from road_drive_dataset import (
     LowPass,
     OpenCvCamera,
@@ -103,6 +104,9 @@ PAGE = """<!doctype html>
           <dt>Frame rate</dt><dd id="fps">-</dd>
           <dt>OpenCV lane</dt><dd id="laneStatus">-</dd>
           <dt>Lane center error</dt><dd id="laneError">-</dd>
+          <dt>Road surface</dt><dd id="surfaceState">-</dd>
+          <dt>Track near / far</dt><dd id="surfaceFraction">-</dd>
+          <dt>Vision gate</dt><dd id="visionGate">-</dd>
           <dt>Line heading</dt><dd id="lineHeading">-</dd>
           <dt>Turn assist</dt><dd id="turnAssist">-</dd>
         </dl>
@@ -203,6 +207,9 @@ PAGE = """<!doctype html>
         get('fps').textContent = fmt(s.fps);
         get('laneStatus').textContent = s.opencv_lane_status;
         get('laneError').textContent = fmt(s.opencv_lane_error);
+        get('surfaceState').textContent = s.road_surface;
+        get('surfaceFraction').textContent = fmt(s.surface_near) + ' / ' + fmt(s.surface_far);
+        get('visionGate').textContent = s.vision_gate;
         get('lineHeading').textContent = fmt(s.vision_heading);
         get('turnAssist').textContent = s.vision_turn;
         get('modelLeft').textContent = fmt(s.model_left_pwm);
@@ -217,12 +224,14 @@ PAGE = """<!doctype html>
         get('runtimeError').textContent = s.error_message || '';
         const badge = get('badge');
         const driveable = s.safety_state === 'driveable' || s.safety_state === 'disabled';
+        const visionFault = s.command.startsWith('vision_') && s.command !== 'vision_wait';
         badge.textContent = s.manual_active ? 'MANUAL ' + s.manual_direction.toUpperCase()
-          : (s.motor_enabled ? 'DRIVING' : s.safety_state.toUpperCase());
-        badge.className = 'badge ' + ((s.manual_active || driveable) ? 'ok'
-          : (s.safety_state === 'uncertain' ? 'warn' : 'bad'));
+          : (s.motor_enabled ? (s.drive_phase === 'paused' ? 'PAUSED' : 'DRIVING')
+            : (visionFault ? 'VISION STOP' : s.safety_state.toUpperCase()));
+        badge.className = 'badge ' + (visionFault ? 'bad' : (s.drive_phase === 'paused' ? 'warn' : ((s.manual_active || driveable) ? 'ok'
+          : (s.safety_state === 'uncertain' ? 'warn' : 'bad'))));
         const laneReady = s.opencv_lane_error !== null && Math.abs(s.opencv_lane_error) <= 40;
-        get('start').disabled = !s.camera_online || !driveable || !laneReady || s.motor_enabled || s.manual_active || s.dry_run;
+        get('start').disabled = !s.camera_online || !driveable || !laneReady || s.vision_gate !== 'ready' || s.motor_enabled || s.manual_active || s.dry_run;
         document.querySelectorAll('.manual').forEach(button => {
           button.disabled = !s.camera_online || s.motor_enabled || s.dry_run;
         });
@@ -371,6 +380,10 @@ class DatasetWebRuntime:
             "fps": 0.0,
             "opencv_lane_status": "waiting",
             "opencv_lane_error": None,
+            "road_surface": "waiting",
+            "surface_near": 0.0,
+            "surface_far": 0.0,
+            "vision_gate": "waiting",
             "vision_heading": None,
             "vision_turn": "off" if not getattr(args, "video_turn_assist", False) else "waiting",
             "model_left_pwm": 0.0,
@@ -404,7 +417,8 @@ class DatasetWebRuntime:
             if enabled and (self.args.dry_run or not self.status["camera_online"] or not driveable):
                 return False
             lane_error = self.status["opencv_lane_error"]
-            if enabled and (lane_error is None or abs(lane_error) > 40):
+            if enabled and (lane_error is None or abs(lane_error) > 40
+                            or self.status["vision_gate"] != "ready"):
                 return False
             self.last_client_seen = time.monotonic()
             if enabled:
@@ -559,7 +573,10 @@ class DatasetWebRuntime:
                 self.args.turn_enter_frames,
             )
             video_assist = VideoTurnAssist()
+            vision_gate = VisionGate(self.args.road_surface, self.args.lane_loss_limit)
             turn_started = 0.0
+            resume_until = 0.0
+            was_waiting = False
             unsafe_frames = 0
             camera_started = time.monotonic()
             last_frame_time = camera_started
@@ -567,7 +584,7 @@ class DatasetWebRuntime:
             lane_status = "waiting"
             lane_error = None
             filtered_lane_error = None
-            lane_lost_samples = 0
+            vision_state = "waiting"
             vision_heading = None
             fps_value = 0.0
 
@@ -607,7 +624,7 @@ class DatasetWebRuntime:
                     lane = lane_detector.process(frame)
                     lane_status = lane.status
                     lane_error = lane.error
-                    lane_lost_samples = lane_lost_samples + 1 if not lane.visible else 0
+                    vision_state = vision_gate.update(frame, lane.visible)
                     if lane.visible and lane.error is not None:
                         filtered_lane_error = (lane.error if filtered_lane_error is None else
                                                0.5 * lane.error + 0.5 * filtered_lane_error)
@@ -641,6 +658,8 @@ class DatasetWebRuntime:
                     turn_decision.reset()
                     video_assist.reset()
                     filtered_lane_error = None
+                    resume_until = now + self.args.resume_seconds
+                    was_waiting = False
 
                 if safety_state == "unsafe":
                     pwm_filter.reset()
@@ -671,26 +690,27 @@ class DatasetWebRuntime:
                     actual_left, actual_right = self._apply_manual(motors, manual_direction)
                     command = f"manual_{manual_direction}"
                     drive_phase = f"manual_{manual_direction}"
-                elif enabled and lane_lost_samples >= self.args.lane_loss_limit:
+                elif enabled and vision_state in {"off_track", "surface_timeout", "lane_timeout"}:
                     motors.stop()
                     turn_decision.reset()
                     video_assist.reset()
                     with self.lock:
                         self.motor_enabled = False
-                        self.fault_reason = "Road line lost. Driving stopped."
-                        self.fault_command = "lane_lost_stop"
+                        self.fault_reason = f"Vision gate: {vision_state}. Driving stopped."
+                        self.fault_command = f"vision_{vision_state}"
                     enabled = False
                     actual_left = actual_right = 0.0
-                    command = "lane_lost_stop"
+                    command = self.fault_command
                     drive_phase = "stopped"
-                elif enabled and lane_status == "lost":
+                elif enabled and vision_state != "ready":
                     motors.stop()
                     turn_decision.reset()
                     video_assist.reset()
                     filtered_lane_error = None
+                    was_waiting = True
                     actual_left = actual_right = 0.0
-                    command = "lane_search_wait"
-                    drive_phase = "stopped"
+                    command = "vision_wait"
+                    drive_phase = "paused"
                 elif enabled and vision_conflict:
                     motors.stop()
                     turn_decision.reset()
@@ -704,6 +724,9 @@ class DatasetWebRuntime:
                     command = "vision_conflict"
                     drive_phase = "stopped"
                 elif enabled and safety_state != "unsafe" and not self.args.dry_run:
+                    if was_waiting:
+                        resume_until = now + self.args.resume_seconds
+                        was_waiting = False
                     previous_direction = turn_decision.direction
                     turn_direction = turn_decision.update(control_error)
                     if turn_direction is not None:
@@ -722,18 +745,23 @@ class DatasetWebRuntime:
                             drive_phase = "stopped"
                         else:
                             actual_left, actual_right = self._apply_turn(
-                                motors, turn_direction, self.args.turn_speed
+                                motors, turn_direction,
+                                min(self.args.turn_speed, self.args.resume_speed)
+                                if now < resume_until else self.args.turn_speed,
                             )
                             command = f"auto_turn_{turn_direction}"
                             drive_phase = f"turn_{turn_direction}"
                     else:
                         if previous_direction is not None:
                             motors.stop()
+                        base = (planned_left + planned_right) / 2.0
+                        if now < resume_until:
+                            base = min(base, self.args.resume_speed)
                         actual_left, actual_right = self._apply_forward(
-                            motors, planned_left, planned_right,
+                            motors, base, base,
                             filtered_lane_error if lane_status == "both_edges" else None,
                         )
-                        command = "auto_forward"
+                        command = "auto_forward_recovery" if now < resume_until else "auto_forward"
                         drive_phase = "forward"
                 else:
                     turn_decision.reset()
@@ -768,6 +796,10 @@ class DatasetWebRuntime:
                         camera_online=True,
                         opencv_lane_status=lane_status,
                         opencv_lane_error=lane_error,
+                        road_surface=vision_gate.surface.reading.state,
+                        surface_near=vision_gate.surface.reading.near_fraction,
+                        surface_far=vision_gate.surface.reading.far_fraction,
+                        vision_gate=vision_state,
                         vision_heading=vision_heading,
                         vision_turn=(video_assist.direction or "none") if self.args.video_turn_assist else "off",
                         safety_state=safety_state,
@@ -833,7 +865,10 @@ def parse_args():
     parser.add_argument("--video-turn-assist", action="store_true")
     parser.add_argument("--no-video-turn-assist", action="store_false", dest="video_turn_assist")
     parser.set_defaults(video_turn_assist=True)
-    parser.add_argument("--lane-loss-limit", type=int, default=3)
+    parser.add_argument("--lane-loss-limit", type=int, default=10)
+    parser.add_argument("--road-surface", choices=["white", "black"], default="white")
+    parser.add_argument("--resume-seconds", type=float, default=1.0)
+    parser.add_argument("--resume-speed", type=float, default=0.34)
     parser.add_argument("--lane-kp", type=float, default=0.0025)
     parser.add_argument("--lane-max-correction", type=float, default=0.07)
     parser.add_argument("--dry-run", action="store_true")
@@ -882,6 +917,8 @@ def main() -> int:
         raise SystemExit("turn frames, timeout, and speed must be positive")
     if args.lane_kp < 0 or not (0 <= args.lane_max_correction <= 1):
         raise SystemExit("lane P-control gain and maximum correction must be nonnegative")
+    if args.resume_seconds < 0 or not (0 < args.resume_speed <= 1):
+        raise SystemExit("recovery duration and speed must be positive")
     if not args.model.exists():
         raise SystemExit(f"steering model not found: {args.model}")
     if not args.no_safety and not args.safety_model.exists():

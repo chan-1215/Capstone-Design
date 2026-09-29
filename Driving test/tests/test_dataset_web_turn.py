@@ -39,6 +39,15 @@ class FakeMotors:
         self.stop()
 
 
+class ReadyVisionGate:
+    def __init__(self, *_args):
+        self.surface = SimpleNamespace(reading=SimpleNamespace(
+            state="track", near_fraction=1.0, far_fraction=1.0))
+
+    def update(self, _frame, _lane_visible):
+        return "ready"
+
+
 class TurnDecisionTests(unittest.TestCase):
     def test_turn_requires_three_matching_frames(self):
         decision = TurnDecision(0.10, 0.04, 4, enter_frames=3)
@@ -52,7 +61,8 @@ class TurnDecisionTests(unittest.TestCase):
         runtime = DatasetWebRuntime(SimpleNamespace(dry_run=False, video_turn_assist=True))
         runtime.status.update(camera_online=True, safety_state="driveable")
         self.assertFalse(runtime.set_motor_enabled(True))
-        runtime.status.update(opencv_lane_status="both_edges", opencv_lane_error=17.0)
+        runtime.status.update(opencv_lane_status="both_edges", opencv_lane_error=17.0,
+                              vision_gate="ready")
         self.assertTrue(runtime.set_motor_enabled(True))
 
     def test_turn_keeps_direction_until_four_aligned_frames(self):
@@ -139,7 +149,8 @@ class TurnDecisionTests(unittest.TestCase):
         self.assertEqual(args.max_pwm, 0.58)
         self.assertEqual(args.right_motor_scale, 0.90)
         self.assertTrue(args.video_turn_assist)
-        self.assertEqual(args.lane_loss_limit, 3)
+        self.assertEqual(args.lane_loss_limit, 10)
+        self.assertEqual(args.road_surface, "white")
         self.assertEqual(args.turn_enter_frames, 3)
 
     def test_autonomous_loop_stops_forward_during_turn(self):
@@ -156,6 +167,7 @@ class TurnDecisionTests(unittest.TestCase):
             jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=5,
             video_turn_assist=False, turn_enter_frames=1, lane_loss_limit=100,
             lane_kp=0.0025, lane_max_correction=0.07,
+            road_surface="white", resume_seconds=1.0, resume_speed=0.34,
         ))
         motors = FakeMotors()
         runtime.motor_enabled = True
@@ -193,6 +205,7 @@ class TurnDecisionTests(unittest.TestCase):
 
         with patch.object(web, "LearnedSteeringModel", Model), \
                 patch.object(web, "LaneDetector", Detector), \
+                patch.object(web, "VisionGate", ReadyVisionGate), \
                 patch.object(runtime, "_camera", return_value=Camera()), \
                 patch.object(runtime, "_motors", return_value=motors), \
                 patch.object(web, "draw_model_preview", side_effect=lambda frame, *_: frame):
@@ -220,6 +233,7 @@ class TurnDecisionTests(unittest.TestCase):
             jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=1000,
             video_turn_assist=True, turn_enter_frames=1, lane_loss_limit=100,
             lane_kp=0.0025, lane_max_correction=0.07,
+            road_surface="white", resume_seconds=1.0, resume_speed=0.34,
         )
         runtime = DatasetWebRuntime(args)
         runtime.motor_enabled = True
@@ -249,6 +263,7 @@ class TurnDecisionTests(unittest.TestCase):
                 return 0.10, 0.50
 
         with patch.object(web, "LearnedSteeringModel", Model), \
+                patch.object(web, "VisionGate", ReadyVisionGate), \
                 patch.object(runtime, "_camera", return_value=Camera()), \
                 patch.object(runtime, "_motors", return_value=motors), \
                 patch.object(web, "draw_model_preview", side_effect=lambda image, *_: image):
@@ -273,6 +288,7 @@ class TurnDecisionTests(unittest.TestCase):
             jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=1000,
             video_turn_assist=False, lane_loss_limit=3,
             lane_kp=0.0025, lane_max_correction=0.07,
+            road_surface="white", resume_seconds=1.0, resume_speed=0.34,
         )
         runtime = DatasetWebRuntime(args)
         runtime.motor_enabled = True
@@ -308,6 +324,7 @@ class TurnDecisionTests(unittest.TestCase):
 
         with patch.object(web, "LearnedSteeringModel", Model), \
                 patch.object(web, "LaneDetector", Detector), \
+                patch.object(web, "VisionGate", ReadyVisionGate), \
                 patch.object(runtime, "_camera", return_value=Camera()), \
                 patch.object(runtime, "_motors", return_value=motors), \
                 patch.object(web, "draw_model_preview", side_effect=lambda image, *_: image):
@@ -329,6 +346,7 @@ class TurnDecisionTests(unittest.TestCase):
             jpeg_quality=80, lane_mode="auto", lane_threshold=150, lane_fps=1000,
             video_turn_assist=False, lane_loss_limit=3,
             lane_kp=0.0025, lane_max_correction=0.07,
+            road_surface="white", resume_seconds=1.0, resume_speed=0.34,
         )
         runtime = DatasetWebRuntime(args)
         runtime.motor_enabled = True
@@ -340,9 +358,10 @@ class TurnDecisionTests(unittest.TestCase):
 
             def read(self):
                 self.count += 1
+                time.sleep(0.003)
                 if self.count == 4:
                     runtime.stop_event.set()
-                return np.zeros((240, 320, 3), dtype=np.uint8)
+                return np.full((240, 320, 3), 255, dtype=np.uint8)
 
             def stop(self):
                 pass
@@ -360,12 +379,77 @@ class TurnDecisionTests(unittest.TestCase):
                 patch.object(web, "draw_model_preview", side_effect=lambda image, *_: image):
             runtime._run()
 
-        self.assertEqual(runtime.status["command"], "lane_lost_stop")
+        self.assertEqual(runtime.status["command"], "vision_lane_timeout")
         self.assertFalse(runtime.status["motor_enabled"])
         self.assertEqual(runtime.status["actual_left_pwm"], 0.0)
         self.assertEqual(runtime.status["actual_right_pwm"], 0.0)
-        self.assertIn("lost", runtime.status["error_message"])
+        self.assertIn("lane_timeout", runtime.status["error_message"])
         self.assertFalse(any(call[0] == "forward_both" for call in motors.calls))
+
+    def test_surface_wait_recovers_then_off_track_latches_stop(self):
+        with patch.object(sys, "argv", ["road_drive_dataset_web.py"]):
+            args = web.parse_args()
+        args.model = Path("unused")
+        args.no_safety = True
+        args.video_turn_assist = False
+        args.rotation = 0
+        args.fps = 1000
+        args.lane_fps = 1000
+        runtime = DatasetWebRuntime(args)
+        runtime.motor_enabled = True
+        runtime.last_client_seen = time.monotonic()
+        motors = FakeMotors()
+        white = np.full((240, 320, 3), 230, dtype=np.uint8)
+        floor = np.full((240, 320, 3), (55, 95, 125), dtype=np.uint8)
+        uncertain = white.copy()
+        uncertain[185:, :] = floor[185:, :]
+        frames = [white] * 3 + [uncertain] + [white] * 3 + [floor] * 2 + [white] * 3
+
+        class Camera:
+            count = 0
+
+            def read(self):
+                time.sleep(0.02)
+                frame = frames[self.count]
+                self.count += 1
+                if self.count == len(frames):
+                    runtime.stop_event.set()
+                return frame
+
+            def stop(self):
+                pass
+
+        class Model:
+            def __init__(self, _path):
+                pass
+
+            def predict(self, _frame):
+                return 0.3, 0.3
+
+        class Detector:
+            def __init__(self, *_args):
+                pass
+
+            def process(self, frame):
+                return SimpleNamespace(visible=True, status="both_edges", error=0.0,
+                                       debug_frame=frame)
+
+        with patch.object(web, "LearnedSteeringModel", Model), \
+                patch.object(web, "LaneDetector", Detector), \
+                patch.object(runtime, "_camera", return_value=Camera()), \
+                patch.object(runtime, "_motors", return_value=motors), \
+                patch.object(web, "draw_model_preview", side_effect=lambda frame, *_: frame):
+            runtime._run()
+
+        forwards = [i for i, call in enumerate(motors.calls) if call[0] == "forward_both"]
+        stops = [i for i, call in enumerate(motors.calls) if call[0] == "stop"]
+        self.assertEqual(len(forwards), 2)
+        self.assertTrue(any(forwards[0] < stop < forwards[1] for stop in stops))
+        self.assertLess(forwards[1], stops[-1])
+        self.assertEqual(runtime.status["command"], "vision_off_track")
+        self.assertFalse(runtime.status["motor_enabled"])
+        self.assertEqual(runtime.status["actual_left_pwm"], 0.0)
+        self.assertEqual(runtime.status["actual_right_pwm"], 0.0)
 
 
 if __name__ == "__main__":
