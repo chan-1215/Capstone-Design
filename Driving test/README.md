@@ -121,7 +121,9 @@ ten consecutive uncertain surface observations, or ten lost-line observations
 stop driving and require another manual Start. At the default 5 FPS diagnostic
 rate, ten observations take about two seconds. These thresholds were selected
 from a screen recording and still require supervised validation with raw Pi
-camera frames. A centered pair of road borders
+camera frames. The white profile admits the slight tint seen in the Pi camera
+while excluding brighter tan floors by requiring near-neutral LAB color.
+A centered pair of road borders
 suppresses model-only pivot turns, and a model-only pivot requires three
 consecutive turn commands. These checks do not affect manual driving.
 

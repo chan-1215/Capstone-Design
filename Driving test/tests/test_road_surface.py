@@ -12,14 +12,23 @@ from road_surface import RoadSurfaceGuard, VisionGate, measure_surface
 
 
 WHITE_ROAD = np.full((240, 320, 3), 230, dtype=np.uint8)
+TINTED_WHITE_ROAD = np.full((240, 320, 3), (223, 219, 220), dtype=np.uint8)
 BROWN_FLOOR = np.full((240, 320, 3), (55, 95, 125), dtype=np.uint8)
+BRIGHT_TAN_FLOOR = np.full((240, 320, 3), (145, 175, 205), dtype=np.uint8)
 BLACK_ROAD = np.full((240, 320, 3), 30, dtype=np.uint8)
 
 
 class RoadSurfaceTests(unittest.TestCase):
     def test_white_track_and_brown_floor(self):
         self.assertEqual(measure_surface(WHITE_ROAD).state, "track")
+        self.assertEqual(measure_surface(TINTED_WHITE_ROAD).state, "track")
         self.assertEqual(measure_surface(BROWN_FLOOR).state, "off_track")
+        self.assertEqual(measure_surface(BRIGHT_TAN_FLOOR).state, "off_track")
+
+    def test_far_track_boundary_pauses(self):
+        frame = TINTED_WHITE_ROAD.copy()
+        frame[106:145, :] = BROWN_FLOOR[106:145, :]
+        self.assertEqual(measure_surface(frame).state, "uncertain")
 
     def test_black_profile(self):
         self.assertEqual(measure_surface(BLACK_ROAD, "black").state, "track")

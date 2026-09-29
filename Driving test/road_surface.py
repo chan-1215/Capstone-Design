@@ -21,7 +21,8 @@ def measure_surface(frame, profile: str = "white") -> SurfaceReading:
     lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB).astype(np.int16)
     lightness, a, b = cv2.split(lab)
     if profile == "white":
-        road = (lightness > 140) & ((a - b) <= 2)
+        road = ((lightness > 140) & (np.abs(a - 128) <= 10)
+                & (np.abs(b - 128) <= 10) & ((a - b) <= 3))
     elif profile == "black":
         road = (lightness < 100) & (np.abs(a - b) <= 12)
     else:
@@ -34,7 +35,7 @@ def measure_surface(frame, profile: str = "white") -> SurfaceReading:
     far_fraction = float(np.mean(far))
     if near_fraction < 0.35:
         state = "off_track"
-    elif near_fraction >= 0.65 and far_fraction >= 0.55:
+    elif near_fraction >= 0.65 and far_fraction >= 0.60:
         state = "track"
     else:
         state = "uncertain"
