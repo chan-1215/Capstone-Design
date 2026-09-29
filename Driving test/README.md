@@ -124,7 +124,9 @@ stop driving and require another manual Start. At the default 5 FPS diagnostic
 rate, ten observations take about two seconds. These thresholds were selected
 from a screen recording and still require supervised validation with raw Pi
 camera frames. The white profile admits the slight tint seen in the Pi camera
-while excluding brighter tan floors by requiring near-neutral LAB color.
+while excluding brighter tan floors by requiring near-neutral LAB color. Its
+color tolerance also covers the camera's observed white-balance fluctuation;
+simultaneously low near and far coverage still confirms a departure.
 At a sharp bend, three matching observations with white track close to the
 camera and clearly more white track on one far side permit a limited pivot
 toward that side. This corner recovery never commands forward PWM, stops when

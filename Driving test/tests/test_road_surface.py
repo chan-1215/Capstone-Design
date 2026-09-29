@@ -13,6 +13,7 @@ from road_surface import RoadSurfaceGuard, VisionGate, measure_surface
 
 WHITE_ROAD = np.full((240, 320, 3), 230, dtype=np.uint8)
 TINTED_WHITE_ROAD = np.full((240, 320, 3), (223, 219, 220), dtype=np.uint8)
+PINK_TINTED_ROAD = np.full((240, 320, 3), (223, 219, 224), dtype=np.uint8)
 BROWN_FLOOR = np.full((240, 320, 3), (55, 95, 125), dtype=np.uint8)
 BRIGHT_TAN_FLOOR = np.full((240, 320, 3), (145, 175, 205), dtype=np.uint8)
 BLACK_ROAD = np.full((240, 320, 3), 30, dtype=np.uint8)
@@ -31,6 +32,7 @@ class RoadSurfaceTests(unittest.TestCase):
     def test_white_track_and_brown_floor(self):
         self.assertEqual(measure_surface(WHITE_ROAD).state, "track")
         self.assertEqual(measure_surface(TINTED_WHITE_ROAD).state, "track")
+        self.assertEqual(measure_surface(PINK_TINTED_ROAD).state, "track")
         self.assertEqual(measure_surface(BROWN_FLOOR).state, "off_track")
         self.assertEqual(measure_surface(BRIGHT_TAN_FLOOR).state, "off_track")
 
@@ -83,6 +85,17 @@ class RoadSurfaceTests(unittest.TestCase):
         for _ in range(10):
             state = guard.update(mixed)
         self.assertEqual(state, "surface_timeout")
+
+    def test_low_near_and_far_surface_confirms_departure(self):
+        frame = BROWN_FLOOR.copy()
+        frame[160:225, 29:173] = WHITE_ROAD[160:225, 29:173]
+        frame[144:153, 29:173] = WHITE_ROAD[144:153, 29:173]
+        frame[105:144, 29:68] = WHITE_ROAD[105:144, 29:68]
+        reading = measure_surface(frame)
+        self.assertGreater(reading.near_fraction, 0.35)
+        self.assertLess(reading.near_fraction, 0.60)
+        self.assertLess(reading.far_fraction, 0.20)
+        self.assertEqual(reading.state, "off_track")
 
     def test_lane_loss_waits_then_times_out(self):
         gate = VisionGate(lane_loss_limit=4)

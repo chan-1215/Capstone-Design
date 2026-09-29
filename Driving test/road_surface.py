@@ -24,7 +24,7 @@ def measure_surface(frame, profile: str = "white") -> SurfaceReading:
     lightness, a, b = cv2.split(lab)
     if profile == "white":
         road = ((lightness > 140) & (np.abs(a - 128) <= 10)
-                & (np.abs(b - 128) <= 10) & ((a - b) <= 3))
+                & (np.abs(b - 128) <= 10) & ((a - b) <= 6))
     elif profile == "black":
         road = (lightness < 100) & (np.abs(a - b) <= 12)
     else:
@@ -38,7 +38,7 @@ def measure_surface(frame, profile: str = "white") -> SurfaceReading:
     middle = far.shape[1] // 2
     far_left = float(np.mean(far[:, :middle]))
     far_right = float(np.mean(far[:, middle:]))
-    if near_fraction < 0.35:
+    if near_fraction < 0.35 or (near_fraction < 0.60 and far_fraction < 0.20):
         state = "off_track"
     elif near_fraction >= 0.75 and 0.35 <= far_fraction < 0.75 and far_right - far_left >= 0.30:
         state = "corner_right"
