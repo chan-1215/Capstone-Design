@@ -1,0 +1,162 @@
+{
+  "python": "3.11.17 (main, Oct  9 2026, 15:20:12) [Clang 22.1.3 ]",
+  "platform": "linux-aarch64",
+  "packages": [
+    {
+      "name": "absl-py",
+      "version": "2.5.1"
+    },
+    {
+      "name": "attrs",
+      "version": "26.1.0"
+    },
+    {
+      "name": "blinker",
+      "version": "1.9.0"
+    },
+    {
+      "name": "certifi",
+      "version": "2026.7.22"
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1"
+    },
+    {
+      "name": "click",
+      "version": "8.5.0"
+    },
+    {
+      "name": "colorzero",
+      "version": "2.0"
+    },
+    {
+      "name": "contourpy",
+      "version": "1.3.3"
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1"
+    },
+    {
+      "name": "Flask",
+      "version": "3.1.3"
+    },
+    {
+      "name": "flatbuffers",
+      "version": "25.12.19"
+    },
+    {
+      "name": "fonttools",
+      "version": "4.66.1"
+    },
+    {
+      "name": "gpiozero",
+      "version": "2.0.1.post3"
+    },
+    {
+      "name": "itsdangerous",
+      "version": "2.2.0"
+    },
+    {
+      "name": "jax",
+      "version": "0.7.1"
+    },
+    {
+      "name": "jaxlib",
+      "version": "0.7.1"
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6"
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.5.1"
+    },
+    {
+      "name": "lgpio",
+      "version": "0.2.2.0"
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.4"
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.11.2"
+    },
+    {
+      "name": "mediapipe",
+      "version": "0.10.18"
+    },
+    {
+      "name": "ml_dtypes",
+      "version": "0.5.4"
+    },
+    {
+      "name": "numpy",
+      "version": "1.26.4"
+    },
+    {
+      "name": "opencv-contrib-python",
+      "version": "4.11.0.86"
+    },
+    {
+      "name": "opencv-python",
+      "version": "5.0.0.93"
+    },
+    {
+      "name": "opt_einsum",
+      "version": "3.4.0"
+    },
+    {
+      "name": "packaging",
+      "version": "26.3"
+    },
+    {
+      "name": "pillow",
+      "version": "12.3.0"
+    },
+    {
+      "name": "protobuf",
+      "version": "4.25.9"
+    },
+    {
+      "name": "pycparser",
+      "version": "3.11"
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.3"
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0"
+    },
+    {
+      "name": "scipy",
+      "version": "1.17.1"
+    },
+    {
+      "name": "sentencepiece",
+      "version": "0.2.2"
+    },
+    {
+      "name": "setuptools",
+      "version": "84.0.0"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0"
+    },
+    {
+      "name": "sounddevice",
+      "version": "0.5.6"
+    },
+    {
+      "name": "Werkzeug",
+      "version": "3.1.9"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+-r requirements-core.in
+mediapipe==0.10.18
+protobuf==4.25.9
+# The old installed JAX 0.7.1 conflicts with NumPy 1.26.4.
+# Resolve compatible versions for a NEW environment; do not modify the old SD.
+jax<0.7
+jaxlib<0.7
