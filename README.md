@@ -50,6 +50,19 @@ DC 모터 속도 차이를 이용한 주행 실험에서 시작해 서보 조향
 
 [발표 및 시연 자료](https://pedestrian-gesture-deck.pages.dev/showcase) · [전체 폴더 안내](docs/repository-map.md)
 
+## Webots 학습 데이터 실험
+
+실물 차량의 반복 실험 부담을 줄이기 위해 Webots 가상 트랙에서 교사 주행을 기록하고,
+선별한 9,000장의 카메라 이미지와 좌우 모터 PWM을 이용해 릿지 회귀 모델을 학습·평가했습니다.
+이는 과거의 시뮬레이션 실험이며 현재 Raspberry Pi의 기본 주행 제어에는 연결되어 있지 않습니다.
+
+| 가상 트랙과 차량 | 트랙·카메라 및 교사 주행 화면 |
+| --- | --- |
+| <img src="docs/images/webots-track-overview.png" alt="Webots의 3차선 사각형 트랙과 파란 가상 차량" width="360"> | <img src="docs/images/webots-expert-camera.png" alt="Webots 트랙과 교사 주행 카메라 화면" width="360"> |
+
+수집 데이터의 구성, 이미지 전처리·증강, 학습 절차와 평가 결과는
+[Webots 학습 실험 기록](docs/webots-training.md)에서 확인할 수 있습니다.
+
 ## 코드 버전
 
 ```text
