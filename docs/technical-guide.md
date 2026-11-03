@@ -142,6 +142,9 @@ Flask는 영상·결과·설정을 브라우저에 제공하고 조작 요청을
 | Webots·학습 모델 | 시뮬레이션에서 주행 데이터를 생성하고 모델을 학습·평가 | [`simulation`](../Auto%20Driving/Without%20Steering/simulation). 현재 서보 트랙 코드의 자동 온라인 학습 기능은 아님 |
 | CNN 비교 | KNN과 다른 분류기의 결과를 비교 | [`cnn_compare_module.py`](../Gesture/cnn_compare_module.py). 선택적 비교 실험 |
 
+이전 **Webots 데이터 생성·학습 실험**은 [사진과 함께 보는 별도 문서](webots-training.md)에 정리했습니다.
+가상 교사 주행, 차선별 데이터 9,000장, 영상→좌우 PWM 릿지 회귀, 실패 사례와 폐루프 평가를 설명합니다.
+
 ## 사진·영상 출처
 
 모두 프로젝트 [기술·시연 발표 사이트](https://pedestrian-gesture-deck.pages.dev/showcase#1)의 기존 기록입니다.

@@ -10,6 +10,7 @@ Raspberry Pi 모형 차량의 차선 추종과 손동작 인식을 다룬 캡스
 | 조향장치 없는 주행 | 좌우 DC 모터의 속도 차이로 회전, OpenCV 차선 추종과 학습 모델 실험 | [살펴보기](docs/driving-without-servo.md) |
 | 조향장치 있는 주행 | 앞바퀴 서보 조향과 후륜 구동, 경로 추종과 Flask 수동·자율 제어 | [살펴보기](docs/driving-with-servo.md) |
 | 제스처 인식 | MediaPipe 손 관절 추출, NumPy 특징 처리, KNN GO·STOP 분류 | [살펴보기](docs/gesture-recognition.md) |
+| 이전 Webots 학습 실험 | 가상 교사 주행에서 데이터 9,000장을 선별하고 영상→좌우 PWM 모델 학습·평가 | [사진과 개발 과정](docs/webots-training.md) |
 
 ## 사용 기술
 

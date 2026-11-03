@@ -1,180 +1,71 @@
-# Dataset Project
+# Webots 주행 데이터 생성·모델 학습 실험
 
-실제 로봇 없이 자율주행 로직을 개발하고 검증하기 위한 독립 작업 공간입니다.
+[프로젝트](../../../README.md) · [서보 없는 주행](../README.md) · [사진과 함께 보는 개발 과정](../../../docs/webots-training.md)
 
-## 작업 원칙
+실물 없이 반복 실험하기 위해 가상 트랙·차량·카메라를 만들고,
+교사 제어기의 좌우 PWM을 정답으로 **영상 기반 릿지 회귀 모델**을 학습했던 작업입니다.
+현재 서보 차량의 기본 주행과는 별도 실험이며 데이터·모델·평가 기록을 보존합니다.
 
-- 기존 `Lee` 폴더의 카메라 코드는 수정하지 않습니다.
-- 실제 로봇 배선과 방향이 설정된 `Lee/motor_module.py`는 실제 관찰값 없이 수정하지 않습니다.
-- 가상 카메라와 가상 모터는 이 폴더에 별도 모듈로 구현합니다.
-- 자율주행 판단 코드는 실제 환경과 시뮬레이션 환경에서 공통으로 사용할 수 있게 구성합니다.
+![Webots 가상 트랙과 교사 주행 카메라 화면](../../../docs/images/webots-expert-camera.png)
 
-## 현재 구성
+2026-11-03 기존 월드를 다시 열어 사용자가 캡처한 `AUTO-EXPERT REC:ON` 화면입니다.
+교사 주행·기록 모드이며, 학습 모델의 새 성능 평가 화면은 아닙니다.
 
-```text
-Dataset Project/
-├── controllers/   # 차선 추종 및 주행 판단
-├── protos/        # 사진을 참고한 4륜 RC카 모델
-├── simulation/    # 가상 카메라·모터 연결
-├── tests/         # 주행 판단 및 안전 동작 테스트
-├── worlds/        # Webots 트랙
-└── README.md
+## 보존된 자료
+
+| 폴더 | 내용 |
+| --- | --- |
+| `worlds/`, `protos/` | 타원·점선 직사각형·반전 노면 월드, 차선별 수집 월드, 가상 4륜 차량 |
+| `controllers/`, `simulation/` | 교사·영상·학습 제어기, 가상 모터 연결, 영상 전처리 |
+| `dataset_v2/` | 차선별 3,000장씩 총 9,000장, 정답·원시 출처 manifest, 선별 통계 |
+| `training/` | 데이터 선별, 증강, 릿지 회귀·주행 가능성 학습, 폐루프 평가 |
+| `models/` | `steering_v1`, `steering_v2`, `driveability_v1` NPZ와 검증 지표 |
+| `reports/` | 과거 일반·반전 노면 주행 평가 JSON |
+| `hardware/` | 이전 4모터 로봇용 어댑터·배포 도구. 현재 서보 로봇과 구분 |
+| `history/`, `HANDOFF.md`, `RASPBERRY_PI_DEPLOY.md` | 당시 인계·환경·배선·실행 기록 |
+
+`dataset/runs/` 원시 실행은 Git에서 제외됩니다. 기존 PC 백업의 원시 자료는 보존합니다.
+과거 문서의 `Dataset Project`는 현재 이 폴더, `Lee`의 비제스처 코드는 현재 `../legacy_rover`입니다.
+원래 README는 [history/README_before_webots_documentation.md](history/README_before_webots_documentation.md)에 보존했습니다.
+
+## 수집 → 학습 → 평가
+
+1. Webots에서 `worlds/collect_rectangle_lane_1.wbt`~`lane_3.wbt`를 각각 열어 교사 주행을 기록합니다.
+2. 이미지를 차선별 선별하고 교사 정답·복구 사례를 `dataset_v2`에 모읍니다.
+3. 회색조·노면 극성 정규화·32×18 축소·좌우 및 노면 반전 증강 후 릿지 회귀를 학습합니다.
+4. 예측 PWM 오차와 모델이 직접 운전하는 폐루프 주행을 나누어 평가합니다.
+
+[상세 설명](../../../docs/webots-training.md)에 입력·정답 예시, 학습 수량, 실패 사례와 개선, 지표의 해석 범위를 적었습니다.
+
+## 실행 안내
+
+저장소 루트에서 시작합니다. 아래 명령은 실제 로봇을 제어하지 않습니다.
+
+```powershell
+cd "Auto Driving/Without Steering/simulation"
+python -m pip install numpy opencv-python
+python -B -m unittest discover -s tests -v
 ```
 
-현재 첫 단계는 카메라 영상 처리와 GPIO 모터 제어를 건드리지 않고,
-그 사이의 **주행 판단 계층**을 독립적으로 만드는 것입니다.
+Webots R2025a에서 `worlds/collect_rectangle_lane_2.wbt`를 열 수 있습니다.
+`controllers/rc_car_controller/runtime.ini`는 당시 PC의 Python 3.9 절대 경로를 가리킵니다.
+새 PC에서는 OpenCV·NumPy를 설치한 Python 경로에 맞춰야 합니다.
+3D 화면에 포커스를 둔 상태에서 `M`은 수동/자동 전환, `V`는 교사/영상/학습 모델 전환, `R`은 기록 전환입니다.
+재생 시 기본 교사·기록 모드가 켜질 수 있어 단순 확인 후에는 기록·실행을 멈춥니다.
 
-## 실행 모드
+선별 데이터만으로 주행 모델을 다시 학습하려면 다음을 실행합니다.
+기존 모델·지표 파일이 갱신되므로 재현 실험은 별도 작업 복사본에서 진행하는 편이 좋습니다.
 
-- `simulation`: 가상 모터를 사용해 명령과 속도를 기록합니다.
-- `hardware`: 추후 실제 로봇에서 기존 `Lee/motor_module.py`를 그대로 연결합니다.
-
-Python과 Webots 설치 후 가상 카메라가 생성한 프레임을 OpenCV 차선 인식에
-전달하고, 그 결과를 현재 주행 판단 계층에 연결할 예정입니다.
-
-## Webots 첫 실행
-
-Webots에서 다음 월드 파일을 엽니다.
-
-```text
-worlds/lane_track.wbt
+```powershell
+python -B training/train_steering_v2.py
 ```
 
-현재 조작키는 다음과 같습니다. Webots의 3D 화면을 한 번 클릭한 후 사용합니다.
+아래 명령은 **원시 `dataset/runs/`가 있을 때만** 의미가 있습니다. 저장소만 복제하면 일부 원시 기록이 없습니다.
 
-시뮬레이션을 재생하면 두 화면이 동시에 표시됩니다.
-
-- Webots 메인 창: 전체 트랙과 RC카를 내려다보는 고정 3인칭 조감도
-- `RC Car Front Camera`: RC카 전면 카메라의 1인칭 화면
-
-| 키 | 동작 |
-|---|---|
-| `W` 또는 `↑` | 전진 |
-| `S` 또는 `↓` | 후진 |
-| `A` 또는 `←` | 왼쪽 곡선 주행 |
-| `D` 또는 `→` | 오른쪽 곡선 주행 |
-| `Q` | 제자리 좌회전 |
-| `E` | 제자리 우회전 |
-| 키를 놓음 | 정지 |
-| `M` | 자동주행/수동주행 전환 |
-| `R` | 데이터 기록 켜기/끄기 |
-| `V` | 교사 경로주행/OpenCV 단독주행 전환 |
-
-시뮬레이션은 기본적으로 `AUTO-EXPERT` 모드와 데이터 기록이 켜진 상태로 시작합니다.
-교사 모드는 Webots의 정확한 차량 위치와 타원형 트랙 중앙선을 사용해 계속 순환하고,
-OpenCV 인식 결과를 동시에 데이터에 기록합니다. `V`를 누르면 기존 OpenCV 결과만으로
-주행하는 `AUTO-VISION` 모드와 비교할 수 있습니다.
-
-`V` 키는 `EXPERT → VISION → LEARNED` 순서로 제어 방식을 전환합니다.
-
-## 학습 모델 테스트 트랙
-
-```text
-worlds/test_track_clockwise.wbt
+```powershell
+python -B training/build_dataset_v2.py --dry-run
+python -B training/train_driveability.py
+python -B training/evaluate_drive_run.py run_20260901_172142 run_20260901_172316
 ```
 
-이 트랙은 학습용 트랙보다 직선이 길고 곡선이 급하며, 노란색 차선과 다른 조명을
-사용합니다. 차량은 시계 방향으로 출발하고 `steering_v1.npz` 학습 모델로 주행합니다.
-
-첫 평가 결과(`run_20260831_013025`):
-
-- 67.36초 연속 주행
-- 평균 중앙 이탈 0.0185 m
-- 최대 중앙 이탈 0.0726 m
-- 가운데 차선 경계 초과 0회
-- 전체 도로 이탈 0회
-
-### 점선 직사각형 테스트 트랙
-
-```text
-worlds/test_track_rectangle.wbt
-```
-
-- 전체 윤곽은 직사각형이며 차량 주행을 위해 모서리만 라운드 처리
-- 3개 차로와 4개의 점선 경계
-- 위쪽 직선에서 시계 방향 출발
-- 기본 제어 방식은 `LEARNED`
-
-`steering_v1` 첫 평가(`run_20260831_013642`)에서는 점선과 직사각형 모서리에
-일반화하지 못했습니다. 평균 중앙 이탈은 0.6346 m였고, 820개 샘플 중 708개가
-가운데 차선을 벗어났습니다. 이 실행은 `dataset_v2` 교정 대상 실패 사례입니다.
-가상 카메라의 원본 이미지와 차선 인식 결과, 좌우 PWM, 차량 위치와 방향은
-다음 경로에 실행별로 저장됩니다.
-
-```text
-dataset/runs/run_YYYYMMDD_HHMMSS/
-├── images/
-├── driving.csv
-└── run_metadata.json
-```
-
-## 첫 RC카 모델의 임시 치수
-
-실제 로봇 측정 전까지 아래 값을 사용합니다.
-
-| 항목 | 임시 값 |
-|---|---:|
-| 차체 길이 | 0.48 m |
-| 차체 폭 | 0.32 m |
-| 차체 높이 | 0.20 m |
-| 바퀴 반지름 | 0.065 m |
-| 전체 질량 | 약 3.82 kg |
-| 카메라 | 320×240, 수평 화각 60° |
-
-`protos/BlueRCCar.proto`에는 참조 이미지의 파란 차체, 전면 카메라,
-표시창, 이중 초음파 센서 외형을 단순 형상으로 반영했습니다.
-
-## GPIO와 가상 바퀴 매핑
-
-| 실제 모터 | 기존 GPIO | 가상 바퀴 |
-|---|---|---|
-| motor1 | 22, 27 | 앞 왼쪽 |
-| motor2 | 24, 23 | 뒤 왼쪽 |
-| motor3 | 21, 16 | 뒤 오른쪽 |
-| motor4 | 19, 26 | 앞 오른쪽 |
-
-`controllers/rc_car_controller/rc_car_controller.py`의 가상 GPIO 브리지는
-각 핀의 정방향·역방향 PWM 상태를 Webots 바퀴 회전 속도로 변환합니다.
-
-## 현재 3차선 타원형 트랙
-
-- 형태: 양쪽 반원 곡선과 위아래 직선으로 구성된 스타디움형 타원
-- 직선 구간 반길이: 약 1.8 m
-- 차선 경계 곡률 반지름: 1.0 / 1.6 / 2.2 / 2.8 m
-- 차로 수: 3개
-- 각 차로 폭: 약 0.6 m
-- 차량 시작점: 아래쪽 직선의 가운데 차로, 오른쪽 방향
-- 기본 PWM: 0.65
-- Webots 바퀴 최대 각속도: 16 rad/s
-
-## 보존 대상 GPIO 설정
-
-실제 로봇에서는 기존 `Lee/motor_module.py`의 설정을 그대로 사용합니다.
-
-```python
-motor1 = Motor(22, 27)
-motor2 = Motor(24, 23)
-motor3 = Motor(21, 16)
-motor4 = Motor(19, 26)
-```
-
-2026-09-01 실제 모터 단품 테스트에서 좌우 위치를 다시 확인했습니다.
-2026-09-02 실제 모터 단품 테스트에서 오른쪽 전후 위치를 다시 확인해
-`motor3 = 뒤 오른쪽`, `motor4 = 앞 오른쪽`으로 갱신했습니다.
-핀 번호와 모터 번호는 그대로 두고, 좌우 그룹은 `motor1/2 = left_wheels`,
-`motor3/4 = right_wheels`로 사용합니다.
-# Three-lane curvature dataset collection
-
-The dashed rectangular track has three collection worlds. Each starts the car
-on a different lane and records an expert label for that lane.
-
-| World | Lane | Corner radius | Curvature | Expert base PWM |
-| --- | --- | ---: | ---: | ---: |
-| `collect_rectangle_lane_1.wbt` | inside (1) | 0.8 m | 1.250 1/m | 0.34 |
-| `collect_rectangle_lane_2.wbt` | middle (2) | 1.4 m | 0.714 1/m | 0.42 |
-| `collect_rectangle_lane_3.wbt` | outside (3) | 2.0 m | 0.500 1/m | 0.48 |
-
-Open one world at a time in Webots. Recording starts automatically and writes
-camera images plus GPIO-equivalent left/right PWM labels under `dataset/runs`.
-The CSV also identifies `target_lane`, `corner_radius_m`, and
-`corner_curvature_1pm`, so the three runs can be balanced during training.
+이번 문서 정리에서는 기존 모델을 재학습하거나 과거 평가 수치를 새로 생성하지 않았습니다.
