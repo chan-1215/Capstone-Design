@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>도로 인식 모니터</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101214;color:#f3f4f5;font:16px system-ui,sans-serif;letter-spacing:0}
+header{height:54px;padding:7px 18px;background:#1b1f22;border-bottom:1px solid #353a3e;font-weight:700;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+[hidden]{display:none!important}#global-stop{width:40px;height:40px;min-height:40px;padding:10px;background:#a33237}
+main{max-width:1200px;margin:auto;padding:16px;display:grid;grid-template-columns:minmax(0,2fr) minmax(280px,1fr);gap:16px}
+.switch{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}button{background:#353c40;color:white;border:0;padding:10px 16px;cursor:pointer;min-height:42px;font:inherit}
+button[aria-selected=true]{background:#41714d}button:focus-visible,input:focus-visible{outline:2px solid #e6c55d;outline-offset:2px}
+.video{min-width:0}img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;background:#050505;border:1px solid #353a3e}
+aside{background:#1b1f22;border:1px solid #353a3e;padding:16px;border-radius:6px;align-self:start;min-width:0;position:sticky;top:70px;max-height:calc(100dvh - 86px);overflow-y:auto;scrollbar-gutter:stable}
+h2{font-size:16px;margin:0 0 14px}dl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:0}
+dt{color:#abb4b9}dd{margin:0;font-variant-numeric:tabular-nums;text-align:right;word-break:keep-all;overflow-wrap:anywhere}
+.settings{margin-top:18px;border-top:1px solid #353a3e;padding-top:16px}.setting{margin-top:16px}
+.setting label{display:flex;justify-content:space-between;gap:12px;color:#abb4b9}.setting input[type=range]{width:100%;accent-color:#41714d;margin-top:8px}
+output{color:#f3f4f5;font-variant-numeric:tabular-nums}.toggle{display:flex;align-items:center;justify-content:space-between;margin-top:16px;color:#abb4b9}
+input[type=checkbox]{accent-color:#41714d;width:20px;height:20px}.legend{display:flex;flex-wrap:wrap;gap:16px;padding:10px 0;color:#abb4b9;font-size:13px}
+.legend span:before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;background:var(--color)}
+#error{color:#ffb4ad;overflow-wrap:anywhere;margin:12px 0 0;font-size:14px}#error:empty{display:none}
+.drive dl{margin-top:14px}.drive-pad{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(3,48px);gap:6px;justify-content:center;margin-top:18px}
+.drive-pad button{padding:0;font-size:25px;touch-action:none;user-select:none}.drive-pad [data-key=w]{grid-column:2}.drive-pad [data-key=a]{grid-row:2;grid-column:1}.drive-pad [data-key=d]{grid-row:2;grid-column:3}.drive-pad [data-key=s]{grid-row:3;grid-column:2}
+.drive-stop{background:#a33237;grid-column:2;grid-row:2}.drive-pad button.pressed{background:#41714d}button:disabled{opacity:.4;cursor:not-allowed}
+#manual-error{color:#ffb4ad;font-size:14px;overflow-wrap:anywhere}#manual-error:empty{display:none}
+.icon-command{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+img.icon{width:18px;height:18px;aspect-ratio:auto;border:0;background:none;filter:invert(1)}
+.media-toolbar,.auto-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px}
+.media-toolbar output{font-size:14px}.recording{background:#a33237}.media-files{margin-top:12px;font-size:14px;color:#abb4b9}
+.media-files summary,.pilot-tuning summary{cursor:pointer}.storage-path{overflow-wrap:anywhere;font-family:monospace;font-size:12px}
+.media-files ul{list-style:none;padding:0;margin:8px 0}.media-files li{padding:6px 0;display:flex;gap:8px;align-items:center;min-width:0}
+.media-files a{color:#b7d9fb;overflow-wrap:anywhere;min-width:0}.media-files small{white-space:nowrap;color:#abb4b9}
+#capture-error,#auto-error{color:#ffb4ad;font-size:14px;overflow-wrap:anywhere}#capture-error:empty,#auto-error:empty{display:none}
+.auto-panel dl{margin:14px 0}.auto-actions button{flex:1;padding:10px}.auto-reference{width:100%}.pilot-tuning{margin-top:16px}
+.panel-details{margin-top:16px;border-top:1px solid #353a3e;padding-top:12px}.panel-details summary{cursor:pointer;color:#abb4b9}.panel-details dl{margin-top:14px}
+.control-tabs{display:flex;gap:4px;margin-bottom:14px}.control-tabs button{flex:1;padding:10px 8px}.control-panel{margin-top:0;border-top:0;padding-top:0}.control-panel .toggle:first-child{margin-top:0}
+.drive-summary{gap:8px}.drive-pad{grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,44px);margin-top:14px}
+.gesture-display{margin-top:18px}.gesture-display h2{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.gesture-display output{font-size:14px;font-weight:400;color:#abb4b9}
+.signal-screen{aspect-ratio:7/3;width:100%;position:relative;display:grid;place-items:center;background:#080a0b;border:1px solid #353a3e;border-radius:4px;overflow:hidden}
+.signal-screen img{width:100%;height:100%;aspect-ratio:7/3;object-fit:contain;border:0}.signal-screen span{color:#abb4b9;font-size:16px;text-align:center;padding:16px}
+@media(max-width:750px){main{grid-template-columns:1fr}.switch button{padding:9px 12px}aside{position:static;max-height:none}}
+@media(max-width:450px){.drive-summary{grid-template-columns:minmax(0,1fr) 50px minmax(0,1fr) 50px;font-size:13px;gap:8px}.drive-pad{grid-template-rows:repeat(3,40px)}}
+</style>
+<header>도로 인식 모니터{% if manual_options %}<button id="global-stop" class="icon-command" type="button" aria-label="전체 즉시 정지" title="전체 즉시 정지" hidden><img class="icon" src="/static/icons/square.svg" alt=""></button>{% endif %}</header>
+<main>
+<div class="video">
+<div class="switch" role="tablist" aria-label="카메라 보기">
+<button role="tab" aria-selected="true" data-view="processed">OpenCV</button>
+<button role="tab" aria-selected="false" data-view="raw">원본</button>
+<button role="tab" aria-selected="false" data-view="dashes">흰 점선</button>
+<button role="tab" aria-selected="false" data-view="yellow">노란 경계</button>
+<button role="tab" aria-selected="false" data-view="road">노면</button>
+{% if gesture_options %}<button role="tab" aria-selected="false" data-view="gesture">제스처</button>{% endif %}
+</div>
+<img id="video" src="/stream/processed" alt="카메라 인식 영상">
+{% if capture_options %}
+<div class="media-toolbar" aria-label="카메라 촬영">
+<button id="capture-photo" class="icon-command" type="button" title="사진 촬영"><img class="icon" src="/static/icons/camera.svg" alt="">사진 촬영</button>
+<button id="capture-video" class="icon-command" type="button" title="영상 녹화 시작"><img id="record-icon" class="icon" src="/static/icons/video.svg" alt=""><span id="record-label">녹화 시작</span></button>
+<output id="record-time">00:00</output><output id="capture-free">{{ capture_options.free_mib }} MiB</output>
+</div>
+<p id="capture-error" role="status"></p>
+{% endif %}
+<section class="gesture-display" aria-labelledby="display-title">
+<h2 id="display-title">디스플레이<output id="signal-state" aria-live="polite">대기</output></h2>
+<div id="pedestrian-display" class="signal-screen" data-state="unknown">
+<img id="pedestrian-signal" width="1050" height="450" alt="" hidden
+ data-go-src="{{ url_for('static', filename='signals/vehicle_go_red.gif') }}"
+ data-stop-src="{{ url_for('static', filename='signals/vehicle_stop_green.gif') }}">
+<span id="signal-placeholder">인식 대기</span>
+</div>
+</section>
+</div>
+<aside>
+{% if manual_options %}
+<div class="control-tabs" role="tablist" aria-label="주행 조작">
+<button id="manual-tab" type="button" role="tab" aria-selected="true" aria-controls="manual-panel" data-control-panel="manual-panel">수동주행</button>
+{% if pilot_options %}<button id="auto-tab" type="button" role="tab" aria-selected="false" aria-controls="auto-panel" tabindex="-1" data-control-panel="auto-panel">자율주행</button>{% endif %}
+</div>
+{% include 'manual_controls.html' %}
+{% endif %}
+{% if pilot_options %}
+<section id="auto-panel" class="auto-panel control-panel" role="tabpanel" aria-labelledby="auto-tab" hidden>
+<dl><dt>상태</dt><dd id="auto-state">대기</dd>
+<dt>중앙 경로</dt><dd id="auto-path">-</dd>
+<dt>경로 상태</dt><dd id="auto-path-detail">-</dd>
+<dt>전방 경로 방향</dt><dd id="auto-direction">-</dd>
+<dt>주행 준비</dt><dd id="auto-ready">-</dd>
+<dt>명령 조향</dt><dd id="auto-angle">0°</dd>
+<dt>명령 출력</dt><dd id="auto-output">0.000</dd>
+<dt>남은 시간</dt><dd id="auto-remaining">0.0초</dd></dl>
+<button id="auto-reference" class="icon-command auto-reference" type="button" title="정지 상태의 현재 경로를 중앙 기준으로 설정"><img class="icon" src="/static/icons/crosshair.svg" alt="">중앙 기준 설정</button>
+<div class="auto-actions">
+<button id="auto-start" class="icon-command" type="button" disabled><img class="icon" src="/static/icons/play.svg" alt="">자율 시작</button>
+<button id="auto-stop" class="icon-command drive-stop" type="button" title="즉시 정지"><img class="icon" src="/static/icons/square.svg" alt="">정지</button></div>
+<p id="auto-error" role="status"></p>
+<details class="panel-details"><summary>주행 설정 · 상세 수치</summary>
+<dl><dt>중앙 기준</dt><dd id="auto-reference-state">미설정</dd>
+<dt>중심 오차</dt><dd id="auto-error-value">-</dd>
+<dt>예상 조향</dt><dd id="auto-prediction">-</dd>
+<dt>출력 상태</dt><dd id="auto-speed-state">정지</dd></dl>
+<label class="toggle" for="auto-continuous">연속 주행<input id="auto-continuous" type="checkbox" {% if pilot_options.settings.continuous %}checked{% endif %}></label>
+<label class="toggle" for="auto-lap-mode">완주 우선<input id="auto-lap-mode" type="checkbox" {% if pilot_options.settings.lap_mode %}checked{% endif %}></label>
+<label class="toggle" for="auto-boundary-guidance">흰점·경계 조향<input id="auto-boundary-guidance" type="checkbox" {% if pilot_options.settings.boundary_guidance %}checked{% endif %}></label>
+<label class="toggle" for="auto-turn-recovery">짧은 커브 복구<input id="auto-turn-recovery" type="checkbox" {% if pilot_options.settings.turn_recovery %}checked{% endif %}></label>
+<label class="toggle" for="auto-crosswalk-gesture">횡단보도 · 제스처 연동<input id="auto-crosswalk-gesture" type="checkbox" {% if pilot_options.settings.crosswalk_gesture %}checked{% endif %} {% if not pilot_options.gesture_available %}disabled{% endif %}></label>
+<div class="setting"><label for="auto-duration">시험 시간<output id="auto-duration-value">1.0초</output></label><input id="auto-duration" type="range" min="0.5" max="3" step="0.5" value="{{ pilot_options.settings.duration }}" {% if pilot_options.settings.continuous %}disabled{% endif %}></div>
+<div class="setting"><label for="auto-speed">기준 출력<output id="auto-speed-value">0.26</output></label><input id="auto-speed" type="range" min="0.1" max="0.3" step="0.01" value="{{ pilot_options.settings.speed }}"></div>
+<div class="setting"><label for="auto-curve-scale">커브 출력 비율<output id="auto-curve-scale-value">{{ (pilot_options.settings.curve_scale * 100)|round|int }}%</output></label><input id="auto-curve-scale" type="range" min="0.75" max="1" step="0.05" value="{{ pilot_options.settings.curve_scale }}"></div>
+<details class="pilot-tuning"><summary>조향 설정</summary>
+<div class="setting"><label for="auto-kp">Kp<output id="auto-kp-value">60</output></label><input id="auto-kp" type="range" min="1" max="120" step="1" value="{{ pilot_options.settings.kp }}"></div>
+<div class="setting"><label for="auto-heading-gain">전방 방향 보정<output id="auto-heading-gain-value">0.8</output></label><input id="auto-heading-gain" type="range" min="0" max="2" step="0.1" value="{{ pilot_options.settings.heading_gain }}"></div>
+<div class="setting"><label for="auto-max-left-angle">왼쪽 조향 제한<output id="auto-max-left-angle-value">-{{ pilot_options.settings.max_left_angle }}°</output></label><input id="auto-max-left-angle" type="range" min="5" max="{{ [105, -manual_options.a_angle]|min }}" step="1" value="{{ pilot_options.settings.max_left_angle }}"></div>
+<div class="setting"><label for="auto-max-right-angle">오른쪽 조향 제한<output id="auto-max-right-angle-value">+{{ pilot_options.settings.max_right_angle }}°</output></label><input id="auto-max-right-angle" type="range" min="5" max="{{ [85, manual_options.d_angle]|min }}" step="1" value="{{ pilot_options.settings.max_right_angle }}"></div>
+<div class="setting"><label for="auto-rate">조향 변화율<output id="auto-rate-value">60°/s</output></label><input id="auto-rate" type="range" min="10" max="120" step="5" value="{{ pilot_options.settings.rate }}"></div></details>
+</details>
+</section>
+{% endif %}
+<details class="panel-details" aria-label="횡단보도와 제스처">
+<summary>횡단보도 · 제스처</summary>
+<dl><dt>횡단보도</dt><dd id="crosswalk-state">-</dd>
+<dt>흰 줄 후보</dt><dd id="crosswalk-count">0개</dd>
+<dt>연동 상태</dt><dd id="interaction-state">비활성</dd>
+{% if gesture_options %}<dt>제스처 엔진</dt><dd id="gesture-engine">준비 중</dd>
+<dt>손 검출</dt><dd id="gesture-hand">-</dd>
+<dt>현재 판정</dt><dd id="gesture-decision">-</dd>
+<dt>제스처 처리</dt><dd id="gesture-ms">-</dd>
+<dt>제스처 갱신</dt><dd id="gesture-fps">0.0 FPS</dd>
+<dt>손 프레임</dt><dd id="gesture-hand-frames">0 / 30</dd>
+<dt>출발 확인</dt><dd id="gesture-go-count">0</dd>{% endif %}</dl>
+<p id="gesture-error" role="status" style="color:#ffb4ad;overflow-wrap:anywhere"></p>
+</details>
+<details class="panel-details"><summary>카메라 인식 · 통계</summary>
+<dl><dt>카메라</dt><dd id="camera">연결 중</dd>
+<dt>인식 상태</dt><dd id="status">-</dd>
+<dt>노란 경계</dt><dd id="boundary">-</dd>
+<dt>흰 점선 후보</dt><dd id="dashes">-</dd>
+<dt>카메라 수신</dt><dd id="camera-fps">-</dd>
+<dt>인식 갱신</dt><dd id="fps">-</dd>
+<dt>미리보기 상한</dt><dd id="preview-fps">-</dd>
+<dt>인식 처리</dt><dd id="latency">-</dd>
+<dt>처리 후 경과</dt><dd id="age">-</dd>
+<dt>입력 수신 후 경과</dt><dd id="input-age">-</dd>
+<dt>시험 상태</dt><dd id="test-mode">{{ '수동 대기' if manual_options else '인식만' }}</dd></dl>
+<div class="legend"><span style="--color:#ffd700">노란 경계 후보</span><span id="dashLegend" style="--color:#00ffff">흰 점선 후보</span></div>
+</details>
+<details class="panel-details"><summary>검출 설정</summary>
+<div class="setting"><label for="roi">상단 제외<output id="roi-value">20%</output></label><input id="roi" type="range" min="0" max="80" step="1" value="20"></div>
+<div class="setting"><label for="white">흰색 밝기 기준<output id="white-value">175</output></label><input id="white" type="range" min="100" max="255" step="1" value="175"></div>
+<div class="setting"><label for="yellow">노란색 채도 기준<output id="yellow-value">55</output></label><input id="yellow" type="range" min="20" max="200" step="1" value="55"></div>
+<label class="toggle" for="rotation">180° 회전<input id="rotation" type="checkbox" checked></label>
+</details>
+{% if capture_options %}
+<details class="panel-details media-files"><summary>저장 파일</summary>
+<p id="capture-directory" class="storage-path">{{ capture_options.directory }}</p><ul id="capture-files"></ul></details>
+{% endif %}
+<details class="panel-details media-files"><summary>실행 정보 · Python {{ runtime_info.python_version }} · {{ 'GPIO 준비' if runtime_info.hardware_enabled else 'GPIO 미사용' }}</summary>
+<p class="storage-path">{{ runtime_info.entrypoint }}</p>
+<p class="storage-path">PID {{ runtime_info.pid }} | {{ runtime_info.interpreter }}</p></details>
+<p id="error" role="status"></p>
+</aside>
+</main>
+<script src="{{ url_for('static', filename='preview.js') }}"></script>
+<script src="{{ url_for('static', filename='interaction.js') }}"></script>
+<script src="{{ url_for('static', filename='control_panels.js') }}"></script>
+<script>window.gestureDisplayOptions={enabled:{{ (gesture_options is not none)|tojson }}};</script>
+<script src="{{ url_for('static', filename='gesture_display.js') }}"></script>
+<script>
+const get=id=>document.getElementById(id), controls=['roi','white','yellow','rotation'];
+let editing=false, pending=false, offline=false;
+const states={no_yellow_boundary:'노란 경계 미검출',road_region_unconfirmed:'노면 영역 미확인',road_only:'노면 검출',markings_detected:'흰 표시 후보 검출'};
+for(const tab of document.querySelectorAll('[data-view]'))tab.addEventListener('click',()=>{
+window.trackPreview.select(tab.dataset.view);
+get('dashLegend').style.setProperty('--color',tab.dataset.view==='dashes'?'#ffffff':'#00ffff');
+for(const other of document.querySelectorAll('[data-view]'))other.setAttribute('aria-selected',String(other===tab));});
+function values(){get('roi-value').textContent=get('roi').value+'%';get('white-value').textContent=get('white').value;get('yellow-value').textContent=get('yellow').value;}
+async function save(){if(pending)return;pending=true;editing=true;
+try{const r=await fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({roi_top:Number(get('roi').value)/100,white_min_value:Number(get('white').value),yellow_min_saturation:Number(get('yellow').value),rotation:get('rotation').checked?180:0})});
+const s=await r.json();if(!r.ok)throw Error(s.error||'설정 변경 실패');get('error').textContent='';}
+catch(e){get('error').textContent=e.message;}finally{pending=false;editing=false;}}
+for(const id of controls){get(id).addEventListener('input',()=>{editing=true;values()});get(id).addEventListener('change',save);}
+async function refresh(){try{const r=await fetch('/status',{cache:'no-store',signal:AbortSignal.timeout(3000)});if(!r.ok)throw Error('상태 조회 실패');const s=await r.json();
+get('camera').textContent=s.camera_online?'온라인':'오프라인';get('status').textContent=states[s.status]||'대기';
+get('boundary').textContent=s.yellow_pixels>0?'후보 검출':'-';get('dashes').textContent=(s.dash_candidate_count??0)+'개';
+get('fps').textContent=s.fps.toFixed(1)+' FPS';get('latency').textContent=(s.processing_ms??0).toFixed(1)+' ms';get('age').textContent=s.frame_age_seconds===null?'-':(s.frame_age_seconds*1000).toFixed(0)+' ms';
+get('input-age').textContent=s.source_age_seconds==null?'-':(s.source_age_seconds*1000).toFixed(0)+' ms';
+get('camera-fps').textContent=s.camera_delivery?.delivery_fps==null?'-':s.camera_delivery.delivery_fps.toFixed(1)+' FPS';get('preview-fps').textContent=(s.preview_fps_limit??30)+' FPS';
+if(!editing){get('roi').value=Math.round(s.settings.roi_top*100);get('white').value=s.settings.white_min_value;get('yellow').value=s.settings.yellow_min_saturation;get('rotation').checked=s.settings.rotation===180;values();}
+get('error').textContent=s.error||'';if(offline&&s.camera_online)window.trackPreview.reconnect();offline=!s.camera_online;
+window.dispatchEvent(new CustomEvent('robot-status',{detail:s}));
+}catch(e){get('camera').textContent='연결 끊김';get('error').textContent=e.message;offline=true;}
+finally{setTimeout(refresh,700);}}
+values();refresh();
+</script>
+{% if manual_options %}
+<script>window.manualOptions={{ manual_options|tojson }};</script>
+<script src="{{ url_for('static', filename='manual.js') }}"></script>
+<script src="{{ url_for('static', filename='safety.js') }}"></script>
+{% endif %}
+{% if pilot_options %}
+<script>window.pilotOptions={{ pilot_options|tojson }};</script>
+<script src="{{ url_for('static', filename='pilot.js') }}"></script>
+{% endif %}
+{% if capture_options %}
+<script>window.captureOptions={{ capture_options|tojson }};</script>
+<script src="{{ url_for('static', filename='capture.js') }}"></script>
+{% endif %}
+</html>

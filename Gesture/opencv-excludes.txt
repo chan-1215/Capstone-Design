@@ -1,0 +1,3 @@
+# MediaPipe's opencv-contrib-python supplies cv2, including the GUI.
+# Do not install a second wheel over the same cv2 package.
+opencv-python

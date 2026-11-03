@@ -1,0 +1,28 @@
+<section id="manual-panel" class="drive control-panel" role="tabpanel" aria-labelledby="manual-tab">
+<dl class="drive-summary">
+<dt>상태</dt><dd id="manual-state">입력 대기</dd>
+<dt>조향 명령</dt><dd id="steer-angle">0°</dd>
+<dt>왼쪽 출력</dt><dd id="motor-left-output">0.000</dd>
+<dt>오른쪽 출력</dt><dd id="motor-right-output">0.000</dd>
+</dl>
+<div class="drive-pad">
+<button type="button" data-key="w" title="전진 (W)" aria-label="전진" disabled>&#8593;</button>
+<button type="button" data-key="a" title="A · -{{ manual_options.left_angle }}°" aria-label="A 조향" disabled>&#8592;</button>
+<button type="button" id="manual-stop" class="drive-stop" title="정지 (Space / Escape)" aria-label="즉시 정지">&#9632;</button>
+<button type="button" data-key="d" title="D · +{{ manual_options.right_angle }}°" aria-label="D 조향" disabled>&#8594;</button>
+<button type="button" data-key="s" title="후진 (S)" aria-label="후진" disabled>&#8595;</button>
+</div>
+<div class="setting"><label for="drive-speed">속도<output id="drive-speed-value">{{ '%.2f'|format(manual_options.speed) }}</output></label><input id="drive-speed" type="range" min="0" max="{{ manual_options.max_speed }}" step="0.01" value="{{ manual_options.speed }}" {% if not manual_options.motors_enabled %}disabled{% endif %}></div>
+<details class="panel-details"><summary>수동 조향 설정</summary>
+<div class="setting"><label for="manual-left-angle">왼쪽 A<output id="manual-left-angle-value">-{{ manual_options.left_angle }}°</output></label><input id="manual-left-angle" type="range" min="0" max="{{ -manual_options.a_angle }}" step="1" value="{{ manual_options.left_angle }}"></div>
+<div class="setting"><label for="manual-right-angle">오른쪽 D<output id="manual-right-angle-value">+{{ manual_options.right_angle }}°</output></label><input id="manual-right-angle" type="range" min="0" max="{{ manual_options.d_angle }}" step="1" value="{{ manual_options.right_angle }}"></div>
+</details>
+<p id="manual-error" role="status"></p>
+<details class="panel-details"><summary>모터 보정 · 장치 상태</summary>
+<div class="setting"><label for="motor1-scale">왼쪽 모터 보정<output id="motor1-scale-value">1.00x</output></label><input id="motor1-scale" type="range" min="0" max="1.5" step="0.01" value="1" {% if not manual_options.motors_enabled %}disabled{% endif %}></div>
+<div class="setting"><label for="motor2-scale">오른쪽 모터 보정<output id="motor2-scale-value">1.00x</output></label><input id="motor2-scale" type="range" min="0" max="1.5" step="0.01" value="1" {% if not manual_options.motors_enabled %}disabled{% endif %}></div>
+<dl><dt>DC 모터</dt><dd id="motor-state">{{ '준비' if manual_options.motors_enabled else '비활성' }}</dd>
+<dt>출력 갱신 횟수</dt><dd id="motor-write-count">0</dd>
+<dt>서보 신호</dt><dd id="servo-signal">꺼짐</dd></dl>
+</details>
+</section>

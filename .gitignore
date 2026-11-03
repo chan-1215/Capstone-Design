@@ -7,3 +7,14 @@ webots_smoke_*.log
 # Raw Webots captures are kept locally because they contain more than 200,000 files.
 Dataset Project/dataset/runs/
 
+# Canonical layout and local runtime artifacts.
+Auto Driving/Without Steering/simulation/dataset/runs/
+Auto Driving/With Steering/captures/
+Auto Driving/With Steering/outputs/
+Gesture/outputs/
+Gesture/runtime_logs/
+Gesture/models/yolov8n*.pt
+.env
+*.pid
+.lgd-*
+

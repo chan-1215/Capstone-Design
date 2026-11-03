@@ -1,0 +1,17 @@
+{
+  "source_records": 187,
+  "data_files_preserved": 9002,
+  "python_files_parsed": 170,
+  "shared_models": "single copy",
+  "dc_wiring": "unchanged",
+  "python_tests": {
+    "servo_runtime": 327,
+    "shared_gesture": 16,
+    "paper_track_with_team_calibration": 103,
+    "simulation": 22,
+    "total": 468
+  },
+  "node_ui_suites": 7,
+  "entry_document_broken_links": 0,
+  "new_layout_pi_deployed": false
+}

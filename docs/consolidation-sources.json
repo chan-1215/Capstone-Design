@@ -1,0 +1,1131 @@
+[
+  {
+    "source": "Auto Driving 20261018/.gitignore",
+    "destination": "Auto Driving/With Steering/.gitignore",
+    "sha256": "b607be86781776a4c3ca3bd8345d570423c96fd84995fcb4b58ed3f3fcdd1b05",
+    "integrated_sha256": "b607be86781776a4c3ca3bd8345d570423c96fd84995fcb4b58ed3f3fcdd1b05"
+  },
+  {
+    "source": "Auto Driving 20261018/.python-version",
+    "destination": "Auto Driving/With Steering/.python-version",
+    "sha256": "49a506dd32096b010d75205acf3430c9ae6c40351888129499e5a5e487126c93",
+    "integrated_sha256": "49a506dd32096b010d75205acf3430c9ae6c40351888129499e5a5e487126c93"
+  },
+  {
+    "source": "Auto Driving 20261018/AGENTS.md",
+    "destination": "Auto Driving/With Steering/history/AGENTS_before_consolidation.md",
+    "sha256": "4f56cecf1744f150b70357361c5e404f830e1b812bb1534c6c4b2e189a56887e",
+    "integrated_sha256": "4f56cecf1744f150b70357361c5e404f830e1b812bb1534c6c4b2e189a56887e"
+  },
+  {
+    "source": "Auto Driving 20261018/analyze_photos.py",
+    "destination": "Auto Driving/With Steering/analyze_photos.py",
+    "sha256": "ef602f2d89375f250ccbed99cd922ffc4e614c1af966456707f5162cf2f54bba",
+    "integrated_sha256": "ef602f2d89375f250ccbed99cd922ffc4e614c1af966456707f5162cf2f54bba"
+  },
+  {
+    "source": "Auto Driving 20261018/autonomous.py",
+    "destination": "Auto Driving/With Steering/autonomous.py",
+    "sha256": "063cdb48e4a1bdc3f49e8710b86ffc7a7988e7250ad97bf9e6c4bdda5a9910b4",
+    "integrated_sha256": "063cdb48e4a1bdc3f49e8710b86ffc7a7988e7250ad97bf9e6c4bdda5a9910b4"
+  },
+  {
+    "source": "Auto Driving 20261018/boundary_guidance.py",
+    "destination": "Auto Driving/With Steering/boundary_guidance.py",
+    "sha256": "bbdbd2341f9637bdd36b7c379796602bd6f247374a97d505b0f9698ae8b4b478",
+    "integrated_sha256": "bbdbd2341f9637bdd36b7c379796602bd6f247374a97d505b0f9698ae8b4b478"
+  },
+  {
+    "source": "Auto Driving 20261018/camera_source.py",
+    "destination": "Auto Driving/With Steering/camera_source.py",
+    "sha256": "3a41ebd6e7de065cc42db4af32456b59131f52b6be65f524c60299cb8514d42e",
+    "integrated_sha256": "3a41ebd6e7de065cc42db4af32456b59131f52b6be65f524c60299cb8514d42e"
+  },
+  {
+    "source": "Auto Driving 20261018/check_runtime.py",
+    "destination": "Auto Driving/With Steering/check_runtime.py",
+    "sha256": "7e154160e3bd83ae3537d4f9b747f387e23c386a27cf645b4558ee71f6782797",
+    "integrated_sha256": "7e154160e3bd83ae3537d4f9b747f387e23c386a27cf645b4558ee71f6782797"
+  },
+  {
+    "source": "Auto Driving 20261018/compare_vision.py",
+    "destination": "Auto Driving/With Steering/compare_vision.py",
+    "sha256": "190bd6e8fb84aa8751b1f58a28049a3c1055b03e8760e1a60c1cdd31ffbeff0f",
+    "integrated_sha256": "190bd6e8fb84aa8751b1f58a28049a3c1055b03e8760e1a60c1cdd31ffbeff0f"
+  },
+  {
+    "source": "Auto Driving 20261018/COMPARISON_RETEST_20261020.md",
+    "destination": "Auto Driving/With Steering/COMPARISON_RETEST_20261020.md",
+    "sha256": "b3fc0a9f465faa14dc7599bb5d334cc1faa30688a2da9ac7192ebd2efd5ce1f1",
+    "integrated_sha256": "b3fc0a9f465faa14dc7599bb5d334cc1faa30688a2da9ac7192ebd2efd5ce1f1"
+  },
+  {
+    "source": "Auto Driving 20261018/COMPARISON_RUN_20261020.md",
+    "destination": "Auto Driving/With Steering/COMPARISON_RUN_20261020.md",
+    "sha256": "e32a2fd662f777127389546db908f0e6d9fad583ab0525388e2440aefb106477",
+    "integrated_sha256": "e32a2fd662f777127389546db908f0e6d9fad583ab0525388e2440aefb106477"
+  },
+  {
+    "source": "Auto Driving 20261018/crosswalk.py",
+    "destination": "Auto Driving/With Steering/crosswalk.py",
+    "sha256": "351fea2e02f59e74f6d6d1665fca5909f067bdcfa7a26b07b7a22d9c0e7f1847",
+    "integrated_sha256": "351fea2e02f59e74f6d6d1665fca5909f067bdcfa7a26b07b7a22d9c0e7f1847"
+  },
+  {
+    "source": "Auto Driving 20261018/gesture_adapter.py",
+    "destination": "Gesture/worker.py",
+    "sha256": "919240531dece443e96134ba2d2ddd90075b51cfbd289ed8a496cbb462649724",
+    "integrated_sha256": "017f1b656575abe89566986d8c3bca61ef68cc36322dd8947bbf780b2a05d4e9"
+  },
+  {
+    "source": "Auto Driving 20261018/HANDOFF.md",
+    "destination": "Auto Driving/With Steering/history/HANDOFF_before_consolidation.md",
+    "sha256": "5affca0b3d602b4e43e26db2d44943dcf13ada7cc2ea2e2ded8aa5d780233f56",
+    "integrated_sha256": "5affca0b3d602b4e43e26db2d44943dcf13ada7cc2ea2e2ded8aa5d780233f56"
+  },
+  {
+    "source": "Auto Driving 20261018/hough_vision.py",
+    "destination": "Auto Driving/With Steering/hough_vision.py",
+    "sha256": "ed2a8dfb154c07504a1c68ec07c89934768a58b8f5a7dae4ae7c9799a0690b6a",
+    "integrated_sha256": "ed2a8dfb154c07504a1c68ec07c89934768a58b8f5a7dae4ae7c9799a0690b6a"
+  },
+  {
+    "source": "Auto Driving 20261018/interaction.py",
+    "destination": "Auto Driving/With Steering/interaction.py",
+    "sha256": "a2984893c3dadab44b68217a6f391f4c088d9407dd2112e001138238802a2ddd",
+    "integrated_sha256": "a2984893c3dadab44b68217a6f391f4c088d9407dd2112e001138238802a2ddd"
+  },
+  {
+    "source": "Auto Driving 20261018/lane_path.py",
+    "destination": "Auto Driving/With Steering/lane_path.py",
+    "sha256": "f710bf836ebc8b37a9441b67264e92f738523eb7d408ad606be88712bd2bb9ce",
+    "integrated_sha256": "f710bf836ebc8b37a9441b67264e92f738523eb7d408ad606be88712bd2bb9ce"
+  },
+  {
+    "source": "Auto Driving 20261018/manual_drive.py",
+    "destination": "Auto Driving/With Steering/manual_drive.py",
+    "sha256": "2865e5eab63e1dc76fd099253c1f76b3fe9bc76015482d490e80c5ed1f96e40b",
+    "integrated_sha256": "2865e5eab63e1dc76fd099253c1f76b3fe9bc76015482d490e80c5ed1f96e40b"
+  },
+  {
+    "source": "Auto Driving 20261018/media_capture.py",
+    "destination": "Auto Driving/With Steering/media_capture.py",
+    "sha256": "ce49caceb54259b3e24beb65b27b928cbee54368916c7272fcd79234d5ae1a63",
+    "integrated_sha256": "ce49caceb54259b3e24beb65b27b928cbee54368916c7272fcd79234d5ae1a63"
+  },
+  {
+    "source": "Auto Driving 20261018/NEXT_SESSION.md",
+    "destination": "Auto Driving/With Steering/NEXT_SESSION.md",
+    "sha256": "20a945d1b5c09154ea158fe89dd543ea9bd3e9e1be76a29d93dde68e074c241a",
+    "integrated_sha256": "20a945d1b5c09154ea158fe89dd543ea9bd3e9e1be76a29d93dde68e074c241a"
+  },
+  {
+    "source": "Auto Driving 20261018/preview.py",
+    "destination": "Auto Driving/With Steering/preview.py",
+    "sha256": "406383bbcfc0ae21812b8df7dd08d9e8238e4cff6990778abb09104f4e20abd7",
+    "integrated_sha256": "406383bbcfc0ae21812b8df7dd08d9e8238e4cff6990778abb09104f4e20abd7"
+  },
+  {
+    "source": "Auto Driving 20261018/README.md",
+    "destination": "Auto Driving/With Steering/history/README_before_consolidation.md",
+    "sha256": "1a6a084e3a0cfcbb4edbba339380fef167a3a97d5de75f6ea6dcabb5001ea148",
+    "integrated_sha256": "1a6a084e3a0cfcbb4edbba339380fef167a3a97d5de75f6ea6dcabb5001ea148"
+  },
+  {
+    "source": "Auto Driving 20261018/replay_path.py",
+    "destination": "Auto Driving/With Steering/replay_path.py",
+    "sha256": "2eecfe1e5e74837a972fae102a104b76d5fbc95ad8157b773cf6ad32d2c44c96",
+    "integrated_sha256": "2eecfe1e5e74837a972fae102a104b76d5fbc95ad8157b773cf6ad32d2c44c96"
+  },
+  {
+    "source": "Auto Driving 20261018/requirements-core-pi311.txt",
+    "destination": "Auto Driving/With Steering/requirements-core-pi311.txt",
+    "sha256": "f6d70480d2c7b700a8684b4f0b6665b4321781717ee4cf4ce938cf3ffbdc6288",
+    "integrated_sha256": "f6d70480d2c7b700a8684b4f0b6665b4321781717ee4cf4ce938cf3ffbdc6288"
+  },
+  {
+    "source": "Auto Driving 20261018/requirements-core.in",
+    "destination": "Auto Driving/With Steering/requirements-core.in",
+    "sha256": "e3ace4fe9f02014764a9b496b3e76c22558877b89ef1b2422a827deea41d7320",
+    "integrated_sha256": "e3ace4fe9f02014764a9b496b3e76c22558877b89ef1b2422a827deea41d7320"
+  },
+  {
+    "source": "Auto Driving 20261018/requirements-gesture-pi311.txt",
+    "destination": "Auto Driving/With Steering/requirements-gesture-pi311.txt",
+    "sha256": "d10607cf5bf7669b53f01c353e0b28bdfe8f5fe57ae2d59275b957a65e7154ac",
+    "integrated_sha256": "d10607cf5bf7669b53f01c353e0b28bdfe8f5fe57ae2d59275b957a65e7154ac"
+  },
+  {
+    "source": "Auto Driving 20261018/requirements-gesture.in",
+    "destination": "Auto Driving/With Steering/requirements-gesture.in",
+    "sha256": "b8a4a8b842ba23792e37527a13c4ff621673c590460d5eebdab25dafc50a2d86",
+    "integrated_sha256": "b8a4a8b842ba23792e37527a13c4ff621673c590460d5eebdab25dafc50a2d86"
+  },
+  {
+    "source": "Auto Driving 20261018/supervised_lap_client.py",
+    "destination": "Auto Driving/With Steering/supervised_lap_client.py",
+    "sha256": "4778e5fa0d031063e76a34a4f219c1616c9c0f50856cd91b69298187c7b36839",
+    "integrated_sha256": "4778e5fa0d031063e76a34a4f219c1616c9c0f50856cd91b69298187c7b36839"
+  },
+  {
+    "source": "Auto Driving 20261018/test_boundary_guidance.py",
+    "destination": "Auto Driving/With Steering/test_boundary_guidance.py",
+    "sha256": "25ba3519647f409fe472f4d6f4586393df16b952ba6dd9fdffae3a6bb55820bc",
+    "integrated_sha256": "25ba3519647f409fe472f4d6f4586393df16b952ba6dd9fdffae3a6bb55820bc"
+  },
+  {
+    "source": "Auto Driving 20261018/test_camera_source.py",
+    "destination": "Auto Driving/With Steering/test_camera_source.py",
+    "sha256": "b26da549db274afe64a8ddf4d6301c2b93f31578ec00999558a5d656f1d3cef5",
+    "integrated_sha256": "b26da549db274afe64a8ddf4d6301c2b93f31578ec00999558a5d656f1d3cef5"
+  },
+  {
+    "source": "Auto Driving 20261018/test_check_runtime.py",
+    "destination": "Auto Driving/With Steering/test_check_runtime.py",
+    "sha256": "952af1c95abb262e24f6a6bfb4c0f6ee6ad13fec4802480aff8a383fe3d0f52f",
+    "integrated_sha256": "952af1c95abb262e24f6a6bfb4c0f6ee6ad13fec4802480aff8a383fe3d0f52f"
+  },
+  {
+    "source": "Auto Driving 20261018/test_compare_vision.py",
+    "destination": "Auto Driving/With Steering/test_compare_vision.py",
+    "sha256": "b732be867be62960c8def86968e4e04ee84472802c8181f28c5dbd5605fceedd",
+    "integrated_sha256": "b732be867be62960c8def86968e4e04ee84472802c8181f28c5dbd5605fceedd"
+  },
+  {
+    "source": "Auto Driving 20261018/test_control_display.py",
+    "destination": "Auto Driving/With Steering/test_control_display.py",
+    "sha256": "8dd76336b24c7c7db4023454ccb37a160bfdd05c5e1038551992a6cee74e0b48",
+    "integrated_sha256": "8dd76336b24c7c7db4023454ccb37a160bfdd05c5e1038551992a6cee74e0b48"
+  },
+  {
+    "source": "Auto Driving 20261018/test_control_panels.cjs",
+    "destination": "Auto Driving/With Steering/test_control_panels.cjs",
+    "sha256": "ef3ec915c28bd7d40f161f6ba19faa6edfe1321bfe373b9fd25423493fd7bb79",
+    "integrated_sha256": "ef3ec915c28bd7d40f161f6ba19faa6edfe1321bfe373b9fd25423493fd7bb79"
+  },
+  {
+    "source": "Auto Driving 20261018/test_curve_path.py",
+    "destination": "Auto Driving/With Steering/test_curve_path.py",
+    "sha256": "9b9a59a9865cbfafceca75e98574bac69f781a949390a133356460c75b588695",
+    "integrated_sha256": "9b9a59a9865cbfafceca75e98574bac69f781a949390a133356460c75b588695"
+  },
+  {
+    "source": "Auto Driving 20261018/test_gesture_adapter.py",
+    "destination": "Gesture/test_worker.py",
+    "sha256": "4d22f45ccdbf25a2829e2e0f0b6a551ace26ad7df681a69f51bc6685928b7986",
+    "integrated_sha256": "150f5c6e467bf78d8e2ebaa4d1bf331e9354b75772267a43c5120820b8d33ef9"
+  },
+  {
+    "source": "Auto Driving 20261018/test_gesture_display.py",
+    "destination": "Auto Driving/With Steering/test_gesture_display.py",
+    "sha256": "284549e52f2c0d57944d752361bc4b6b898dda7a183ab8a9b3baed6f910dce51",
+    "integrated_sha256": "284549e52f2c0d57944d752361bc4b6b898dda7a183ab8a9b3baed6f910dce51"
+  },
+  {
+    "source": "Auto Driving 20261018/test_gesture_display_ui.cjs",
+    "destination": "Auto Driving/With Steering/test_gesture_display_ui.cjs",
+    "sha256": "10b47aa8366303837dc5d10932c694c4c31cf14d724fdb9986e0a319ae9ed3aa",
+    "integrated_sha256": "10b47aa8366303837dc5d10932c694c4c31cf14d724fdb9986e0a319ae9ed3aa"
+  },
+  {
+    "source": "Auto Driving 20261018/test_hough_vision.py",
+    "destination": "Auto Driving/With Steering/test_hough_vision.py",
+    "sha256": "6ec05bae11b5f276af8a6f91fa96a0a07723df8c759f7bce3e6978eabd25998d",
+    "integrated_sha256": "6ec05bae11b5f276af8a6f91fa96a0a07723df8c759f7bce3e6978eabd25998d"
+  },
+  {
+    "source": "Auto Driving 20261018/test_integration_policy.py",
+    "destination": "Auto Driving/With Steering/test_integration_policy.py",
+    "sha256": "b8a0a0d2e9a2a0bdcf0403313e3c7c66b7d3ec88f6c0bbcaf28c003cf3706859",
+    "integrated_sha256": "b8a0a0d2e9a2a0bdcf0403313e3c7c66b7d3ec88f6c0bbcaf28c003cf3706859"
+  },
+  {
+    "source": "Auto Driving 20261018/test_interaction_ui.cjs",
+    "destination": "Auto Driving/With Steering/test_interaction_ui.cjs",
+    "sha256": "193a22e55f9fc183b7f1d54588d55168551a8c0e4c33ef825cb73699b4885321",
+    "integrated_sha256": "193a22e55f9fc183b7f1d54588d55168551a8c0e4c33ef825cb73699b4885321"
+  },
+  {
+    "source": "Auto Driving 20261018/test_lap_mode.py",
+    "destination": "Auto Driving/With Steering/test_lap_mode.py",
+    "sha256": "fd517f5a9c67f6070ab8ef4d59a911aa419b00f897229f16e970ac25e1f73386",
+    "integrated_sha256": "fd517f5a9c67f6070ab8ef4d59a911aa419b00f897229f16e970ac25e1f73386"
+  },
+  {
+    "source": "Auto Driving 20261018/test_manual_drive.py",
+    "destination": "Auto Driving/With Steering/test_manual_drive.py",
+    "sha256": "41e7fda2ec37dc06aebb6190dbf537b04c4c93263555930c536f7971dc111eff",
+    "integrated_sha256": "41e7fda2ec37dc06aebb6190dbf537b04c4c93263555930c536f7971dc111eff"
+  },
+  {
+    "source": "Auto Driving 20261018/test_manual_ui.cjs",
+    "destination": "Auto Driving/With Steering/test_manual_ui.cjs",
+    "sha256": "e70e6bb80ca1ad21b71611402e48f5e3def713f80e5bdaa01858225280b9222b",
+    "integrated_sha256": "e70e6bb80ca1ad21b71611402e48f5e3def713f80e5bdaa01858225280b9222b"
+  },
+  {
+    "source": "Auto Driving 20261018/test_media_capture.py",
+    "destination": "Auto Driving/With Steering/test_media_capture.py",
+    "sha256": "7bec379defa9024837f36a69465d450322ccf8fd353574a0a42e1ce7bb892844",
+    "integrated_sha256": "7bec379defa9024837f36a69465d450322ccf8fd353574a0a42e1ce7bb892844"
+  },
+  {
+    "source": "Auto Driving 20261018/test_pilot.py",
+    "destination": "Auto Driving/With Steering/test_pilot.py",
+    "sha256": "e85693d432a3d205b23494cdd70e70c7ffae48d9cef01880953e8c1cd3cad03a",
+    "integrated_sha256": "e85693d432a3d205b23494cdd70e70c7ffae48d9cef01880953e8c1cd3cad03a"
+  },
+  {
+    "source": "Auto Driving 20261018/test_pilot_integration.py",
+    "destination": "Auto Driving/With Steering/test_pilot_integration.py",
+    "sha256": "11ff95a515b216844ab969ec90c343c8bcefef9da4bf6c73202b41c8a9949cab",
+    "integrated_sha256": "11ff95a515b216844ab969ec90c343c8bcefef9da4bf6c73202b41c8a9949cab"
+  },
+  {
+    "source": "Auto Driving 20261018/test_pilot_ui.cjs",
+    "destination": "Auto Driving/With Steering/test_pilot_ui.cjs",
+    "sha256": "20632dd5a22d6f268b1a62d4482672ede4cbbbe9eb637bde5bc01e299970cfeb",
+    "integrated_sha256": "20632dd5a22d6f268b1a62d4482672ede4cbbbe9eb637bde5bc01e299970cfeb"
+  },
+  {
+    "source": "Auto Driving 20261018/test_pipeline_end_to_end.py",
+    "destination": "Auto Driving/With Steering/test_pipeline_end_to_end.py",
+    "sha256": "03a2079e9a06b9098aa02ccd778b869c2bd0e8f437eedb4c195e39b265efb001",
+    "integrated_sha256": "03a2079e9a06b9098aa02ccd778b869c2bd0e8f437eedb4c195e39b265efb001"
+  },
+  {
+    "source": "Auto Driving 20261018/test_preview_ui.cjs",
+    "destination": "Auto Driving/With Steering/test_preview_ui.cjs",
+    "sha256": "53975d17408672750b35652ef14066af4246ac5a2348ad298a1470d9876afbcd",
+    "integrated_sha256": "53975d17408672750b35652ef14066af4246ac5a2348ad298a1470d9876afbcd"
+  },
+  {
+    "source": "Auto Driving 20261018/test_replay_path.py",
+    "destination": "Auto Driving/With Steering/test_replay_path.py",
+    "sha256": "909ba082376e0adf9097799bc7bfe594120bcfc7e38b62d348e042ac6d604dca",
+    "integrated_sha256": "909ba082376e0adf9097799bc7bfe594120bcfc7e38b62d348e042ac6d604dca"
+  },
+  {
+    "source": "Auto Driving 20261018/test_safety_ui.cjs",
+    "destination": "Auto Driving/With Steering/test_safety_ui.cjs",
+    "sha256": "291f6b1d92c021d30b829fc33bf2d3bf67140c43ea5c5d8e8ae6c5c7caabffea",
+    "integrated_sha256": "291f6b1d92c021d30b829fc33bf2d3bf67140c43ea5c5d8e8ae6c5c7caabffea"
+  },
+  {
+    "source": "Auto Driving 20261018/test_supervised_lap_client.py",
+    "destination": "Auto Driving/With Steering/test_supervised_lap_client.py",
+    "sha256": "189f9acefe72b580dd7cf81c5ee0e3c98e60d2688e2b62a72594dde1fb36890b",
+    "integrated_sha256": "189f9acefe72b580dd7cf81c5ee0e3c98e60d2688e2b62a72594dde1fb36890b"
+  },
+  {
+    "source": "Auto Driving 20261018/test_track_vision.py",
+    "destination": "Auto Driving/With Steering/test_track_vision.py",
+    "sha256": "3232bfcbc5cc74ff1b66ea604ffe20f03fdd816286f40c01274f483f3f39d6f6",
+    "integrated_sha256": "3232bfcbc5cc74ff1b66ea604ffe20f03fdd816286f40c01274f483f3f39d6f6"
+  },
+  {
+    "source": "Auto Driving 20261018/test_track_web.py",
+    "destination": "Auto Driving/With Steering/test_track_web.py",
+    "sha256": "2af211a0a46ed0930fd3703caecb6ec876ccaf1517b5ca26966ebcdaf1749cc8",
+    "integrated_sha256": "2af211a0a46ed0930fd3703caecb6ec876ccaf1517b5ca26966ebcdaf1749cc8"
+  },
+  {
+    "source": "Auto Driving 20261018/track_vision.py",
+    "destination": "Auto Driving/With Steering/track_vision.py",
+    "sha256": "2798ea5b5e0cd92e9eb0f6d422175765d4a07bbd4deb112d571c618e042f9f28",
+    "integrated_sha256": "2798ea5b5e0cd92e9eb0f6d422175765d4a07bbd4deb112d571c618e042f9f28"
+  },
+  {
+    "source": "Auto Driving 20261018/track_web.py",
+    "destination": "Auto Driving/With Steering/track_web.py",
+    "sha256": "cf454dbdaa22cbcc5ffff8d0b49cb77cfdd9105091a4b8e144b7360935c6e05f",
+    "integrated_sha256": "cf454dbdaa22cbcc5ffff8d0b49cb77cfdd9105091a4b8e144b7360935c6e05f"
+  },
+  {
+    "source": "Auto Driving 20261018/turn_recovery.py",
+    "destination": "Auto Driving/With Steering/turn_recovery.py",
+    "sha256": "46e19bb153236fee23daf37e9d919a708f125473ffc9bd163a9f774a866cdd98",
+    "integrated_sha256": "46e19bb153236fee23daf37e9d919a708f125473ffc9bd163a9f774a866cdd98"
+  },
+  {
+    "source": "Auto Driving 20261018/static/capture.js",
+    "destination": "Auto Driving/With Steering/static/capture.js",
+    "sha256": "9f08327a469b413a622e4606c03ededb2e7cfe6262c3276a80b3c6b84d7f0152",
+    "integrated_sha256": "9f08327a469b413a622e4606c03ededb2e7cfe6262c3276a80b3c6b84d7f0152"
+  },
+  {
+    "source": "Auto Driving 20261018/static/control_panels.js",
+    "destination": "Auto Driving/With Steering/static/control_panels.js",
+    "sha256": "b7e6641d1e30ce089bc2da9a3e8ad62b9da03641338717b69cbd0e4ed7c4c8fe",
+    "integrated_sha256": "b7e6641d1e30ce089bc2da9a3e8ad62b9da03641338717b69cbd0e4ed7c4c8fe"
+  },
+  {
+    "source": "Auto Driving 20261018/static/gesture_display.js",
+    "destination": "Auto Driving/With Steering/static/gesture_display.js",
+    "sha256": "e61b08cb62012981824092e03040425f5188dd41f2c96b7d19579d0204806e45",
+    "integrated_sha256": "e61b08cb62012981824092e03040425f5188dd41f2c96b7d19579d0204806e45"
+  },
+  {
+    "source": "Auto Driving 20261018/static/interaction.js",
+    "destination": "Auto Driving/With Steering/static/interaction.js",
+    "sha256": "1c8d1f81e92892d2d0cf9ab2b18c05a56b1e2f6638423b15d976ea8c7b969fb4",
+    "integrated_sha256": "1c8d1f81e92892d2d0cf9ab2b18c05a56b1e2f6638423b15d976ea8c7b969fb4"
+  },
+  {
+    "source": "Auto Driving 20261018/static/manual.js",
+    "destination": "Auto Driving/With Steering/static/manual.js",
+    "sha256": "3c07af46ca537fcf5546987f4417f23c9018d219c956d8b828ad1dea3f5f24d6",
+    "integrated_sha256": "3c07af46ca537fcf5546987f4417f23c9018d219c956d8b828ad1dea3f5f24d6"
+  },
+  {
+    "source": "Auto Driving 20261018/static/pilot.js",
+    "destination": "Auto Driving/With Steering/static/pilot.js",
+    "sha256": "e356552b8b98228dce73cb39b754948edc4e490616fd251f43ad53baf6879228",
+    "integrated_sha256": "e356552b8b98228dce73cb39b754948edc4e490616fd251f43ad53baf6879228"
+  },
+  {
+    "source": "Auto Driving 20261018/static/preview.js",
+    "destination": "Auto Driving/With Steering/static/preview.js",
+    "sha256": "0930ce15a5d5ea5e0f0f8e410b009b86e1272458dcb2c3190085f9b16bed1065",
+    "integrated_sha256": "0930ce15a5d5ea5e0f0f8e410b009b86e1272458dcb2c3190085f9b16bed1065"
+  },
+  {
+    "source": "Auto Driving 20261018/static/safety.js",
+    "destination": "Auto Driving/With Steering/static/safety.js",
+    "sha256": "6ef47139aa398a216b1262fc63b69c3fa3d4396cc5c0c0325ea75ba825a0d323",
+    "integrated_sha256": "6ef47139aa398a216b1262fc63b69c3fa3d4396cc5c0c0325ea75ba825a0d323"
+  },
+  {
+    "source": "Auto Driving 20261018/static/icons/camera.svg",
+    "destination": "Auto Driving/With Steering/static/icons/camera.svg",
+    "sha256": "89b7493fb7f18b3a303184f9dea61e989521eae4a98349bbaa979a586f063cba",
+    "integrated_sha256": "89b7493fb7f18b3a303184f9dea61e989521eae4a98349bbaa979a586f063cba"
+  },
+  {
+    "source": "Auto Driving 20261018/static/icons/crosshair.svg",
+    "destination": "Auto Driving/With Steering/static/icons/crosshair.svg",
+    "sha256": "496108b34a12fd951bda7f3655e530e47601e8c802c471b2d1103463bfbfdb3b",
+    "integrated_sha256": "496108b34a12fd951bda7f3655e530e47601e8c802c471b2d1103463bfbfdb3b"
+  },
+  {
+    "source": "Auto Driving 20261018/static/icons/download.svg",
+    "destination": "Auto Driving/With Steering/static/icons/download.svg",
+    "sha256": "f68a21e11115edc0aef51ac6f8f4618e14d2b92055f1cb9f5d670efc696bea85",
+    "integrated_sha256": "f68a21e11115edc0aef51ac6f8f4618e14d2b92055f1cb9f5d670efc696bea85"
+  },
+  {
+    "source": "Auto Driving 20261018/static/icons/LICENSE.lucide",
+    "destination": "Auto Driving/With Steering/static/icons/LICENSE.lucide",
+    "sha256": "1e7290b35280a048667bbf0ebabac1c7fd52a75300e8b2946ac165715997f2bc",
+    "integrated_sha256": "1e7290b35280a048667bbf0ebabac1c7fd52a75300e8b2946ac165715997f2bc"
+  },
+  {
+    "source": "Auto Driving 20261018/static/icons/play.svg",
+    "destination": "Auto Driving/With Steering/static/icons/play.svg",
+    "sha256": "f0cab5b458fdf5e5d5d1a8aeb3d368ccab337cc578b1f8081807b8e39f68f1a1",
+    "integrated_sha256": "f0cab5b458fdf5e5d5d1a8aeb3d368ccab337cc578b1f8081807b8e39f68f1a1"
+  },
+  {
+    "source": "Auto Driving 20261018/static/icons/square.svg",
+    "destination": "Auto Driving/With Steering/static/icons/square.svg",
+    "sha256": "c6c07f247abd06d3164a6749e21812da9092908fe0033f8163149b4ee2e31347",
+    "integrated_sha256": "c6c07f247abd06d3164a6749e21812da9092908fe0033f8163149b4ee2e31347"
+  },
+  {
+    "source": "Auto Driving 20261018/static/icons/video.svg",
+    "destination": "Auto Driving/With Steering/static/icons/video.svg",
+    "sha256": "1b8fa7df8d5021d963a8ce39c4ebcd368df02d1e9d777fc302138c020b09bd22",
+    "integrated_sha256": "1b8fa7df8d5021d963a8ce39c4ebcd368df02d1e9d777fc302138c020b09bd22"
+  },
+  {
+    "source": "Auto Driving 20261018/static/signals/vehicle_go_red.gif",
+    "destination": "Auto Driving/With Steering/static/signals/vehicle_go_red.gif",
+    "sha256": "51fbd9748aa578324a3a12baa52f5a78910119ba7dbb48f8db9a675b70c243c8",
+    "integrated_sha256": "51fbd9748aa578324a3a12baa52f5a78910119ba7dbb48f8db9a675b70c243c8"
+  },
+  {
+    "source": "Auto Driving 20261018/static/signals/vehicle_stop_green.gif",
+    "destination": "Auto Driving/With Steering/static/signals/vehicle_stop_green.gif",
+    "sha256": "d4b641b6308c97d1588f837762292868d61260bcb02be1b307bcfc2daf5bc481",
+    "integrated_sha256": "d4b641b6308c97d1588f837762292868d61260bcb02be1b307bcfc2daf5bc481"
+  },
+  {
+    "source": "Auto Driving 20261018/templates/manual_controls.html",
+    "destination": "Auto Driving/With Steering/templates/manual_controls.html",
+    "sha256": "9cdba828e9a568245df73171d052aac39a0b715cff0ed6ac1ff1a242a5d04cdf",
+    "integrated_sha256": "9cdba828e9a568245df73171d052aac39a0b715cff0ed6ac1ff1a242a5d04cdf"
+  },
+  {
+    "source": "Auto Driving 20261018/templates/monitor.html",
+    "destination": "Auto Driving/With Steering/templates/monitor.html",
+    "sha256": "ce57265c9050fae01662c7e1980d63629a2779fffb55da9b6d2fe4b6be95067f",
+    "integrated_sha256": "ce57265c9050fae01662c7e1980d63629a2779fffb55da9b6d2fe4b6be95067f"
+  },
+  {
+    "source": "Auto Driving 20261018/environment/installed-pi311.json",
+    "destination": "Auto Driving/With Steering/environment/installed-pi311.json",
+    "sha256": "958dfbf09ef54a1b694e0026fbd98794e812282952573052ee3bc797f304442b",
+    "integrated_sha256": "958dfbf09ef54a1b694e0026fbd98794e812282952573052ee3bc797f304442b"
+  },
+  {
+    "source": "Auto Driving 20261018/history/TRACK_VISION_AGENTS.md",
+    "destination": "Auto Driving/With Steering/history/TRACK_VISION_AGENTS.md",
+    "sha256": "372e69864d7520fbb269e5e0b35dfe5b220de6bf29b037ba4c563ebafd0b7d07",
+    "integrated_sha256": "372e69864d7520fbb269e5e0b35dfe5b220de6bf29b037ba4c563ebafd0b7d07"
+  },
+  {
+    "source": "Auto Driving 20261018/history/TRACK_VISION_README.md",
+    "destination": "Auto Driving/With Steering/history/TRACK_VISION_README.md",
+    "sha256": "e828d2dd73527cbc9730b2f79b7a5d7be186d87f7c836d752d5c380f1d6a8587",
+    "integrated_sha256": "e828d2dd73527cbc9730b2f79b7a5d7be186d87f7c836d752d5c380f1d6a8587"
+  },
+  {
+    "source": "Lee/gesture/gesture_recognition_module.py",
+    "destination": "Gesture/gesture_recognition_module.py",
+    "sha256": "f04fed99905b8afd1878ea0a23a9275f697d694f2d89643f52fbd01cfbb12c28",
+    "integrated_sha256": "b94ef92a140b108e98aa076f901bfe5a743798bc33158370d0d4a2da991ce682"
+  },
+  {
+    "source": "Lee/gesture/hand_utils.py",
+    "destination": "Gesture/hand_utils.py",
+    "sha256": "fbe17f5c7b710cd635a8b4e0e3a3b181f1e8a106bd7457aff85480a63c9c79ca",
+    "integrated_sha256": "fbe17f5c7b710cd635a8b4e0e3a3b181f1e8a106bd7457aff85480a63c9c79ca"
+  },
+  {
+    "source": "Lee/gesture/cnn_compare_module.py",
+    "destination": "Gesture/cnn_compare_module.py",
+    "sha256": "3a8d56366e2258831b8ee11053ec17851c862374f061975c1fc60602f497e8b8",
+    "integrated_sha256": "3a8d56366e2258831b8ee11053ec17851c862374f061975c1fc60602f497e8b8"
+  },
+  {
+    "source": "Lee/gesture/gesture_knn_model.npz",
+    "destination": "Gesture/models/gesture_knn_model.npz",
+    "sha256": "2aee0c9e93ac5d5a723980d4d43922994173bce61cc537db0c07ebb3bc4a3eb4",
+    "integrated_sha256": "2aee0c9e93ac5d5a723980d4d43922994173bce61cc537db0c07ebb3bc4a3eb4"
+  },
+  {
+    "source": "Lee/gesture/gesture_seq_skeleton_cnn_model.pt",
+    "destination": "Gesture/models/gesture_seq_skeleton_cnn_model.pt",
+    "sha256": "41204fd0b20a8ac2f4f6262ea9b48ff8378aa0c3061d84f0155d0d42e2f3b941",
+    "integrated_sha256": "41204fd0b20a8ac2f4f6262ea9b48ff8378aa0c3061d84f0155d0d42e2f3b941"
+  },
+  {
+    "source": "Gesture PC/run_webcam.py",
+    "destination": "Gesture/run_webcam.py",
+    "sha256": "fee4ec2754aa116dd1f135a55a09c3b16bf198593cdb3cd6b75b2aa1627ce95f",
+    "integrated_sha256": "e6fedaff68230416c35d05bd2f6c1a8a8e52e6e14178a186317f006917fc892c"
+  },
+  {
+    "source": "Gesture PC/camera_guard.py",
+    "destination": "Gesture/camera_guard.py",
+    "sha256": "8adeee80b05b38ab13e214ae544a27a24c90ca6e97cff8ffa031a89c1fada0a2",
+    "integrated_sha256": "8adeee80b05b38ab13e214ae544a27a24c90ca6e97cff8ffa031a89c1fada0a2"
+  },
+  {
+    "source": "Gesture PC/person_detection.py",
+    "destination": "Gesture/person_detection.py",
+    "sha256": "e8061e0fdaaea4a8ebdc8f3b5a9f0de59570bc17b6d2b0a87dbbdd6c5caec0f7",
+    "integrated_sha256": "e8061e0fdaaea4a8ebdc8f3b5a9f0de59570bc17b6d2b0a87dbbdd6c5caec0f7"
+  },
+  {
+    "source": "Gesture PC/test_person_detection.py",
+    "destination": "Gesture/test_person_detection.py",
+    "sha256": "827352cb999b604838b94d01e7c75a11a3805b40ce342963e458d001c614d159",
+    "integrated_sha256": "827352cb999b604838b94d01e7c75a11a3805b40ce342963e458d001c614d159"
+  },
+  {
+    "source": "Gesture PC/requirements.txt",
+    "destination": "Gesture/requirements.txt",
+    "sha256": "32e2693b67287403e9858be1b4f227304774b5c65f7df519ca7340f1f736ce02",
+    "integrated_sha256": "32e2693b67287403e9858be1b4f227304774b5c65f7df519ca7340f1f736ce02"
+  },
+  {
+    "source": "Gesture PC/opencv-excludes.txt",
+    "destination": "Gesture/opencv-excludes.txt",
+    "sha256": "b841718583e69aeb63647e9d619dd5d9a1cf47dbb1efdc9ed416f48a7e5c9380",
+    "integrated_sha256": "b841718583e69aeb63647e9d619dd5d9a1cf47dbb1efdc9ed416f48a7e5c9380"
+  },
+  {
+    "source": "Auto Driving 20261018/gesture_adapter.py",
+    "destination": "Gesture/worker.py",
+    "sha256": "919240531dece443e96134ba2d2ddd90075b51cfbd289ed8a496cbb462649724",
+    "integrated_sha256": "017f1b656575abe89566986d8c3bca61ef68cc36322dd8947bbf780b2a05d4e9"
+  },
+  {
+    "source": "Auto Driving 20261018/test_gesture_adapter.py",
+    "destination": "Gesture/test_worker.py",
+    "sha256": "4d22f45ccdbf25a2829e2e0f0b6a551ace26ad7df681a69f51bc6685928b7986",
+    "integrated_sha256": "150f5c6e467bf78d8e2ebaa4d1bf331e9354b75772267a43c5120820b8d33ef9"
+  },
+  {
+    "source": "Gesture PC/README.md",
+    "destination": "Gesture/history/PC_README_20261014.md",
+    "sha256": "dfef1ab5863a9fea6253b5e060380b58e1ddacb7a2fa94e6dec6796541166210",
+    "integrated_sha256": "dfef1ab5863a9fea6253b5e060380b58e1ddacb7a2fa94e6dec6796541166210"
+  },
+  {
+    "source": "Gesture PC/HANDOFF.md",
+    "destination": "Gesture/history/PC_HANDOFF_20261014.md",
+    "sha256": "19ced17f62fdb68db495f92bf0e6c5946e84e7fa2fbb18bc8e85211457ead2ff",
+    "integrated_sha256": "1d35c10de0dfc8655684899e0a3e74312658ee1ba95a84d15d16ba91aa47c79a"
+  },
+  {
+    "source": "Lee/gesture/README.md",
+    "destination": "Gesture/history/LEE_README_20261013.md",
+    "sha256": "f316ce179ed6614ee23ca963e6bcf1f5809c7c5baddc03b3749bf2d74b231c6b",
+    "integrated_sha256": "f316ce179ed6614ee23ca963e6bcf1f5809c7c5baddc03b3749bf2d74b231c6b"
+  },
+  {
+    "source": "gesture/gesture_data_collector.py",
+    "destination": "Gesture/experiments/collection/gesture_data_collector.py",
+    "sha256": "09dfb57b36e0a5eb9a2af57b6cbc9a439daaaffa92e3231ee72c5ead2b684fb1",
+    "integrated_sha256": "09dfb57b36e0a5eb9a2af57b6cbc9a439daaaffa92e3231ee72c5ead2b684fb1"
+  },
+  {
+    "source": "gesture/test_gesture_knn.py",
+    "destination": "Gesture/experiments/collection/test_gesture_knn.py",
+    "sha256": "97025e07d8c89369c417b6fbd21df4932a8ff82775c9cf2afc569f805e11addc",
+    "integrated_sha256": "97025e07d8c89369c417b6fbd21df4932a8ff82775c9cf2afc569f805e11addc"
+  },
+  {
+    "source": "gesture/train_gesture_knn.py",
+    "destination": "Gesture/experiments/collection/train_gesture_knn.py",
+    "sha256": "54cff9ea911e08a9c27afc81fda44d25e8b303940068b280906144f201109dc6",
+    "integrated_sha256": "54cff9ea911e08a9c27afc81fda44d25e8b303940068b280906144f201109dc6"
+  },
+  {
+    "source": "image capture/camera_1.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_1.py",
+    "sha256": "48b11abeee46f8d7c688e26e4368656754546712d5690eab88bbea8db7115449",
+    "integrated_sha256": "48b11abeee46f8d7c688e26e4368656754546712d5690eab88bbea8db7115449"
+  },
+  {
+    "source": "image capture/camera_2.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_2.py",
+    "sha256": "0619206b7ae09164c674c7d792e499ceb481b2de4ea6dd629d364708678b3b30",
+    "integrated_sha256": "0619206b7ae09164c674c7d792e499ceb481b2de4ea6dd629d364708678b3b30"
+  },
+  {
+    "source": "image capture/camera_3.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_3.py",
+    "sha256": "891e255f13a2eb944c0957f3a8f6dcb99f73584d219106680d4c14320c8564f5",
+    "integrated_sha256": "891e255f13a2eb944c0957f3a8f6dcb99f73584d219106680d4c14320c8564f5"
+  },
+  {
+    "source": "image capture/camera_4_2.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_4_2.py",
+    "sha256": "398447b00d6ea60f3deb7e102315cdb352bd53828dd312fc00f326bb8d76c976",
+    "integrated_sha256": "398447b00d6ea60f3deb7e102315cdb352bd53828dd312fc00f326bb8d76c976"
+  },
+  {
+    "source": "image capture/camera_5.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_5.py",
+    "sha256": "899dbc7fbabc5e45340a87874f8e306140202803ba4d8491b1d3d2a6f57e6cab",
+    "integrated_sha256": "899dbc7fbabc5e45340a87874f8e306140202803ba4d8491b1d3d2a6f57e6cab"
+  },
+  {
+    "source": "image capture/camera_6.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_6.py",
+    "sha256": "ce3f95b9fe0d53a8a88c599311936445159f3400f0bd7ccd1903d772a082c919",
+    "integrated_sha256": "ce3f95b9fe0d53a8a88c599311936445159f3400f0bd7ccd1903d772a082c919"
+  },
+  {
+    "source": "image capture/camera_7.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_7.py",
+    "sha256": "68854550b757043b758b36747d2bcd04f62f682cb5a7c99dcadd9c2119231d46",
+    "integrated_sha256": "68854550b757043b758b36747d2bcd04f62f682cb5a7c99dcadd9c2119231d46"
+  },
+  {
+    "source": "image capture/camera_8.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_8.py",
+    "sha256": "8e59dfbe512d6d95d6d2824e1bf69dfe5a9fab4aded96b3ec1312d6d9bc30f64",
+    "integrated_sha256": "8e59dfbe512d6d95d6d2824e1bf69dfe5a9fab4aded96b3ec1312d6d9bc30f64"
+  },
+  {
+    "source": "image capture1/camera_1_1.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_1_1.py",
+    "sha256": "8cf603b26bcec8c96a921b2fe3280c435a8fe962498b66cfecc9070b9d47768f",
+    "integrated_sha256": "8cf603b26bcec8c96a921b2fe3280c435a8fe962498b66cfecc9070b9d47768f"
+  },
+  {
+    "source": "image capture1/camera_1_2.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_2.py",
+    "sha256": "0619206b7ae09164c674c7d792e499ceb481b2de4ea6dd629d364708678b3b30",
+    "deduplicated": true,
+    "integrated_sha256": "0619206b7ae09164c674c7d792e499ceb481b2de4ea6dd629d364708678b3b30"
+  },
+  {
+    "source": "image capture1/camera_1_3.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_3.py",
+    "sha256": "891e255f13a2eb944c0957f3a8f6dcb99f73584d219106680d4c14320c8564f5",
+    "deduplicated": true,
+    "integrated_sha256": "891e255f13a2eb944c0957f3a8f6dcb99f73584d219106680d4c14320c8564f5"
+  },
+  {
+    "source": "image capture1/camera_1_4_2.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_1_4_2.py",
+    "sha256": "6b8515ca9adf4930a383f606c78d7f038e8c8b07a79832e47f1d5c6f3d65c78e",
+    "integrated_sha256": "6b8515ca9adf4930a383f606c78d7f038e8c8b07a79832e47f1d5c6f3d65c78e"
+  },
+  {
+    "source": "image capture1/camera_1_5.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_5.py",
+    "sha256": "899dbc7fbabc5e45340a87874f8e306140202803ba4d8491b1d3d2a6f57e6cab",
+    "deduplicated": true,
+    "integrated_sha256": "899dbc7fbabc5e45340a87874f8e306140202803ba4d8491b1d3d2a6f57e6cab"
+  },
+  {
+    "source": "image capture1/camera_1_6.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_6.py",
+    "sha256": "ce3f95b9fe0d53a8a88c599311936445159f3400f0bd7ccd1903d772a082c919",
+    "deduplicated": true,
+    "integrated_sha256": "ce3f95b9fe0d53a8a88c599311936445159f3400f0bd7ccd1903d772a082c919"
+  },
+  {
+    "source": "image capture1/camera_1_7.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_7.py",
+    "sha256": "68854550b757043b758b36747d2bcd04f62f682cb5a7c99dcadd9c2119231d46",
+    "deduplicated": true,
+    "integrated_sha256": "68854550b757043b758b36747d2bcd04f62f682cb5a7c99dcadd9c2119231d46"
+  },
+  {
+    "source": "image capture1/camera_1_8.py",
+    "destination": "Auto Driving/Without Steering/experiments/camera/camera_8.py",
+    "sha256": "8e59dfbe512d6d95d6d2824e1bf69dfe5a9fab4aded96b3ec1312d6d9bc30f64",
+    "deduplicated": true,
+    "integrated_sha256": "8e59dfbe512d6d95d6d2824e1bf69dfe5a9fab4aded96b3ec1312d6d9bc30f64"
+  },
+  {
+    "source": "keyboard/keyboard_1.py",
+    "destination": "Auto Driving/Without Steering/experiments/keyboard/keyboard_1.py",
+    "sha256": "2313674503aa53478907f9a044c032622ff2b8d55f76a8fa8f3c542632a44011",
+    "integrated_sha256": "2313674503aa53478907f9a044c032622ff2b8d55f76a8fa8f3c542632a44011"
+  },
+  {
+    "source": "keyboard/keyboard_2.py",
+    "destination": "Auto Driving/Without Steering/experiments/keyboard/keyboard_1.py",
+    "sha256": "2313674503aa53478907f9a044c032622ff2b8d55f76a8fa8f3c542632a44011",
+    "deduplicated": true,
+    "integrated_sha256": "2313674503aa53478907f9a044c032622ff2b8d55f76a8fa8f3c542632a44011"
+  },
+  {
+    "source": "모터제어/motor_1.py",
+    "destination": "Auto Driving/Without Steering/experiments/모터제어/motor_1.py",
+    "sha256": "8803b932ea34f45a7edaaae8f2db40b57f0fe1fab383c92560481aaa249ee85a",
+    "integrated_sha256": "8803b932ea34f45a7edaaae8f2db40b57f0fe1fab383c92560481aaa249ee85a"
+  },
+  {
+    "source": "모터제어/motor_2.py",
+    "destination": "Auto Driving/Without Steering/experiments/모터제어/motor_2.py",
+    "sha256": "519c095e55b44bb2dd1bd845666939a906225305e18183083ff5482328515a26",
+    "integrated_sha256": "519c095e55b44bb2dd1bd845666939a906225305e18183083ff5482328515a26"
+  },
+  {
+    "source": "모터제어/motor_3.py",
+    "destination": "Auto Driving/Without Steering/experiments/모터제어/motor_3.py",
+    "sha256": "d23ad367836df35ebb23d1a3fb0eb1bbf66ee76f9cb42e95c5aae45f82be8716",
+    "integrated_sha256": "d23ad367836df35ebb23d1a3fb0eb1bbf66ee76f9cb42e95c5aae45f82be8716"
+  },
+  {
+    "source": "모터제어/motor_4.py",
+    "destination": "Auto Driving/Without Steering/experiments/모터제어/motor_4.py",
+    "sha256": "dc2ea6374aec3d92694a0c4fbc01bc74443e1083dddfe91d46c95e66becade25",
+    "integrated_sha256": "dc2ea6374aec3d92694a0c4fbc01bc74443e1083dddfe91d46c95e66becade25"
+  },
+  {
+    "source": "모터제어/motor_5.py",
+    "destination": "Auto Driving/Without Steering/experiments/모터제어/motor_5.py",
+    "sha256": "2f44527e84d0eb79db11eed2a98b32a3cf6d552cfe3c7d8028568af9cfa1e9a3",
+    "integrated_sha256": "2f44527e84d0eb79db11eed2a98b32a3cf6d552cfe3c7d8028568af9cfa1e9a3"
+  },
+  {
+    "source": "모터제어/test_motor1.py",
+    "destination": "Auto Driving/Without Steering/experiments/모터제어/test_motor1.py",
+    "sha256": "d988edd5fd13b96ce5f5834cc83cd1e886c3a2b7c56cfba49a9116279c2c0289",
+    "integrated_sha256": "d988edd5fd13b96ce5f5834cc83cd1e886c3a2b7c56cfba49a9116279c2c0289"
+  },
+  {
+    "source": "모터제어/test_motor2.py",
+    "destination": "Auto Driving/Without Steering/experiments/모터제어/test_motor2.py",
+    "sha256": "63eac45c8c358613dcfe80d1e99e563ae432139d051fae4ac389c36edfbf1415",
+    "integrated_sha256": "63eac45c8c358613dcfe80d1e99e563ae432139d051fae4ac389c36edfbf1415"
+  },
+  {
+    "source": "모터제어/test_motor3.py",
+    "destination": "Auto Driving/Without Steering/experiments/모터제어/test_motor3.py",
+    "sha256": "b7974ddee5a5f2992f184999bdf6cb792695917bca4c61bbcd35d7d5c53421bb",
+    "integrated_sha256": "b7974ddee5a5f2992f184999bdf6cb792695917bca4c61bbcd35d7d5c53421bb"
+  },
+  {
+    "source": "모터제어/test_motor4.py",
+    "destination": "Auto Driving/Without Steering/experiments/모터제어/test_motor4.py",
+    "sha256": "a48da4735bd893f0bbe124b1796bb7c1bd3e9b023188cf0c48b6382302b7c0b1",
+    "integrated_sha256": "a48da4735bd893f0bbe124b1796bb7c1bd3e9b023188cf0c48b6382302b7c0b1"
+  },
+  {
+    "source": "vision_11/vision_11_main_pipeline.py",
+    "destination": "Auto Driving/Without Steering/experiments/vision_11/vision_11_main_pipeline.py",
+    "sha256": "8d45bc5b80b1998fe7efcf2a8014a7d65300135b83660fb248fea2497e05d5d7",
+    "integrated_sha256": "8d45bc5b80b1998fe7efcf2a8014a7d65300135b83660fb248fea2497e05d5d7"
+  },
+  {
+    "source": "vision_11/vision_22",
+    "destination": "Auto Driving/Without Steering/experiments/vision_11/vision_22",
+    "sha256": "1501c9a5070bfaf8dc154fe5b46c8b17b2524e872d93ca48fad3eebdec55312e",
+    "integrated_sha256": "1501c9a5070bfaf8dc154fe5b46c8b17b2524e872d93ca48fad3eebdec55312e"
+  },
+  {
+    "source": "linetracer/linetracer.py",
+    "destination": "Auto Driving/Without Steering/experiments/linetracer/linetracer.py",
+    "sha256": "02cbbf4f39a70f024d31355c3d20522e30bb2ae960c1cf126b77f442196a06f4",
+    "integrated_sha256": "02cbbf4f39a70f024d31355c3d20522e30bb2ae960c1cf126b77f442196a06f4"
+  },
+  {
+    "source": "motor_identify.py",
+    "destination": "Auto Driving/With Steering/experiments/hardware/motor_identify.py",
+    "sha256": "82ef77c64aa973ba7a1916f88d8d460e24276d3f018c77710f46a8f884682987",
+    "integrated_sha256": "82ef77c64aa973ba7a1916f88d8d460e24276d3f018c77710f46a8f884682987"
+  },
+  {
+    "source": "servo_ad_test.py",
+    "destination": "Auto Driving/With Steering/experiments/hardware/servo_ad_test.py",
+    "sha256": "2707daa856fbe45e03570ea449416795167be5ba8fcfe56549ca3c7862cc215e",
+    "integrated_sha256": "2707daa856fbe45e03570ea449416795167be5ba8fcfe56549ca3c7862cc215e"
+  },
+  {
+    "source": "test_servo_ad_test.py",
+    "destination": "Auto Driving/With Steering/experiments/hardware/test_servo_ad_test.py",
+    "sha256": "92b7262ab19e7662ae7fedf2c2a75eb3b20ffdfed8451a428fa14e66a07f68f2",
+    "integrated_sha256": "92b7262ab19e7662ae7fedf2c2a75eb3b20ffdfed8451a428fa14e66a07f68f2"
+  },
+  {
+    "source": "Steering robot test/back test.py",
+    "destination": "Auto Driving/With Steering/experiments/hardware/back test.py",
+    "sha256": "37cd2c53172823d2e0a1283cb4679d50743a28030aca00b3166e9e3f7606557c",
+    "integrated_sha256": "37cd2c53172823d2e0a1283cb4679d50743a28030aca00b3166e9e3f7606557c"
+  },
+  {
+    "source": "Steering robot test/dc_motor_test.py",
+    "destination": "Auto Driving/With Steering/experiments/hardware/dc_motor_test.py",
+    "sha256": "d5af571bcaf4a5ef78788e30ff765f98f209f23c97ed2b0359af770a6ee49214",
+    "integrated_sha256": "d5af571bcaf4a5ef78788e30ff765f98f209f23c97ed2b0359af770a6ee49214"
+  },
+  {
+    "source": "Steering robot test/drive_keys.py",
+    "destination": "Auto Driving/With Steering/experiments/hardware/drive_keys.py",
+    "sha256": "091cee66c0027add49503d82121370d6192a4d1b31bb8ecd41a45c2a3b2688af",
+    "integrated_sha256": "091cee66c0027add49503d82121370d6192a4d1b31bb8ecd41a45c2a3b2688af"
+  },
+  {
+    "source": "Steering robot test/rotation test.py",
+    "destination": "Auto Driving/With Steering/experiments/hardware/rotation test.py",
+    "sha256": "b2d4f7abd368f1992fa4fc9323fb483e53f44ed39300f1517b0ac2594ba677a8",
+    "integrated_sha256": "b2d4f7abd368f1992fa4fc9323fb483e53f44ed39300f1517b0ac2594ba677a8"
+  },
+  {
+    "source": "Steering robot test/servo_supply_check.py",
+    "destination": "Auto Driving/With Steering/experiments/hardware/servo_supply_check.py",
+    "sha256": "66ba70cdb7947d5b0f1b9d74d31c2f97b914d0f374ad01a59b78277ab348d0a3",
+    "integrated_sha256": "66ba70cdb7947d5b0f1b9d74d31c2f97b914d0f374ad01a59b78277ab348d0a3"
+  },
+  {
+    "source": "Steering robot test/steering_keys.py",
+    "destination": "Auto Driving/With Steering/experiments/hardware/steering_keys.py",
+    "sha256": "f4022411cc9ba7a9921ca901cf5ba56c5d431f2cd6bdccb03390aba245b3fae8",
+    "integrated_sha256": "f4022411cc9ba7a9921ca901cf5ba56c5d431f2cd6bdccb03390aba245b3fae8"
+  },
+  {
+    "source": "Auto Driving@/CHANGES_20261014.md",
+    "destination": "Auto Driving/With Steering/history/TEAM_MOTOR_CHANGES_20261014.md",
+    "sha256": "346aa39392562a9714840405a6b9d2d278d0d950a101328fdac4ddf99637aa2e",
+    "integrated_sha256": "346aa39392562a9714840405a6b9d2d278d0d950a101328fdac4ddf99637aa2e"
+  },
+  {
+    "source": "Auto Driving@/HANDOFF.md",
+    "destination": "Auto Driving/With Steering/history/TEAM_MOTOR_HANDOFF_20261014.md",
+    "sha256": "5d4502f2d1684b647d579ce5429d2aba3f237871cebc4acb0bc3a23537e4e666",
+    "integrated_sha256": "5d4502f2d1684b647d579ce5429d2aba3f237871cebc4acb0bc3a23537e4e666"
+  },
+  {
+    "source": "Auto Driving@/README.md",
+    "destination": "Auto Driving/With Steering/history/TEAM_MOTOR_README_20261014.md",
+    "sha256": "259052f04306e3d0490bd2e85f589232b9554b88a610739e8c928dacc7da776e",
+    "integrated_sha256": "259052f04306e3d0490bd2e85f589232b9554b88a610739e8c928dacc7da776e"
+  },
+  {
+    "source": "Auto Driving@/analyze_label_alignment.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/analyze_label_alignment.py",
+    "sha256": "de1a4247f12a02c32ffed843134dfcec164cc90e8517cc579fed6548566f386c",
+    "integrated_sha256": "de1a4247f12a02c32ffed843134dfcec164cc90e8517cc579fed6548566f386c"
+  },
+  {
+    "source": "Auto Driving@/build_manual_dataset.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/build_manual_dataset.py",
+    "sha256": "a2bbb8868d543ff6c749188ade7387bc5ee39cb12c097ad9e0e9c604411de13c",
+    "integrated_sha256": "a2bbb8868d543ff6c749188ade7387bc5ee39cb12c097ad9e0e9c604411de13c"
+  },
+  {
+    "source": "Auto Driving@/build_raw_session_dataset.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/build_raw_session_dataset.py",
+    "sha256": "f6aeaa50d22722c4bcd86c81fd90dc4d0d3cf21c59bef346e9da320d288ac55e",
+    "integrated_sha256": "f6aeaa50d22722c4bcd86c81fd90dc4d0d3cf21c59bef346e9da320d288ac55e"
+  },
+  {
+    "source": "Auto Driving@/camera_test.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/camera_test.py",
+    "sha256": "e5adf8d371a542ebfbeeb63a6e09137879293a227a2a7a526ba2b789d4088e1c",
+    "integrated_sha256": "e5adf8d371a542ebfbeeb63a6e09137879293a227a2a7a526ba2b789d4088e1c"
+  },
+  {
+    "source": "Auto Driving@/capture_boundary_view.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/capture_boundary_view.py",
+    "sha256": "0101e639e94d0a035019e5a6eaeb8f80f45c2eaad6f78d29cacd619d0d49a745",
+    "integrated_sha256": "0101e639e94d0a035019e5a6eaeb8f80f45c2eaad6f78d29cacd619d0d49a745"
+  },
+  {
+    "source": "Auto Driving@/collect_manual_raw.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/collect_manual_raw.py",
+    "sha256": "8bef8f6dc4445b03633e39d3a8bd55d0000f44d39de4b24615bb77b672d30674",
+    "integrated_sha256": "8bef8f6dc4445b03633e39d3a8bd55d0000f44d39de4b24615bb77b672d30674"
+  },
+  {
+    "source": "Auto Driving@/evaluate_hybrid_control.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/evaluate_hybrid_control.py",
+    "sha256": "5da0cfbf0422031b171d6a9d9fa62cdb3e7b0c0d0f0d663ec9d7e2122be71197",
+    "integrated_sha256": "5da0cfbf0422031b171d6a9d9fa62cdb3e7b0c0d0f0d663ec9d7e2122be71197"
+  },
+  {
+    "source": "Auto Driving@/extract_manual_demo.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/extract_manual_demo.py",
+    "sha256": "9012ae890ed388cebc1412d005e3437defe3e364696d05425aaed5d473ebfb1f",
+    "integrated_sha256": "9012ae890ed388cebc1412d005e3437defe3e364696d05425aaed5d473ebfb1f"
+  },
+  {
+    "source": "Auto Driving@/extract_overhead_path.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/extract_overhead_path.py",
+    "sha256": "31d0c200908a1c8db8272e7ecede4fe8a8490b99b4edc5e46a8c1d1714052090",
+    "integrated_sha256": "31d0c200908a1c8db8272e7ecede4fe8a8490b99b4edc5e46a8c1d1714052090"
+  },
+  {
+    "source": "Auto Driving@/hardware_test.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/hardware_test.py",
+    "sha256": "40c323a0f61e254202176982a06109037446fe7660d34d1be99309b9aa3c14e0",
+    "integrated_sha256": "40c323a0f61e254202176982a06109037446fe7660d34d1be99309b9aa3c14e0"
+  },
+  {
+    "source": "Auto Driving@/imitation_features.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/imitation_features.py",
+    "sha256": "4407a51a6b8c2ad5875b2680e58c481df9701b3945e74bbaf85c3b35057779dd",
+    "integrated_sha256": "4407a51a6b8c2ad5875b2680e58c481df9701b3945e74bbaf85c3b35057779dd"
+  },
+  {
+    "source": "Auto Driving@/imitation_runtime.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/imitation_runtime.py",
+    "sha256": "92acc1e924319bd80b6abf436ebee840c561337f142a734bc8610fbe9a279370",
+    "integrated_sha256": "92acc1e924319bd80b6abf436ebee840c561337f142a734bc8610fbe9a279370"
+  },
+  {
+    "source": "Auto Driving@/manual_demo_20261011.csv",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/manual_demo_20261011.csv",
+    "sha256": "b5ee8e9d374b4e60bff1b6e4248d276ff890617b02097f87a2863a3422fb27a4",
+    "integrated_sha256": "b5ee8e9d374b4e60bff1b6e4248d276ff890617b02097f87a2863a3422fb27a4"
+  },
+  {
+    "source": "Auto Driving@/manual_demo_20261011_overhead.csv",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/manual_demo_20261011_overhead.csv",
+    "sha256": "e3f666f02a2ecb10317e3232bec1b769bb3a435396020d3552eaae1015978e05",
+    "integrated_sha256": "e3f666f02a2ecb10317e3232bec1b769bb3a435396020d3552eaae1015978e05"
+  },
+  {
+    "source": "Auto Driving@/overhead_guard.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/overhead_guard.py",
+    "sha256": "548a3169421fd2c4b757825d7bdf582562b40ee62037ae3fb05f84bb307a5911",
+    "integrated_sha256": "548a3169421fd2c4b757825d7bdf582562b40ee62037ae3fb05f84bb307a5911"
+  },
+  {
+    "source": "Auto Driving@/record_overhead_trial.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/record_overhead_trial.py",
+    "sha256": "1c7c50cd668690b6a6bd0a7367278166b65a74b16230a7869ae87f18c490ed94",
+    "integrated_sha256": "1c7c50cd668690b6a6bd0a7367278166b65a74b16230a7869ae87f18c490ed94"
+  },
+  {
+    "source": "Auto Driving@/replay_road_vision.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/replay_road_vision.py",
+    "sha256": "39167c729a71e00a3342d00d8bcb3fc0d9aea247b0bef00c32d497c585009ecd",
+    "integrated_sha256": "39167c729a71e00a3342d00d8bcb3fc0d9aea247b0bef00c32d497c585009ecd"
+  },
+  {
+    "source": "Auto Driving@/replay_trial_models.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/replay_trial_models.py",
+    "sha256": "d9bf181a9cc8849e73eba9caca1d96f63ee5b595e206ac1de9c1b004882e239b",
+    "integrated_sha256": "d9bf181a9cc8849e73eba9caca1d96f63ee5b595e206ac1de9c1b004882e239b"
+  },
+  {
+    "source": "Auto Driving@/requirements-pc.txt",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/requirements-pc.txt",
+    "sha256": "0d23d1271a253da22dadc7d2ddc031e7634da50c4922c87e03c5e53b2ed49135",
+    "integrated_sha256": "0d23d1271a253da22dadc7d2ddc031e7634da50c4922c87e03c5e53b2ed49135"
+  },
+  {
+    "source": "Auto Driving@/road_camera_web.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/road_camera_web.py",
+    "sha256": "c762e32b328556e9cfae328d32a91c6ba502e3ea66f44c0620f21ee9fc25a68a",
+    "integrated_sha256": "c762e32b328556e9cfae328d32a91c6ba502e3ea66f44c0620f21ee9fc25a68a"
+  },
+  {
+    "source": "Auto Driving@/road_drive_web.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/road_drive_web.py",
+    "sha256": "419cba9cf3ba9c00ea16095ac4c3632a502cfa4677008d2726b40a015ad88872",
+    "integrated_sha256": "419cba9cf3ba9c00ea16095ac4c3632a502cfa4677008d2726b40a015ad88872"
+  },
+  {
+    "source": "Auto Driving@/road_vision.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/road_vision.py",
+    "sha256": "8fdb6a7ec7b39dd492117e6714d4f3cc251de5aea5480d76268f4ab2e81aed6c",
+    "integrated_sha256": "8fdb6a7ec7b39dd492117e6714d4f3cc251de5aea5480d76268f4ab2e81aed6c"
+  },
+  {
+    "source": "Auto Driving@/shadow_manual_model.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/shadow_manual_model.py",
+    "sha256": "0f9dbc7b716cff5da20d1c0701ad7d6e305f0b70ad3c81791b8eb67b961d348d",
+    "integrated_sha256": "0f9dbc7b716cff5da20d1c0701ad7d6e305f0b70ad3c81791b8eb67b961d348d"
+  },
+  {
+    "source": "Auto Driving@/study_curve_heading.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/study_curve_heading.py",
+    "sha256": "5ca4a04e1446e466213b53c579680d4ce052fe0143d810cd6a92c59d5fe3b073",
+    "integrated_sha256": "5ca4a04e1446e466213b53c579680d4ce052fe0143d810cd6a92c59d5fe3b073"
+  },
+  {
+    "source": "Auto Driving@/test_analyze_label_alignment.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_analyze_label_alignment.py",
+    "sha256": "9b989a28eba1b0b8415593a7c118ab281fca339d9edee85166953f9475cf942b",
+    "integrated_sha256": "9b989a28eba1b0b8415593a7c118ab281fca339d9edee85166953f9475cf942b"
+  },
+  {
+    "source": "Auto Driving@/test_evaluate_hybrid_control.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_evaluate_hybrid_control.py",
+    "sha256": "bb28ec46345b709e7de6da4d050348d68db16a0621548db8a5d2f5489d0725cb",
+    "integrated_sha256": "bb28ec46345b709e7de6da4d050348d68db16a0621548db8a5d2f5489d0725cb"
+  },
+  {
+    "source": "Auto Driving@/test_extract_manual_demo.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_extract_manual_demo.py",
+    "sha256": "2fb4afd8cba3812e00d462b1d55362010d94e8fc3f6502b042abc501e9c0a87f",
+    "integrated_sha256": "2fb4afd8cba3812e00d462b1d55362010d94e8fc3f6502b042abc501e9c0a87f"
+  },
+  {
+    "source": "Auto Driving@/test_extract_overhead_path.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_extract_overhead_path.py",
+    "sha256": "3981d86e66cede8dbeff7503b70acff26bf10699beeeadeb44b3810c8a83e8ca",
+    "integrated_sha256": "3981d86e66cede8dbeff7503b70acff26bf10699beeeadeb44b3810c8a83e8ca"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/after_second_curve_20261014.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/after_second_curve_20261014.jpg",
+    "sha256": "127c59b291b79be870a1d92507c777c6335eefb871324e0671a5abaa139a1884",
+    "integrated_sha256": "127c59b291b79be870a1d92507c777c6335eefb871324e0671a5abaa139a1884"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/early_stop_20261014.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/early_stop_20261014.jpg",
+    "sha256": "ac104b4fc79fff8f8c4391c8cf4ce182e43f1b25364bd0a47ea259eb268b49b9",
+    "integrated_sha256": "ac104b4fc79fff8f8c4391c8cf4ce182e43f1b25364bd0a47ea259eb268b49b9"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/edge_direction_missing_20261014.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/edge_direction_missing_20261014.jpg",
+    "sha256": "adbf8130791fd246aa5e3bd670d8f37933e518e515aeaee2b83d3370f0e903b4",
+    "integrated_sha256": "adbf8130791fd246aa5e3bd670d8f37933e518e515aeaee2b83d3370f0e903b4"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/left_turn_stop_20261014.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/left_turn_stop_20261014.jpg",
+    "sha256": "9a6e06661f152d3d6b2fc99c621b822da2ef44a72e7adf58efafa1180480b9aa",
+    "integrated_sha256": "9a6e06661f152d3d6b2fc99c621b822da2ef44a72e7adf58efafa1180480b9aa"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/mid_corner_restart_20261014.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/mid_corner_restart_20261014.jpg",
+    "sha256": "7090fedf65232fbb28b2ded9e2f0bea073515a30a5ebcd10894e4127d297de9b",
+    "integrated_sha256": "7090fedf65232fbb28b2ded9e2f0bea073515a30a5ebcd10894e4127d297de9b"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/near_solid_line_20261014.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/near_solid_line_20261014.jpg",
+    "sha256": "68cab1c70c1b3df890853c989b918d9e6a6414a6a39adf298b9c3374f47c87f9",
+    "integrated_sha256": "68cab1c70c1b3df890853c989b918d9e6a6414a6a39adf298b9c3374f47c87f9"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/next_curve_entry_20261014.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/next_curve_entry_20261014.jpg",
+    "sha256": "150dfe12cd99c8c18fdf770e475567d0e475bc44f0e4dfe0514df3decb9bc487",
+    "integrated_sha256": "150dfe12cd99c8c18fdf770e475567d0e475bc44f0e4dfe0514df3decb9bc487"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/next_curve_false_pair_20261014.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/next_curve_false_pair_20261014.jpg",
+    "sha256": "10bc4eed460a9f73c219b7566fda7b54461ae0b03a62b1cc7eca5744cfc76168",
+    "integrated_sha256": "10bc4eed460a9f73c219b7566fda7b54461ae0b03a62b1cc7eca5744cfc76168"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/right_curve_road_above_floor.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/right_curve_road_above_floor.jpg",
+    "sha256": "01c16fe5b987bb756e2d62cc24f116819871c9b1cae7e69c7f82ee726b2dfb2a",
+    "integrated_sha256": "01c16fe5b987bb756e2d62cc24f116819871c9b1cae7e69c7f82ee726b2dfb2a"
+  },
+  {
+    "source": "Auto Driving@/test_fixtures/right_solid_missed_20261014.jpg",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_fixtures/right_solid_missed_20261014.jpg",
+    "sha256": "f6da183048f4c7f39c9ad024ab9b0432b6fa64443ad90438c539f6cfff13b9e7",
+    "integrated_sha256": "f6da183048f4c7f39c9ad024ab9b0432b6fa64443ad90438c539f6cfff13b9e7"
+  },
+  {
+    "source": "Auto Driving@/test_imitation_learning.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_imitation_learning.py",
+    "sha256": "95ee1c37ea42ddea36039d281ef6788cf41ed48ed79e4673b7ac229821071cae",
+    "integrated_sha256": "95ee1c37ea42ddea36039d281ef6788cf41ed48ed79e4673b7ac229821071cae"
+  },
+  {
+    "source": "Auto Driving@/test_motor_calibration.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_motor_calibration.py",
+    "sha256": "c5bd696895fbee176e11943485b6e566718a39b89e787ad6c18f21dffeebcb9a",
+    "integrated_sha256": "c5bd696895fbee176e11943485b6e566718a39b89e787ad6c18f21dffeebcb9a"
+  },
+  {
+    "source": "Auto Driving@/test_overhead_guard.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_overhead_guard.py",
+    "sha256": "1199beed82dd6460bebfc7c2f823fb6b2f4b4d5a9a01f710f7c1dc288d24df6e",
+    "integrated_sha256": "1199beed82dd6460bebfc7c2f823fb6b2f4b4d5a9a01f710f7c1dc288d24df6e"
+  },
+  {
+    "source": "Auto Driving@/test_overhead_quality.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_overhead_quality.py",
+    "sha256": "a5eb7daf7bfdc3d0cc2afe61ba638b1847df6aa0b120b09dbaacb30da7cbc6b1",
+    "integrated_sha256": "a5eb7daf7bfdc3d0cc2afe61ba638b1847df6aa0b120b09dbaacb30da7cbc6b1"
+  },
+  {
+    "source": "Auto Driving@/test_road_drive.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_road_drive.py",
+    "sha256": "f1acb6fd82deb3ab96ac48d41beda2287715c56d83119671c5ffb06e00f50aca",
+    "integrated_sha256": "f1acb6fd82deb3ab96ac48d41beda2287715c56d83119671c5ffb06e00f50aca"
+  },
+  {
+    "source": "Auto Driving@/test_road_vision.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/test_road_vision.py",
+    "sha256": "dafdc802dfcaa7f8cfd8b1bbc816ed9907fb9493a8bc8f75159b6e29bbe9e3c8",
+    "integrated_sha256": "dafdc802dfcaa7f8cfd8b1bbc816ed9907fb9493a8bc8f75159b6e29bbe9e3c8"
+  },
+  {
+    "source": "Auto Driving@/train_manual_model.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/train_manual_model.py",
+    "sha256": "8ef61b3cb4132e2e28ad81792a8332ad4ebe48a938e8fd4bb42a13421223a12c",
+    "integrated_sha256": "8ef61b3cb4132e2e28ad81792a8332ad4ebe48a938e8fd4bb42a13421223a12c"
+  },
+  {
+    "source": "Auto Driving@/verify_pc.py",
+    "destination": "Auto Driving/With Steering/experiments/paper_track/verify_pc.py",
+    "sha256": "5d94fcb7511841b0efc4e36d95bf8cc5af41de8038061093c2693f36d9a8e3fb",
+    "integrated_sha256": "5d94fcb7511841b0efc4e36d95bf8cc5af41de8038061093c2693f36d9a8e3fb"
+  }
+]
