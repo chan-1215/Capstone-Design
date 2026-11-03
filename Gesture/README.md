@@ -15,7 +15,22 @@ Lee의 MediaPipe·KNN 모듈을 바탕으로 PC 웹캠 실험과 Flask 연결 �
 | `cnn_compare_module.py`, `models/*.pt` | 선택적인 CNN 분류 비교·로그 |
 | `experiments/collection/`, `history/` | 이전 수집·학습 실험과 출처·검증 기록 |
 
-## PC 실행
+## 기술을 선택한 이유와 인식 과정
+
+**MediaPipe**는 손 관절 21개의 좌표를 찾고, **NumPy**는 좌표 정규화와 배열·거리 계산에 사용합니다.
+**KNN**은 정규화한 최근 30프레임(1,890차원)을 저장 예시 256개와 비교해 가까운 3개로 GO·STOP을 분류합니다.
+손목 위치를 빼고 손 크기로 나누어 위치·크기 변화의 영향을 줄이며, 충분한 손 검출과 특징 거리 조건이 안 맞으면 unknown을 반환합니다.
+즉 KNN과 NumPy는 대체 관계가 아니라 분류 방법과 계산 도구입니다.
+
+<img src="../docs/images/gesture-feedback.jpg" alt="손 관절 추출·GO 분류와 빨간 보행자 STOP 디스플레이" width="400">
+
+차량 GO에 **빨강**, 차량 STOP에 **초록**을 표시하여 보행자에게 응답합니다.
+이 사진은 PREVIEW 인식 시연이며, 모터 출발은 별도 연동 설정·신선한 판정·경로 조건에 따릅니다.
+
+[단계별 계산·모델·오인 방지·현재 한계](../docs/technical-guide.md#3-손동작은-어떻게-gostop이-되나요) ·
+[시연 영상](https://pedestrian-gesture-deck.pages.dev/media/gesture-present-merged-20261022.mp4)
+
+## PC 실행 방법
 
 저장소 루트에서 PowerShell로 실행합니다.
 
