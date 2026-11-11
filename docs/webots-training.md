@@ -7,6 +7,9 @@
 **영상으로부터 좌우 PWM을 예측하는 지도학습·모방학습**을 진행했습니다.
 현재 서보 차량의 기본 주행은 OpenCV·P제어이며 이 모델을 기본 제어기로 사용하지 않습니다.
 
+이후 조향장치 차량은 별도의 Unity 가상 환경에서 카메라→조향각·목표 속도 모델을 실험했습니다.
+[Unity 실행 사진과 두 데이터셋 생성 방식의 장단점 비교](../Auto%20Driving/With%20Steering/dataset/UnityDriving/README.md#webots-사륜-구동과-unity-조향-데이터셋-비교)를 참고하세요.
+
 ## 가상 환경과 데이터 수집 화면
 
 ![Webots 3차선 트랙과 파란 가상 차량](images/webots-track-overview.png)

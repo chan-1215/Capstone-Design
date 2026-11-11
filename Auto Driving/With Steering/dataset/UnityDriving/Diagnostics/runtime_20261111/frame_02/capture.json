@@ -1,0 +1,11 @@
+{
+    "simulation_seconds": 16.00577163696289,
+    "yaw_deg": 307.1095275878906,
+    "position": {
+        "x": -0.16936813294887544,
+        "y": 0.0,
+        "z": -0.13479477167129517
+    },
+    "source": "Unity Camera.Render during learned_camera_mlp runtime",
+    "note": "OpenCV overlay updates asynchronously; it is not the steering controller."
+}

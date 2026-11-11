@@ -1,0 +1,32 @@
+{
+    "camera_optical_centre_relative_to_frame_m": {
+        "x": 0.0,
+        "y": 0.1550000011920929,
+        "z": 0.019999999552965165
+    },
+    "camera_height_above_ground_m": 0.1550000011920929,
+    "vehicle_forward_world": {
+        "x": -0.9232071042060852,
+        "y": 0.0,
+        "z": 0.38430267572402956
+    },
+    "camera_forward_world": {
+        "x": -0.7995209097862244,
+        "y": -0.5000000596046448,
+        "z": 0.3328157663345337
+    },
+    "visible_lens_forward_world": {
+        "x": -0.7995209097862244,
+        "y": -0.5000000596046448,
+        "z": 0.3328157663345337
+    },
+    "forward_alignment": 0.8660253882408142,
+    "horizontal_forward_alignment": 0.9999999403953552,
+    "motion_forward_alignment": 0.972878634929657,
+    "visible_parts": [
+        "rectangular frame",
+        "four wheels",
+        "connected camera support and bracket",
+        "camera module and lens"
+    ]
+}

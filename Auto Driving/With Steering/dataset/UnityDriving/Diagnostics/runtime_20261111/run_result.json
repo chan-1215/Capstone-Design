@@ -1,0 +1,19 @@
+{
+  "status": "completed",
+  "controller": "learned_camera_mlp",
+  "lane": 0,
+  "completed_laps": 2,
+  "predictions": 1008,
+  "ground_truth_action_fallbacks": 0,
+  "seconds": 80.61669158935547,
+  "max_cte_m": 0.05635210499167442,
+  "minimum_road_margin_m": 0.01426418125629425,
+  "captured_on": "2026-11-11",
+  "model_sha256": "a382baa729c2a2b6e0c3c5a4653b81b2fe5d99e6f0b09aa9774ca08d30d36b78",
+  "captured_simulation_seconds": [
+    6,
+    16,
+    26,
+    36
+  ]
+}

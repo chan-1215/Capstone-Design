@@ -40,6 +40,14 @@
 현재 카메라 조건의 합성 영상 2,377장과 원본 Unity 수집 489장, 학습·시뮬레이터 코드를 함께 정리했습니다.
 실물 주행 코드와 분리한 가상 실험이며 OpenCV는 인식 표시, 학습 MLP는 조향·속도 예측을 담당합니다.
 
+| Unity 학습 모델 주행 중 | 차량 카메라·OpenCV 표시 |
+| --- | --- |
+| ![Unity 실행 중 조향 로봇](dataset/UnityDriving/Diagnostics/runtime_20261111/frame_03/unity_robot.png) | ![실행 중 노란 경계와 흰 점선 검출](dataset/UnityDriving/Diagnostics/runtime_20261111/frame_03/opencv_tracking.png) |
+
+2026-11-11 실제 Unity 주행 실행에서 저장한 가상 카메라 출력입니다.
+이전 Webots는 사륜 좌우 모터 출력, 현재 Unity는 앞바퀴 조향각·목표 속도를 정답으로 수집합니다.
+[실행 사진·Webots와 Unity의 데이터셋 생성 장단점 비교](dataset/UnityDriving/README.md#webots-사륜-구동과-unity-조향-데이터셋-비교)를 함께 정리했습니다.
+
 ## 환경과 실행 방법
 
 Pi의 저장소 루트에서 Python 3.11 환경을 만듭니다.
