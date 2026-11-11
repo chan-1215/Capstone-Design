@@ -17,37 +17,11 @@ Raspberry Pi 모형 차량의 차선 추종과 손동작 인식을 다룬 캡스
 
 시스템은 **실물 로봇의 인식·주행·응답**과 **가상 환경의 데이터 생성·학습**으로 나뉩니다.
 실물의 기본 주행은 OpenCV 경로 추종이며, Unity의 학습 주행과 구분합니다.
+그림의 점선 박스는 실행 환경, 색상은 기능, 화살표와 라벨은 정보 전달 방향을 뜻합니다.
 
 ### 1. 실물 로봇: 보고 → 판단하고 → 움직이고 → 응답하기
 
-```mermaid
-flowchart TB
-    CAM["Pi 카메라 · 실시간 영상"] --> SRC["영상 수신·최신 프레임 관리<br/>camera_source.py · track_web.py"]
-    subgraph VISION["인식"]
-        ROAD["OpenCV · 노란 경계·검은 노면·흰 점선"]
-        PATH["주행 경로 · 위치 오차·방향 오차"]
-        CROSS["횡단보도 줄무늬·접근/정차 조건"]
-        HAND["MediaPipe · 손 관절 21개"]
-        KNN["좌표 정규화·최근 30프레임<br/>KNN → GO / STOP / unknown"]
-    end
-    SRC --> ROAD --> PATH
-    SRC --> CROSS
-    SRC --> HAND --> KNN
-    subgraph DECISION["판단·제어"]
-        AUTO["자율 제어 · 위치/방향 오차 → 조향·속도"]
-        GATE["선택적 횡단보도 연동<br/>접근 → 정차·제스처 대기 → 출발 허가"]
-        GUARD["제어 출력 검사<br/>활성 상태·최신 입력·출력 한계·정지 조건"]
-    end
-    PATH --> AUTO --> GUARD
-    CROSS --> GATE
-    KNN -->|"최신 제어용 판정"| GATE
-    GATE -->|"대기·출발 허가 조건"| AUTO
-    WEB["Flask 웹 화면<br/>영상·수동/자율 설정·정지·촬영"] -->|"수동 명령·모드 선택"| GUARD
-    SRC -->|"인식 영상·상태"| WEB
-    GUARD --> GPIO["GPIO Zero · lgpio"]
-    GPIO --> MOTOR["서보 조향 + 좌우 DC 모터"]
-    KNN -->|"표시용 판정"| DISPLAY["웹 디스플레이 · GIF<br/>차량 GO → 보행자 빨강<br/>차량 STOP → 보행자 초록"]
-```
+![실물 로봇 시스템 아키텍처: Pi 서버의 인식·판단·GPIO와 웹·디스플레이 연결](docs/images/architecture-robot.png)
 
 1. **영상 입력:** Pi 카메라 프레임을 도로·횡단보도·손동작 인식에 전달합니다.
 2. **도로 추종:** 색·윤곽에서 경로를 만들고 위치·방향 오차를 조향과 속도에 반영합니다.
@@ -70,22 +44,7 @@ PC의 YOLO 사람 윤곽 검출은 선택 실험이며, 위 Pi 기본 파이프�
 
 ### 2. 가상 환경: 데이터 생성 → 학습 → 영상 기반 주행 평가
 
-```mermaid
-flowchart LR
-    subgraph COLLECT["합성 데이터 생성"]
-        SIM["Webots / Unity<br/>트랙·차량·가상 카메라"]
-        RGB["카메라 RGB 영상"]
-        TEACH["가상 위치·경로를 아는 교사"]
-        DATA["영상 + 정답 + 출처·시간·자세"]
-        SIM --> RGB --> DATA
-        SIM --> TEACH --> DATA
-    end
-    DATA --> PRE["선별·분할·전처리·증강"]
-    PRE --> W["Webots · 릿지 회귀<br/>좌우 PWM 예측"]
-    PRE --> U["Unity · MLP<br/>조향각·목표 속도 예측"]
-    W --> EVAL["가상 차량 폐루프 주행<br/>이탈·경로 오차·완주 확인"]
-    U --> EVAL
-```
+![Webots와 Unity의 데이터 생성·전처리·학습·가상 주행 평가 아키텍처](docs/images/architecture-learning.png)
 
 교사의 가상 위치·경로는 **데이터 정답 생성**에 사용합니다.
 Unity 모델은 실행 시 원본 카메라 영상에서 예측하며, OpenCV 경계·점선 연결은 별도 확인 화면입니다.
