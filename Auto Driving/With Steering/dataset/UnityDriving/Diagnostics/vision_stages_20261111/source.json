@@ -1,0 +1,32 @@
+{
+  "source": "../runtime_20261111/frame_03/unity_policy_input.png",
+  "method": "offline reprocessing of captured RGB with opencv_lane_view.analyze",
+  "result": {
+    "dashes": 9,
+    "boundaries": 2,
+    "pathPoints": 5,
+    "path": [
+      [
+        241,
+        125
+      ],
+      [
+        175,
+        77
+      ],
+      [
+        138,
+        51
+      ],
+      [
+        114,
+        35
+      ],
+      [
+        99,
+        25
+      ]
+    ],
+    "valid": true
+  }
+}
