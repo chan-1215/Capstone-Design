@@ -1,0 +1,32 @@
+[
+  {
+    "source": "C:\\Users\\a\\Downloads\\Final Test.stl",
+    "output": "FinalTest_Chassis.obj",
+    "triangles": 3928,
+    "source_size_mm": [
+      130.51011657714844,
+      88.11441040039062,
+      18.0
+    ],
+    "unity_size_m": [
+      0.08811441040039063,
+      0.018000000000000006,
+      0.13051011657714845
+    ]
+  },
+  {
+    "source": "C:\\Users\\a\\Downloads\\hweel.stl",
+    "output": "Hweel_Wheel.obj",
+    "triangles": 880,
+    "source_size_mm": [
+      67.0,
+      67.0,
+      18.0
+    ],
+    "unity_size_m": [
+      0.018000000000000002,
+      0.067,
+      0.067
+    ]
+  }
+]

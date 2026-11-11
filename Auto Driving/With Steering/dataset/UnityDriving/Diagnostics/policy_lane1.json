@@ -1,0 +1,11 @@
+{
+    "status": "completed",
+    "controller": "learned_camera_mlp",
+    "lane": 1,
+    "completed_laps": 2,
+    "predictions": 1153,
+    "ground_truth_action_fallbacks": 0,
+    "seconds": 92.22821807861328,
+    "max_cte_m": 0.03356281667947769,
+    "minimum_road_margin_m": 0.012615203857421875
+}

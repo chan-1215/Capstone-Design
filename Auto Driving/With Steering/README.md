@@ -33,6 +33,13 @@
 [영상 단계·경로 오차·커브 판단·제어 연결 상세](../../docs/technical-guide.md#1-도로를-어떻게-구분하나요) ·
 [도로 인식 영상](https://pedestrian-gesture-deck.pages.dev/media/driving-03.mp4)
 
+## 조향장치 주행 데이터셋
+
+[Unity 주행 데이터셋 · 코드·모델·검증 기록](dataset/UnityDriving/README.md)
+
+현재 카메라 조건의 합성 영상 2,377장과 원본 Unity 수집 489장, 학습·시뮬레이터 코드를 함께 정리했습니다.
+실물 주행 코드와 분리한 가상 실험이며 OpenCV는 인식 표시, 학습 MLP는 조향·속도 예측을 담당합니다.
+
 ## 환경과 실행 방법
 
 Pi의 저장소 루트에서 Python 3.11 환경을 만듭니다.

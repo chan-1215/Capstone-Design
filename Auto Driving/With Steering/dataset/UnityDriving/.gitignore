@@ -1,0 +1,14 @@
+/Library/
+/Temp/
+/Logs/
+/Obj/
+/UserSettings/
+/Tools/preview-workspace/
+/Tools/bin/
+/Tools/obj/
+/Tools/*.request
+/Builds/
+**/features.npz
+__pycache__/
+*.csproj
+*.sln

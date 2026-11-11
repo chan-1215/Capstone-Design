@@ -1,0 +1,19 @@
+{
+  "model": "RGB mask-grid MLP 288-64-32-2",
+  "source": "existing Unity trajectories, current-camera rerenders and relabelled recovery perturbations",
+  "validation_group": "20291029_0",
+  "train_scenario_groups": [
+    "20271083_0",
+    "20281056_1"
+  ],
+  "source_scenario_groups": 3,
+  "train_images_before_mirroring": 2102,
+  "training_examples": 4204,
+  "validation_images": 275,
+  "best_epoch": 398,
+  "validation_steering_mae_deg": 0.9775429964065552,
+  "validation_speed_mae_m_s": 0.00374428927898407,
+  "independent_test": "closed-loop Unity checks required; no independent image test set with only three source scenarios",
+  "dataset": "AlignedDatasetFrontCamera",
+  "camera_mount_revision": 3
+}

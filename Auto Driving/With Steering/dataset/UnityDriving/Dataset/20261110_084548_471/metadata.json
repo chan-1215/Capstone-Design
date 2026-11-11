@@ -1,0 +1,1 @@
+{"simulator":"Unity2022.3","dynamics":"kinematic_bicycle","teacher":"ground_truth_pure_pursuit","dimensions":"provisional","labels":"capture_pose_target_for_next_action_and_latest_applied_action","synthetic":true}

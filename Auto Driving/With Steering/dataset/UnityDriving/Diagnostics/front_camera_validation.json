@@ -1,0 +1,40 @@
+{
+  "camera_mount_revision": 3,
+  "model_sha256": "a382baa729c2a2b6e0c3c5a4653b81b2fe5d99e6f0b09aa9774ca08d30d36b78",
+  "camera_z_m": 0.02,
+  "camera_height_m": 0.155,
+  "controller": "learned_camera_mlp",
+  "opencv_role": "image-only diagnostic overlay, not steering control",
+  "lane0": {
+    "status": "completed",
+    "controller": "learned_camera_mlp",
+    "lane": 0,
+    "completed_laps": 2,
+    "predictions": 1008,
+    "ground_truth_action_fallbacks": 0,
+    "seconds": 80.62163543701172,
+    "max_cte_m": 0.05635210499167442,
+    "minimum_road_margin_m": 0.014186009764671326
+  },
+  "lane1": {
+    "status": "completed",
+    "controller": "learned_camera_mlp",
+    "lane": 1,
+    "completed_laps": 2,
+    "predictions": 1153,
+    "ground_truth_action_fallbacks": 0,
+    "seconds": 92.22821807861328,
+    "max_cte_m": 0.03356281667947769,
+    "minimum_road_margin_m": 0.012615203857421875
+  },
+  "opencv_overlay": {
+    "ready": false,
+    "valid": false,
+    "dashes": 1,
+    "boundaries": 1,
+    "pathPoints": 1,
+    "jpeg": "",
+    "error": "",
+    "opencv": ""
+  }
+}
